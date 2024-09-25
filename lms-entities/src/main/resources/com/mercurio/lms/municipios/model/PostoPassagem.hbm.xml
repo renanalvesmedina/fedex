@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.PostoPassagem" 
+    table="POSTO_PASSAGEM"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+	<synchronize table="POSTO_PASSAGEM"/>
+
+
+    <id
+        name="idPostoPassagem"
+        type="java.lang.Long"
+        column="ID_POSTO_PASSAGEM"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">POSTO_PASSAGEM_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpPostoPassagem"
+		    column="TP_POSTO_PASSAGEM"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_POSTO_PASSAGEM</param>
+	    </type>
+    </property>
+    <property
+        name="nrKm"
+		type="java.lang.Integer"
+        column="NR_KM"
+        not-null="false"
+        length="8"
+    />
+    <property
+        name="tpSentidoCobranca"
+		column="TP_SENTIDO_COBRANCA"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SENTIDO_COBRANCA_POSTO_PASSAGEM</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrLatitude"
+		type="java.math.BigDecimal"
+        column="NR_LATITUDE"
+        length="18"
+    />
+    <property
+        name="nrLongitude"
+		type="java.math.BigDecimal"
+        column="NR_LONGITUDE"
+        length="18"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Concessionaria -->
+    <many-to-one
+        name="concessionaria"
+        class="com.mercurio.lms.municipios.model.Concessionaria"
+        not-null="true"
+    >
+        <column name="ID_CONCESSIONARIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to PostoPassagemCc -->
+    <bag
+        name="postoPassagemCcs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PostoPassagemCc</meta>
+ 	        <key>
+            <column name="ID_POSTO_PASSAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.PostoPassagemCc"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TarifaPostoPassagem -->
+    <bag
+        name="tarifaPostoPassagems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TarifaPostoPassagem</meta>
+ 	        <key>
+            <column name="ID_POSTO_PASSAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.TarifaPostoPassagem"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TipoPagamentoPosto -->
+    <bag
+        name="tipoPagamentoPostos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TipoPagamentoPosto</meta>
+ 	        <key>
+            <column name="ID_POSTO_PASSAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.TipoPagamentoPosto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PostoPassagemMunicipio -->
+    <bag
+        name="postoPassagemMunicipios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PostoPassagemMunicipio</meta>
+ 	        <key>
+            <column name="ID_POSTO_PASSAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.PostoPassagemMunicipio"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PostoPassagemRotaColEnt -->
+    <bag
+        name="postoPassagemRotaColEnts"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PostoPassagemRotaColEnt</meta>
+ 	        <key>
+            <column name="ID_POSTO_PASSAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.PostoPassagemRotaColEnt"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Rodovia -->
+    <many-to-one
+        name="rodovia"
+        class="com.mercurio.lms.municipios.model.Rodovia"
+        not-null="false"
+    >
+        <column name="ID_RODOVIA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

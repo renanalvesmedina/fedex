@@ -1,0 +1,177 @@
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+	<div class="fixed-top">
+		<div ng-include src="contextPath + 'js/app/common/view/templates/form-buttons-list.html'" />
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="controleCarga" data-labelSize="3" data-multiSize="6">
+			<input
+				class="form-control"
+				id="controleCarga"
+				lms-controle-carga
+				ng-model="filter.controleCarga"
+			/>
+			<input
+				class="form-control"
+				disabled
+				id="nrControleCarga"
+				type="text"
+				value="{{ filter.controleCarga.nrControleCarga | lpad : 8 }}"
+			/>
+		</div>
+		<div adsm-add-field data-boxsize="6" data-label="virusCarga" data-labelsize="3">
+			<input
+				class="form-control"
+				id="nrIscaCarga"
+				ng-disabled="filter.controleCarga"
+				ng-model="filter.nrIscaCarga"
+				type="text"
+			/>
+		</div>
+	</div>
+	<accordion>
+		<accordion-group is-open="isFiltroBasicoOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{ 'glyphicon-chevron-down' : isFiltroBasicoOpen, 'glyphicon-chevron-right' : !isFiltroBasicoOpen }" />
+				{{ 'filtrosBasicos' | translate }}
+			</accordion-heading>
+
+			<div class="form-horizontal">
+				<div adsm-add-field data-boxsize="6" data-label="chaveNfe" data-labelsize="3">
+					<input
+						class="form-control"
+						id="nrChave"
+						maxlength="44"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.nrChave"
+						type="text"
+					/>
+				</div>
+				<div adsm-add-field data-boxsize="6" data-label="volume" data-labelsize="3">
+					<input
+						class="form-control"
+						id="nrVolume"
+						maxlength="44"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.nrVolume"
+						type="text"
+					/>
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="cliente" data-labelSize="3" data-multiSize="4">
+					<input
+						class="form-control"
+						id="cliente"
+						lms-cliente
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.cliente"
+					/>
+					<input
+						class="form-control"
+						disabled
+						id="cliente.nmPessoa"
+						type="text"
+						value="{{ filter.cliente.nmPessoa }}"
+					/>
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="dataInclusao" data-labelSize="3" data-multiSize="6">
+					<input
+						adsm-date-picker
+						class="form-control"
+						data-end="filter.dhInclusaoFinal"
+						data-mask="date"
+						id="dhInclusaoInicial"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.dhInclusaoInicial"
+					/>
+					<input
+						adsm-date-picker
+						class="form-control"
+						data-mask="date"
+						data-start="filter.dhInclusaoInicial"
+						id="dhInclusaoFinal"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.dhInclusaoFinal"
+					/>
+				</div>
+				<div adsm-add-field data-boxsize="6" data-label="notaFiscal" data-labelsize="3" data-multiSize="9">
+					<input
+						class="form-control"
+						id="nrNotaFiscal"
+						mask="integer"
+						maxlength="9"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.nrNotaFiscal"
+						type="text"
+					/>
+					<input
+						class="form-control"
+						id="dsSerie"
+						maxlength="3"
+						ng-disabled="filter.controleCarga || !filter.nrNotaFiscal"
+						ng-model="filter.dsSerie"
+						type="text"
+					/>
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="dataAtivacao" data-labelSize="3" data-multiSize="6">
+					<input
+						adsm-date-picker
+						class="form-control"
+						data-end="filter.dhAtivacaoFinal"
+						data-mask="date"
+						id="dhAtivacaoInicial"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.dhAtivacaoInicial"
+					/>
+					<input
+						adsm-date-picker
+						class="form-control"
+						data-mask="date"
+						data-start="filter.dhAtivacaoInicial"
+						id="dhAtivacaoFinal"
+						ng-disabled="filter.controleCarga"
+						ng-model="filter.dhAtivacaoFinal"
+					/>
+				</div>
+			</div>
+		</accordion-group>
+	</accordion>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="scroll-table">
+				<table
+					adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					data-remove-service="removeByIds()"
+					show-checkboxes="true"
+				>
+					<thead>
+						<tr>
+							<th />
+							<th sortable="nrChave">{{ 'chaveNfe' | translate }}</th>
+							<th colspan="2">{{ 'cliente' | translate }}</th>
+							<th colspan="2">{{ 'notaFiscal' | translate }}</th>
+							<th>{{ 'volume' | translate }}</th>
+							<th>{{ 'virusCarga' | translate }}</th>
+							<th>{{ 'dataAtivacao' | translate }}</th>
+							<th>{{ 'dataInclusao' | translate }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+							<td>{{ row.nrChave }}</td>
+							<td>{{ row.cliente.nrIdentificacao }}</td>
+							<td>{{ row.cliente.nmPessoa }}</td>
+							<td>{{ row.nrNotaFiscal }}</td>
+							<td>{{ row.dsSerie }}</td>
+							<td>{{ row.nrVolume }}</td>
+							<td>{{ row.nrIscaCarga }}</td>
+							<td>{{ row.dhAtivacao | dateTimeZone }}</td>
+							<td>{{ row.dhInclusao | dateTimeZone }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>

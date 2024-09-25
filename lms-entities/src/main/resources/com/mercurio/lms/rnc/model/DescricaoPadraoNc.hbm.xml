@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.rnc.model.DescricaoPadraoNc" persister="com.mercurio.adsm.core.model.hibernate.I18nTablePersister" table="DESCRICAO_PADRAO_NC">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_DESCRICAO_PADRAO_NC" name="idDescricaoPadraoNc" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">DESCRICAO_PADRAO_NC_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_PADRAO_NC_I" length="200" name="dsPadraoNc" not-null="true" type="varcharI18n"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to MotivoAberturaNc -->
+    <many-to-one class="com.mercurio.lms.rnc.model.MotivoAberturaNc" name="motivoAberturaNc" not-null="true">
+        <column name="ID_MOTIVO_ABERTURA_NC"/>
+    </many-to-one>
+    <!-- bi-directional one-to-many association to OcorrenciaNaoConformidade -->
+    <bag cascade="none" inverse="true" lazy="true" name="ocorrenciaNaoConformidades">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade</meta>
+ 	        <key>
+            <column name="ID_DESCRICAO_PADRAO_NC"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

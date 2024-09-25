@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.entrega.model.RegistroDocumentoEntrega" 
+    table="REGISTRO_DOCUMENTO_ENTREGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRegistroDocumentoEntrega"
+        type="java.lang.Long"
+        column="ID_REGISTRO_DOCUMENTO_ENTREGA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">REGISTRO_DOCUMENTO_ENTREGA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="blComprovanteRecolhido"
+			        type="sim_nao"
+            column="BL_COMPROVANTE_RECOLHIDO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="nrComprovante"
+			        type="java.lang.String"
+            column="NR_COMPROVANTE"
+        length="20"
+    />
+    <property
+        name="obComprovante"
+			        type="java.lang.String"
+            column="OB_COMPROVANTE"
+        length="500"
+    />
+	<property
+        name="tpSituacaoRegistro"
+		    column="TP_SITUACAO_REGISTRO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_REGISTRO_DOCUMENTO_ENTREGA</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoDocumentoEntrega -->
+    <many-to-one
+        name="tipoDocumentoEntrega"
+        class="com.mercurio.lms.entrega.model.TipoDocumentoEntrega"
+        not-null="true"
+    >
+        <column name="ID_TIPO_DOCUMENTO_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to DocumentoMir -->
+    <bag
+        name="documentoMirs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.DocumentoMir</meta>
+ 	        <key>
+            <column name="ID_REGISTRO_DOCUMENTO_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.DocumentoMir"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="true"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.seguros.model.ReciboReembolsoProcesso" 
+    table="RECIBO_REEMBOLSO_PROCESSO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idReciboReembolsoProcesso"
+        type="java.lang.Long"
+        column="ID_RECIBO_REEMBOLSO_PROCESSO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">RECIBO_REEMBOLSO_PROCESSO_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrRecibo"
+		type="java.lang.Long"
+        column="NR_RECIBO"
+        not-null="true"
+        length="12"
+    />
+    <property
+        name="dtReebolso"
+		type="jtyearmonthday"
+        column="DT_REEBOLSO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="vlReembolso"
+		type="java.math.BigDecimal"
+        column="VL_REEMBOLSO"
+        not-null="true"
+        length="18"
+    />
+
+	<property
+        name="vlReembolsoAvulso"
+		type="java.math.BigDecimal"
+        column="VL_REEMBOLSO_AVULSO"
+        not-null="true"
+        length="18"
+    />
+    
+    <property
+        name="obReciboReembolso"
+		type="java.lang.String"
+        column="OB_RECIBO_REEMBOLSO"
+        not-null="false"
+        length="1500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ReciboReembolsoDoctoServico -->
+    <bag
+        name="reciboReembolsoDoctoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.ReciboReembolsoDoctoServico</meta>
+ 	        <key>
+            <column name="ID_RECIBO_REEMBOLSO_PROCESSO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.seguros.model.ReciboReembolsoDoctoServico"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ProcessoSinistro -->
+    <many-to-one
+        name="processoSinistro"
+        class="com.mercurio.lms.seguros.model.ProcessoSinistro"
+        not-null="true"
+    >
+        <column name="ID_PROCESSO_SINISTRO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

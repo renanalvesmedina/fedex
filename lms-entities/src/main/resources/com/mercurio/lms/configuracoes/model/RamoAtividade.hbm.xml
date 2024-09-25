@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.configuracoes.model.RamoAtividade" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="RAMO_ATIVIDADE">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_RAMO_ATIVIDADE" name="idRamoAtividade" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">RAMO_ATIVIDADE_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_RAMO_ATIVIDADE_I" length="500" name="dsRamoAtividade" not-null="true" type="varcharI18n"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to Cliente -->
+    <bag cascade="none" inverse="true" lazy="true" name="clientes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Cliente</meta>
+ 	        <key>
+            <column name="ID_RAMO_ATIVIDADE"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.Cliente"/>
+    </bag>
+    <!-- bi-directional many-to-one association to CodigoFiscalOperacao -->
+    <many-to-one class="com.mercurio.lms.tributos.model.CodigoFiscalOperacao" name="codigoFiscalOperacao" not-null="true">
+        <column name="ID_CODIGO_FISCAL_OPERACAO"/>
+    </many-to-one>
+
+	
+	
+</class>
+</hibernate-mapping>

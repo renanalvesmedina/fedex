@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tabelaprecos.model.FaixaProgressiva" 
+    table="FAIXA_PROGRESSIVA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id name="idFaixaProgressiva" column="ID_FAIXA_PROGRESSIVA"
+        type="java.lang.Long"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">FAIXA_PROGRESSIVA_SQ</param>
+        </generator>
+    </id>
+	<version name="versao" column="NR_VERSAO"/>
+    <property
+        name="tpIndicadorCalculo"
+            column="TP_INDICADOR_CALCULO"
+        not-null="true"
+        length="2">
+        <type name="domain">
+			<param name="domainName">DM_INDICADORES_CALCULO</param>
+		</type>
+    </property>
+    <property
+        name="cdMinimoProgressivo"
+        column="CD_MINIMO_PROGRESSIVO"
+        not-null="true"
+        length="2">
+    	<type name="domain">
+			<param name="domainName">DM_CODIGOS_MIN_PROGRESSIVO</param>
+		</type>
+    </property>
+    <property
+        name="tpSituacao"
+            column="TP_SITUACAO"
+        not-null="true"
+        length="1">
+    	<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+    </property>
+    <property
+        name="vlFaixaProgressiva"
+			        type="java.math.BigDecimal"
+            column="VL_FAIXA_PROGRESSIVA"
+        length="18"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to TabelaPrecoParcela -->
+    <many-to-one
+        name="tabelaPrecoParcela"
+        class="com.mercurio.lms.tabelaprecos.model.TabelaPrecoParcela"
+        not-null="true"
+    >
+       <column name="ID_TABELA_PRECO_PARCELA" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to ProdutoEspecifico -->
+    <many-to-one
+        name="produtoEspecifico"
+        class="com.mercurio.lms.tabelaprecos.model.ProdutoEspecifico"
+    >
+        <column name="ID_PRODUTO_ESPECIFICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to UnidadeMedida -->
+    <many-to-one
+        name="unidadeMedida"
+        class="com.mercurio.lms.tabelaprecos.model.UnidadeMedida"
+    >
+        <column name="ID_UNIDADE_MEDIDA" />
+    </many-to-one>
+    
+     <!-- bi-directional one-to-many association to ValorFaixaProgressiva -->
+    <bag
+        name="valoresFaixasProgressivas"
+        lazy="true"
+        inverse="true"
+		cascade="save-update,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.ValorFaixaProgressiva</meta>
+ 	        <key>
+            <column name="ID_FAIXA_PROGRESSIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.ValorFaixaProgressiva"
+        />
+    </bag>
+    
+</class>
+</hibernate-mapping>

@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.vendas.model.DivisaoCliente" 
+	table="DIVISAO_CLIENTE"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idDivisaoCliente"
+		type="java.lang.Long"
+		column="ID_DIVISAO_CLIENTE"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">DIVISAO_CLIENTE_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="cdDivisaoCliente"
+		type="java.lang.Long"
+		column="CD_DIVISAO_CLIENTE"
+		not-null="true"
+		length="10"
+	/>
+	<property
+		name="dsDivisaoCliente"
+		type="java.lang.String"
+		column="DS_DIVISAO_CLIENTE"
+		not-null="true"
+		length="60"
+	/>
+	<property
+		name="nrQtdeDocsRomaneio"
+		type="java.lang.Integer"
+		column="NR_QTDE_DOCS_ROMANEIO"
+		length="5"
+	/>
+ 	<property
+		name="tpSituacao"
+		column="TP_SITUACAO"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+	
+	<property 
+		name="tpSituacaoSolicitada" 
+		column="TP_SITUACAO_SOLICITADA"
+		not-null="false"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to Cliente -->
+	<many-to-one
+		name="cliente"
+		class="com.mercurio.lms.vendas.model.Cliente"
+		not-null="true"
+	>
+		<column name="ID_CLIENTE" />
+	</many-to-one>
+
+	<!-- bi-directional many-to-one association to NaturezaProduto -->
+	<many-to-one
+		name="naturezaProduto"
+		class="com.mercurio.lms.expedicao.model.NaturezaProduto"
+	>
+		<column name="ID_NATUREZA_PRODUTO" />
+	</many-to-one>
+
+	<!-- bi-directional one-to-many association to Simulacao -->
+	<bag
+		name="simulacoes"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Simulacao</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.Simulacao"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to DiaFaturamento -->
+	<bag
+		name="diaFaturamentos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DiaFaturamento</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.DiaFaturamento"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to DoctoServico -->
+	<bag
+		name="doctoServicos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.DoctoServico</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.expedicao.model.DoctoServico"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to DivisaoProduto -->
+	<bag
+		name="divisaoProdutos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DivisaoProduto</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.DivisaoProduto"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to TabelaDivisaoCliente -->
+	<bag
+		name="tabelaDivisaoClientes"
+		lazy="true"
+		inverse="true"
+		cascade="save-update" 
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.TabelaDivisaoCliente</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.TabelaDivisaoCliente"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to AgrupamentoCliente -->
+	<bag
+		name="agrupamentoClientes"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.AgrupamentoCliente</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.AgrupamentoCliente"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to AgrupamentoCliente -->
+	<bag
+		name="prazoVencimentos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PrazoVencimento</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.PrazoVencimento"
+		/>
+	</bag>	
+
+	<!-- bi-directional one-to-many association to Fatura -->
+	<bag
+		name="faturas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Fatura</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.contasreceber.model.Fatura"
+		/>
+	</bag>
+	
+	<!-- bi-directional one-to-many association to Fatura -->
+	<bag
+		name="devedorDocServFats"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.DevedorDocServFat</meta>
+		<key>
+			<column name="ID_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.contasreceber.model.DevedorDocServFat"
+		/>
+	</bag>	
+</class>
+</hibernate-mapping>

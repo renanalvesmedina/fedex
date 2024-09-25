@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class
+	name="com.mercurio.lms.municipios.model.Concessionaria" 
+   	table="CONCESSIONARIA"
+>
+	
+	<id name="idConcessionaria" column="ID_CONCESSIONARIA">
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>
+
+	<property
+	        name="dsHomePage"
+	        type="java.lang.String"
+	        column="DS_HOMEPAGE"
+	        length="120"
+	/>
+	
+	<property
+	        name="tpSituacao"
+	        column="TP_SITUACAO"
+	        not-null="true"
+	        length="1"
+		>
+         	<type name="domain" >
+                  <param name="domainName">DM_STATUS</param>
+			</type>
+	</property>
+	
+	<!-- Associations -->
+	<one-to-one name="pessoa" constrained="true" class="com.mercurio.lms.configuracoes.model.Pessoa"/>
+
+	
+	
+   <!-- bi-directional one-to-many association to PostoPassagem -->
+    <bag
+        name="postoPassagems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PostoPassagem</meta>
+ 	        <key>
+            <column name="ID_CONCESSIONARIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.PostoPassagem"
+        />
+    </bag>
+
+</class>
+
+</hibernate-mapping>

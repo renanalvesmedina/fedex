@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.expedicao.model.TipoRegistroComplemento" 
+    table="TIPO_REGISTRO_COMPLEMENTO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTipoRegistroComplemento"
+        type="java.lang.Long"
+        column="ID_TIPO_REGISTRO_COMPLEMENTO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_REGISTRO_COMPLEMENTO_SQ</param>
+        </generator>
+    </id>
+	<version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="dsTipoRegistroComplemento"
+			        type="java.lang.String"
+            column="DS_TIPO_REGISTRO_COMPLEMENTO"
+        not-null="true"
+        unique="true"
+        length="60"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to InformacaoDocServico -->
+    <bag
+        name="informacaoDocServicos"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.InformacaoDocServico</meta>
+ 	        <key>
+            <column name="ID_TIPO_REGISTRO_COMPLEMENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.InformacaoDocServico"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Fatura -->
+    <bag
+        name="faturas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Fatura</meta>
+ 	        <key>
+            <column name="ID_TIPO_REGISTRO_COMPLEMENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Fatura"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.ContaBancaria" 
+    table="CONTA_BANCARIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idContaBancaria"
+        type="java.lang.Long"
+        column="ID_CONTA_BANCARIA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CONTA_BANCARIA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrContaBancaria"
+			        type="java.lang.String"
+            column="NR_CONTA_BANCARIA"
+        not-null="true"
+        length="15"
+    />
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpConta"
+		    column="TP_CONTA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_CONTA</param>
+	    </type>
+    </property>
+    <property
+        name="dvContaBancaria"
+			        type="java.lang.String"
+            column="DV_CONTA_BANCARIA"
+        not-null="true"
+        length="2"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ChequeReembolso -->
+    <bag
+        name="chequeReembolsos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ChequeReembolso</meta>
+ 	        <key>
+            <column name="ID_CONTA_BANCARIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.ChequeReembolso"
+        />
+    </bag>
+    
+     <!-- bi-directional one-to-many association to ReciboFreteCarreteiro -->
+    <bag
+        name="reciboFreteCarreteiros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro</meta>
+ 	        <key>
+            <column name="ID_CONTA_BANCARIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro"
+        />
+    </bag>
+    
+    <!-- bi-directional many-to-one association to AgenciaBancaria -->
+    <many-to-one
+        name="agenciaBancaria"
+        class="com.mercurio.lms.configuracoes.model.AgenciaBancaria"
+        not-null="true"
+    >
+        <column name="ID_AGENCIA_BANCARIA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true" 
+    >
+        <column name="ID_PESSOA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

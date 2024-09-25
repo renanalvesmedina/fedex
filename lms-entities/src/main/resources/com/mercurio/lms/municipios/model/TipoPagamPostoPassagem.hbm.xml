@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.municipios.model.TipoPagamPostoPassagem" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="TIPO_PAGAM_POSTO_PASSAGEM">
+	
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_TIPO_PAGAM_POSTO_PASSAGEM" name="idTipoPagamPostoPassagem" type="java.lang.Long">
+        <generator class="sequence">
+            <param name="sequence">TIPO_PAGAM_POSTO_PASSAGEM_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_TIPO_PAGAM_POSTO_PASSAGEM_I" length="500" name="dsTipoPagamPostoPassagem" not-null="true" type="varcharI18n">
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<meta attribute="use-in-tostring">true</meta>
+     		<type name="domain">
+                <param name="domainName">DM_STATUS</param>
+		</type>       
+    </property>
+
+    <property column="BL_CARTAO_PEDAGIO" length="1" name="blCartaoPedagio" not-null="false" type="sim_nao"/>
+
+    <!-- Associations -->
+  	<!-- bi-directional one-to-many association to PostoPassagemCc -->
+    <bag cascade="none" inverse="true" lazy="true" name="postoPassagemCcs">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PostoPassagemCc</meta>
+ 	        <key>
+            <column name="ID_TIPO_PAGAM_POSTO_PASSAGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.PostoPassagemCc"/>
+    </bag>
+    <!-- bi-directional one-to-many association to TipoPagamentoPosto -->
+    <bag cascade="none" inverse="true" lazy="true" name="tipoPagamentoPostos">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TipoPagamentoPosto</meta>
+ 	        <key>
+            <column name="ID_TIPO_PAGAMENTO_POSTO_PASSAG"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.municipios.model.TipoPagamentoPosto"/>
+    </bag>
+    <!-- bi-directional one-to-many association to PagtoPedagioCc -->
+    <bag cascade="none" inverse="true" lazy="true" name="pagtoPedagioCcs">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PagtoPedagioCc</meta>
+ 	        <key>
+            <column name="TIPO_PAGAM_POSTO_PASSAGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.PagtoPedagioCc"/>
+    </bag>
+
+	
+	
+
+</class>
+</hibernate-mapping>

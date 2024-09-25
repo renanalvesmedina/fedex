@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.pendencia.model.UnidadeProduto" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="UNIDADE_PRODUTO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_UNIDADE_PRODUTO" name="idUnidadeProduto" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">UNIDADE_PRODUTO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_UNIDADE_PRODUTO_I" length="500" name="dsUnidadeProduto" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to MercadoriaPendenciaMz -->
+    <bag cascade="none" inverse="true" lazy="true" name="mercadoriaPendenciaMzsByIdUnidadesPorVolume">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz</meta>
+ 	        <key>
+            <column name="ID_UNIDADES_POR_VOLUME"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz"/>
+    </bag>
+    <!-- bi-directional one-to-many association to MercadoriaPendenciaMz -->
+    <bag cascade="none" inverse="true" lazy="true" name="mercadoriaPendenciaMzsByIdUnidadeProduto">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_PRODUTO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz"/>
+    </bag>
+
+	<!-- bi-directional one-to-many association to EntradaPendenciaMatriz -->
+	<bag cascade="none" inverse="true" lazy="true" name="entradaPendenciaMatrizs">
+		<meta attribute="adsm-parametrized-attribute">
+			com.mercurio.lms.pendencia.model.EntradaPendenciaMatriz
+		</meta>
+		<key>
+			<column name="ID_UNIDADE_PRODUTO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.pendencia.model.EntradaPendenciaMatriz"/>
+	</bag>    
+    
+
+	
+	
+</class>
+</hibernate-mapping>

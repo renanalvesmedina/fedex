@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.LocalTroca" 
+    table="LOCAL_TROCA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idLocalTroca"
+        type="java.lang.Long"
+        column="ID_LOCAL_TROCA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LOCAL_TROCA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrKmRodoviaTroca"
+			        type="java.lang.Integer"
+            column="NR_KM_RODOVIA_TROCA"
+        length="6"
+    />
+    <property
+        name="dsTroca"
+			        type="java.lang.String"
+            column="DS_TROCA"
+        length="300"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ControleTrecho -->
+    <many-to-one
+        name="controleTrecho"
+        class="com.mercurio.lms.carregamento.model.ControleTrecho"
+        not-null="false"
+    >
+        <column name="ID_CONTROLE_TRECHO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to PontoParada -->
+    <many-to-one
+        name="pontoParada"
+        class="com.mercurio.lms.municipios.model.PontoParada"
+        not-null="true"
+    >
+        <column name="ID_PONTO_PARADA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Rodovia -->
+    <many-to-one
+        name="rodovia"
+        class="com.mercurio.lms.municipios.model.Rodovia"
+        not-null="true"
+    >
+        <column name="ID_RODOVIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to SemiReboqueCc -->
+    <bag
+        name="semiReboqueCcs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.SemiReboqueCc</meta>
+ 	        <key>
+            <column name="ID_LOCAL_TROCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.SemiReboqueCc"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to VeiculoControleCarga -->
+    <bag
+        name="veiculoControleCargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.VeiculoControleCarga</meta>
+ 	        <key>
+            <column name="ID_LOCAL_TROCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.VeiculoControleCarga"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MotoristaControleCarga -->
+    <bag
+        name="motoristaControleCargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.MotoristaControleCarga</meta>
+ 	        <key>
+            <column name="ID_LOCAL_TROCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.MotoristaControleCarga"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

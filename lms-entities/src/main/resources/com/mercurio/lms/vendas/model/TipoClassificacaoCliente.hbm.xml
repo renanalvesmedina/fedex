@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.vendas.model.TipoClassificacaoCliente" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="TIPO_CLASSIFICACAO_CLIENTE">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_TIPO_CLASSIFICACAO_CLIENTE" name="idTipoClassificacaoCliente" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_CLASSIFICACAO_CLIENTE_SQ</param>
+        </generator>
+    </id>
+   	<version column="NR_VERSAO" name="versao"/>
+    <property column="DS_TIPO_CLASS_CLIENTE_I" length="500" name="dsTipoClassificacaoCliente" not-null="true" type="varcharI18n"/>
+    <property column="BL_OPCIONAL" length="1" name="blOpcional" not-null="true" type="sim_nao">
+    </property>
+    <property column="BL_ESPECIAL" length="1" name="blEspecial" not-null="true" type="sim_nao">
+    </property>
+    <property column="BL_EVENTUAL" length="1" name="blEventual" not-null="true" type="sim_nao">
+    </property>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to DescClassificacaoCliente -->
+    <bag cascade="delete-orphan" inverse="true" lazy="true" name="descClassificacaoClientes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DescClassificacaoCliente</meta>
+ 	        <key>
+            <column name="ID_TIPO_CLASSIFICACAO_CLIENTE"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.DescClassificacaoCliente"/>
+    </bag>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one class="com.mercurio.lms.municipios.model.Empresa" name="empresa" not-null="true">
+        <column name="ID_EMPRESA"/>
+    </many-to-one>
+
+	
+	
+</class>
+</hibernate-mapping>

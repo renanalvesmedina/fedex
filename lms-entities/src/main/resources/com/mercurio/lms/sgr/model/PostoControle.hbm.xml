@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.sgr.model.PostoControle" 
+    table="POSTO_CONTROLE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPostoControle"
+        type="java.lang.Long"
+        column="ID_POSTO_CONTROLE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">POSTO_CONTROLE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nmPostoControlePassaporte"
+			        type="java.lang.String"
+            column="NM_POSTO_CONTROLE_PASSAPORTE"
+        not-null="true"
+        unique="true"
+        length="50"
+    />
+    <property
+        name="nmLocal"
+			        type="java.lang.String"
+            column="NM_LOCAL"
+        not-null="true"
+        unique="true"
+        length="50"
+    />
+    <property
+        name="nrKm"
+			        type="java.lang.Integer"
+            column="NR_KM"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="nrTelefone"
+			        type="java.lang.String"
+            column="NR_TELEFONE"
+        length="20"
+    />
+    <property
+        name="nmResponsavel"
+			        type="java.lang.String"
+            column="NM_RESPONSAVEL"
+        length="100"
+    />
+    <property
+        name="dsCorreioEletronico"
+			        type="java.lang.String"
+            column="DS_CORREIO_ELETRONICO"
+        length="60"
+    />
+    
+    <property
+        name="tpBandeiraPosto"
+		column="TP_BANDEIRA_POSTO"
+        length="2">
+		<type name="domain">
+        	<param name="domainName">DM_BANDEIRA_POSTO</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ReguladoraSeguro -->
+    <many-to-one
+        name="reguladoraSeguro"
+        class="com.mercurio.lms.seguros.model.ReguladoraSeguro"
+        not-null="true"
+    >
+        <column name="ID_REGULADORA_SEGURO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to PostoPassaporte -->
+    <bag
+        name="postoPassaportes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.PostoPassaporte</meta>
+ 	        <key>
+            <column name="ID_POSTO_CONTROLE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.PostoPassaporte"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to RotaPostoControle -->
+    <bag
+        name="rotaPostoControles"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.RotaPostoControle</meta>
+ 	        <key>
+            <column name="ID_POSTO_CONTROLE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.RotaPostoControle"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Rodovia -->
+    <many-to-one
+        name="rodovia"
+        class="com.mercurio.lms.municipios.model.Rodovia"
+        not-null="true"
+    >
+        <column name="ID_RODOVIA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

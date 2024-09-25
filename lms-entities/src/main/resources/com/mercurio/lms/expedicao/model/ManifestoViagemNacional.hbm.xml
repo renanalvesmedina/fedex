@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.expedicao.model.ManifestoViagemNacional" 
+    table="MANIFESTO_VIAGEM_NACIONAL"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idManifestoViagemNacional"
+        type="java.lang.Long"
+        column="ID_MANIFESTO_VIAGEM_NACIONAL"
+    >
+        <generator class="foreign">
+            <param name="property">manifesto</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrManifestoOrigem"
+			        type="java.lang.Integer"
+            column="NR_MANIFESTO_ORIGEM"
+        not-null="true"
+        length="8"
+    />
+
+        <property
+        name="nrCto"
+			        type="java.lang.Integer"
+            column="NR_CTO"
+        not-null="false"
+        length="10"
+    />
+    <property
+        name="obManifestoViagemNacional"
+        type="java.lang.String"
+        column="OB_MANIFESTO_VIAGEM_NACIONAL"
+    />
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Manifesto -->
+    <one-to-one
+        name="manifesto"
+        class="com.mercurio.lms.carregamento.model.Manifesto"
+        outer-join="auto"
+        constrained="true"
+    />
+    <!-- bi-directional one-to-many association to ManifestoNacionalCto -->
+    <bag
+        name="manifestoNacionalCtos"
+        lazy="true"
+        inverse="true"
+		cascade="all-delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.ManifestoNacionalCto</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_VIAGEM_NACIONAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.ManifestoNacionalCto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ManifestoNacionalVolume -->
+    <bag
+        name="manifestoNacionalVolumes"
+        lazy="true"
+        inverse="true"
+		cascade="all-delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.ManifestoNacionalVolume</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_VIAGEM_NACIONAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.ManifestoNacionalVolume"
+        />
+    </bag>
+           
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+    
+</class>
+</hibernate-mapping>

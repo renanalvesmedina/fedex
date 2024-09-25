@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.coleta.model.ManifestoColeta" 
+    table="MANIFESTO_COLETA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idManifestoColeta"
+        type="java.lang.Long"
+        column="ID_MANIFESTO_COLETA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MANIFESTO_COLETA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrManifesto"
+			        type="java.lang.Integer"
+            column="NR_MANIFESTO"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="tpStatusManifestoColeta"
+		    column="TP_STATUS_MANIFESTO_COLETA"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_MANIFESTO_COLETA</param>
+	    </type>
+    </property>
+    <property
+        name="dhGeracao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_GERACAO"/><column name="DH_GERACAO_TZR"/></property>
+    <property
+        name="dhEmissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+	<property
+		name="qtTotalColetasEmissao"
+		type="java.lang.Integer"
+		column="QT_TOTAL_COLETAS_EMISSAO"
+		length="10"
+	/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to DescargaManifesto -->
+    <bag
+        name="descargaManifestos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.DescargaManifesto</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_COLETA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.DescargaManifesto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PedidoColeta -->
+    <bag
+        name="pedidoColetas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.PedidoColeta</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_COLETA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.coleta.model.PedidoColeta"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to EventoManifestoColeta -->
+    <bag
+        name="eventoManifestoColetas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.EventoManifestoColeta</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_COLETA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.coleta.model.EventoManifestoColeta"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to RotaColetaEntrega -->
+    <many-to-one
+        name="rotaColetaEntrega"
+        class="com.mercurio.lms.municipios.model.RotaColetaEntrega"
+        not-null="true"
+    >
+        <column name="ID_ROTA_COLETA_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,327 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.EnderecoPessoa" 
+    table="ENDERECO_PESSOA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idEnderecoPessoa"
+        type="java.lang.Long"
+        column="ID_ENDERECO_PESSOA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ENDERECO_PESSOA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrCep"
+		type="java.lang.String"
+        column="NR_CEP"
+        length="10"
+    />
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dsEndereco"
+		type="java.lang.String"
+        column="DS_ENDERECO"
+        not-null="true"
+        length="100"
+    />
+    <property
+        name="nrEndereco"
+		type="java.lang.String"
+        column="NR_ENDERECO"
+        length="5"
+    />
+    <property
+        name="nrLatitude"
+		type="java.math.BigDecimal"
+        column="NR_LATITUDE"
+        length="18"
+    />
+    <property
+        name="nrLongitude"
+		type="java.math.BigDecimal"
+        column="NR_LONGITUDE"
+        length="18"
+    />
+    
+    <property
+        name="nrLatitudeTmp"
+		type="java.math.BigDecimal"
+        column="NR_LATITUDE_TMP"
+        length="18"
+    />
+    <property
+        name="nrLongitudeTmp"
+		type="java.math.BigDecimal"
+        column="NR_LONGITUDE_TMP"
+        length="18"
+    />
+    <property
+        name="nrQualidade"
+		type="java.lang.Integer"
+        column="NR_QUALIDADE"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="dsComplemento"
+		type="java.lang.String"
+        column="DS_COMPLEMENTO"
+        length="60"
+    />
+    <property
+        name="dsBairro"
+		type="java.lang.String"
+        column="DS_BAIRRO"
+        length="60"
+    />
+    <property
+        name="obEnderecoPessoa"
+		type="java.lang.String"
+        column="OB_ENDERECO_PESSOA"
+        length="500"
+    />
+    <property
+        name="blEnderecoMigrado"
+		type="sim_nao"
+        column="BL_ENDERECO_MIGRADO"
+        not-null="true"
+        length="1"
+    />
+
+    <many-to-one
+		name="usuarioAlteracao"
+		entity-name="usuario"
+		not-null="false"
+		fetch="join"
+	>
+	   	<column name="ID_USUARIO_ALTERACAO" />
+	</many-to-one>
+	<many-to-one
+		name="usuarioInclusao"
+		entity-name="usuario"
+		not-null="false"
+		fetch="join"
+	>
+	   	<column name="ID_USUARIO_INCLUSAO" />
+	</many-to-one>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to TipoEnderecoPessoa -->
+    <bag
+        name="tipoEnderecoPessoas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.TipoEnderecoPessoa</meta>
+ 	    <key>
+            <column name="ID_ENDERECO_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.TipoEnderecoPessoa"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DoctoServico -->
+    <bag
+        name="doctoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.DoctoServico</meta>
+ 	    <key>
+            <column name="ID_ENDERECO_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.DoctoServico"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ColetaAutomaticaCliente -->
+    <bag
+        name="coletaAutomaticaClientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ColetaAutomaticaCliente</meta>
+ 	    <key>
+            <column name="ID_ENDERECO_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.ColetaAutomaticaCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TelefoneEndereco -->
+    <bag
+        name="telefoneEnderecos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.TelefoneEndereco</meta>
+ 	    <key>
+            <column name="ID_ENDERECO_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.TelefoneEndereco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to HorarioCorteCliente -->
+    <bag
+        name="horarioCorteClientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.HorarioCorteCliente</meta>
+ 	    <key>
+            <column name="ID_ENDERECO_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.HorarioCorteCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MilkRemetente -->
+    <bag
+        name="milkRemetentes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.MilkRemetente</meta>
+ 	    <key>
+            <column name="ID_ENDERECO_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.coleta.model.MilkRemetente"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to TipoLogradouro -->
+    <many-to-one
+        name="tipoLogradouro"
+        class="com.mercurio.lms.configuracoes.model.TipoLogradouro"
+        not-null="true"
+    >
+        <column name="ID_TIPO_LOGRADOURO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true"
+    >
+        <column name="ID_PESSOA" />
+    </many-to-one>
+</class>
+<query name="com.mercurio.lms.configuracoes.model.EnderecoPessoa.findByIdPessoaTpEndereco">
+<![CDATA[
+	select new Map(uf.idUnidadeFederativa as municipio_unidadeFederativa_idUnidadeFederativa,
+					uf.sgUnidadeFederativa as municipio_unidadeFederativa_sgUnidadeFederativa,  
+    				pais.idPais as municipio_unidadeFederativa_pais_idPais,  
+    				pais.nmPais as municipio_unidadeFederativa_pais_nmPais,  
+    				mun.nmMunicipio as municipio_nmMunicipio,  
+    				ep.idEnderecoPessoa as idEnderecoPessoa,  
+    				ep.nrCep as nrCep,  
+    				ep.dsEndereco as dsEndereco,  
+    				ep.nrEndereco as nrEndereco,  
+    				ep.dsBairro as dsBairro,  
+    				ep.dsComplemento as dsComplemento,  
+    				ep.tipoLogradouro.idTipoLogradouro as tipoLogradouro_idTipoLogradouro,  
+    				mun.idMunicipio as municipio_idMunicipio)  
+    					from  com.mercurio.lms.configuracoes.model.EnderecoPessoa as ep  
+    					 	left join ep.municipio as mun  
+    						left join mun.unidadeFederativa as uf  
+    						left join uf.pais as pais  
+    						left join ep.tipoEnderecoPessoas as tep  
+    							where  ep.pessoa.id = :idPessoa and tep.tpEndereco = :tpEndereco  
+    							 and ep.dtVigenciaInicial <= :dataAtual
+								 and ep.dtVigenciaFinal >= :dataAtual
+]]></query>
+
+<query name="com.mercurio.lms.configuracoes.model.EnderecoPessoa.findByIdPessoaTpEnderecoLocalEntrega">
+<![CDATA[
+	select new Map( pais.nmPais as nmPais,
+					pais.idPais as idPais,   
+					uf.idUnidadeFederativa as idUnidadeFederativa,
+    				uf.sgUnidadeFederativa as sgUnidadeFederativa,
+    				mun.nmMunicipio as nmMunicipio, 
+    				mun.idMunicipio as idMunicipio, 
+    				ep.idEnderecoPessoa as idEnderecoPessoa,  
+    				ep.nrCep as nrCep,  
+    				ep.dsEndereco as dsEndereco,  
+    				ep.nrEndereco as nrEndereco,  
+    				ep.dsBairro as dsBairro,  
+    				ep.dsComplemento as dsComplemento,  
+    				ep.tipoLogradouro.dsTipoLogradouro as dsTipoLogradouro,  
+    				ep.tipoLogradouro.idTipoLogradouro as idTipoLogradouro
+    				)  
+    					from  com.mercurio.lms.configuracoes.model.EnderecoPessoa as ep  
+    					 	left join ep.municipio as mun  
+    						left join mun.unidadeFederativa as uf  
+    						left join uf.pais as pais  
+    						left join ep.tipoEnderecoPessoas as tep  
+    							where  ep.pessoa.id in (:idPessoa) and tep.tpEndereco = :tpEndereco  
+    							 and ep.dtVigenciaInicial <= :dataAtual
+								 and ep.dtVigenciaFinal >= :dataAtual
+]]></query>
+
+<query name="com.mercurio.lms.configuracoes.model.EnderecoPessoa.findByPessoaTipoEndereco">
+<![CDATA[
+	select new Map(uf.sgUnidadeFederativa as endereco_sgUnidadeFederativa,
+				uf.nmUnidadeFederativa as endereco_nmUnidadeFederativa,
+				uf.idUnidadeFederativa as endereco_idUnidadeFederativa,
+				mun.idMunicipio as endereco_idMunicipio,
+				mun.nmMunicipio as endereco_nmMunicipio,
+				ep.nrCep as endereco_nrCep,
+				ep.dsEndereco as endereco_dsEndereco,
+				tl.dsTipoLogradouro as endereco_dsTipoLogradouro,
+				ep.dsComplemento as endereco_dsComplemento,
+				ep.nrEndereco as endereco_nrEndereco)  
+    					from  com.mercurio.lms.configuracoes.model.EnderecoPessoa as ep  
+    					 	left join ep.municipio as mun  
+    						left join mun.unidadeFederativa as uf  
+    						left join ep.tipoEnderecoPessoas as tep
+    						left join ep.tipoLogradouro as tl  
+    							where  ep.pessoa.id = :idPessoa and tep.tpEndereco = :tpEndereco
+    							  and ep.dtVigenciaInicial <= :dataAtual
+								  and ep.dtVigenciaFinal >= :dataAtual
+]]></query>
+</hibernate-mapping>

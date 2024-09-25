@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.ItemMda" 
+    table="ITEM_MDA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idItemMda"
+        type="java.lang.Long"
+        column="ID_ITEM_MDA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ITEM_MDA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="qtVolumes"
+			        type="java.lang.Integer"
+            column="QT_VOLUMES"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="vlMercadoria"
+			        type="java.math.BigDecimal"
+            column="VL_MERCADORIA"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="psItem"
+			        type="java.math.BigDecimal"
+            column="PS_ITEM"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dsMercadoria"
+			        type="java.lang.String"
+            column="DS_MERCADORIA"
+        not-null="true"
+        length="200"
+    />
+    <property
+        name="obItemMda"
+			        type="java.lang.String"
+            column="OB_ITEM_MDA"
+        not-null="true"
+        length="200"
+    />
+
+    <!-- Associations -->
+    <!-- bi-directional many-to-one association to NaoConformidade -->
+    <many-to-one
+        name="naoConformidade"
+        class="com.mercurio.lms.rnc.model.NaoConformidade"
+        not-null="true"
+    >
+        <column name="ID_NAO_CONFORMIDADE" />
+    </many-to-one>  
+    <!-- bi-directional many-to-one association to NaturezaProduto -->
+    <many-to-one
+        name="naturezaProduto"
+        class="com.mercurio.lms.expedicao.model.NaturezaProduto"
+        not-null="true"
+    >
+        <column name="ID_NATUREZA_PRODUTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="false"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Mda -->
+    <many-to-one
+        name="mda"
+        class="com.mercurio.lms.pendencia.model.Mda"
+        not-null="true"
+    >
+        <column name="ID_MDA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to NfItemMda -->
+    <bag
+        name="nfItemMdas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.NfItemMda</meta>
+ 	        <key>
+            <column name="ID_ITEM_MDA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.NfItemMda"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

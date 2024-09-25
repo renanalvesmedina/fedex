@@ -1,0 +1,60 @@
+<style type="text/css">
+.my-modal .modal-dialog{
+	width: 650px;
+}
+</style>
+
+<div class="content">
+	<form class="form-horizontal content-padding" ng-submit="storeEventosLocalizacao()"">
+		<div class="alert-container" data-ng-show="popupAlerts.length">
+			<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+				<span data-ng-bind="alert.msg"></span>
+			</alert>
+		</div>	
+	
+		<div class="modal-body">
+			<div class="row">
+				<div adsm-add-field data-label="awb" data-boxSize="12" data-labelSize="3" data-fieldSize="3">
+					<input type="text" ng-model="data.awbSelecionado" id="awbSelecionado" disabled />
+				</div>
+				<div adsm-add-field data-label="ciaAerea" data-boxSize="12" data-labelSize="3" data-fieldSize="5">
+					<input type="text" ng-model="data.ciaAereaSelecionada" id="ciaAereaSelecionada" disabled />
+				</div>
+				<div adsm-add-field data-label="evento" data-boxSize="12" data-labelSize="3" data-fieldSize="9">
+					<select data-adsm-chosen id="idLocalizacao"
+						ng-disabled="{{isLocalizacaoRetiradoAeroporto}}"
+						data-ng-options="obj.idLocalizacao as obj.dsTracking for obj in localizacoes | orderBy:'obj.dsTracking'"
+						data-ng-model="data.idLocalizacao" required>
+						<option value=""></option>
+					</select>
+				</div>
+				<div adsm-add-field data-label="dataEvento" data-boxSize="12" data-labelSize="3" data-fieldSize="3">
+					<input adsm-date-time ng-model="data.dtEvento" adsm-custom-validation="validateDtEvento" ng-disabled="{{isLocalizacaoRetiradoAeroporto}}"/>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row"> 
+			<div class="col-sm-12">
+				<table adsm-table="listEventosTableParams" class="table adsm-table-hover table-condensed table-clickable adsm-table" >
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+							<td column-title="dataEvento">{{row.dataEventoFormatada}}</td>
+							<td column-title="evento">{{row.dsTracking}}</td>
+							<td column-title="localizacao">{{row.tpLocalizacao}}</td>
+						</tr>
+					</tbody>
+				</table>					
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default btn-lg pull-right" ng-click="close()">
+				{{'fechar' |  translate }}
+			</button>
+			
+			<button type="submit" class="btn btn-default btn-lg pull-right" id="salvarEventosLocalizacao()" ng-disabled="{{isLocalizacaoRetiradoAeroporto}}">
+				{{'salvar' |  translate }}
+			</button>
+		</div>
+	</form>
+</div>

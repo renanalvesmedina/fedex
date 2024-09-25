@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.AdiantamentoTrecho" 
+    table="ADIANTAMENTO_TRECHO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idAdiantamentoTrecho"
+        type="java.lang.Long"
+        column="ID_ADIANTAMENTO_TRECHO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ADIANTAMENTO_TRECHO_SQ</param>
+        </generator>
+    </id>
+    
+	<property
+        name="pcFrete"
+		type="java.math.BigDecimal"
+        column="PC_FRETE"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="tpStatusRecibo"
+        column="TP_STATUS_RECIBO"
+        not-null="true"
+        length="1">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_RECIBO</param>
+	    </type>
+    </property>
+    <property
+        name="vlAdiantamento"
+		type="java.math.BigDecimal"
+        column="VL_ADIANTAMENTO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="vlFrete"
+		type="java.math.BigDecimal"
+        column="VL_FRETE"
+        not-null="true"
+        length="18"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to ReciboFreteCarreteiro -->
+    <many-to-one
+        name="reciboFreteCarreteiro"
+        class="com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro"
+        not-null="false"
+    >
+        <column name="ID_RECIBO_FRETE_CARRETEIRO" />
+    </many-to-one>
+
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="postoConveniado"
+		class="com.mercurio.lms.contratacaoveiculos.model.PostoConveniado"
+		not-null="false"
+	>
+		<column name="ID_POSTO_CONVENIADO" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

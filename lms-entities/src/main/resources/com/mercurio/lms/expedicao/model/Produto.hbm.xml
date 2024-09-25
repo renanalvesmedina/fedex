@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.expedicao.model.Produto" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="PRODUTO">
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<cache usage="read-write"/>
+
+	<id column="ID_PRODUTO" name="idProduto" type="java.lang.Long">
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">PRODUTO_SQ</param>
+		</generator>
+	</id>
+	<property column="DS_PRODUTO_I" length="500" name="dsProduto" not-null="false" type="varcharI18n"/>
+	<property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+
+	<property column="TP_CATEGORIA" length="2" name="categoria" not-null="false">
+		<type name="domain">
+			<param name="domainName">DM_CATEGORIA_PRODUTO</param>
+		</type>
+	</property>
+
+	<property name="nrOnu" type="java.lang.Integer"	column="NR_ONU"	not-null="false" length="5"/>
+	
+	<property name="nrOrdem" type="java.lang.Integer" column="NR_ORDEM"	not-null="false" length="10"/>
+	
+	<property name="nrNcm" type="java.lang.String"	column="NR_NCM"	not-null="false" length="12"/>
+	
+	<property
+		name="blProdutoProibido"
+		type="sim_nao"
+		column="BL_PRODUTO_PROIBIDO"
+		not-null="false"
+		length="1"
+	/>
+	
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to ClasseRisco -->
+	<many-to-one class="com.mercurio.lms.expedicao.model.ClasseRisco" name="classeRisco" not-null="false">
+		<column name="ID_CLASSE_RISCO"/>
+	</many-to-one>
+	
+	<!-- bi-directional many-to-one association to SubClasseRisco -->
+	<many-to-one class="com.mercurio.lms.expedicao.model.SubClasseRisco" name="subClasseRisco" not-null="false">
+		<column name="ID_SUBCLASSE_RISCO"/>
+	</many-to-one>
+
+	<!-- bi-directional many-to-one association to NaturezaProduto -->
+	<many-to-one class="com.mercurio.lms.expedicao.model.NaturezaProduto" name="naturezaProduto" not-null="true">
+		<column name="ID_NATUREZA_PRODUTO"/>
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TipoProduto -->
+	<many-to-one class="com.mercurio.lms.expedicao.model.TipoProduto" name="tipoProduto" not-null="true">
+		<column name="ID_TIPO_PRODUTO"/>
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Empresa -->
+	<many-to-one class="com.mercurio.lms.municipios.model.Empresa" name="empresa" not-null="true">
+		<column name="ID_EMPRESA"/>
+	</many-to-one>
+
+	<!-- bi-directional one-to-many association to PedidoColetaProduto -->
+	<bag
+		name="produtoCategoriaProdutos"
+		lazy="true"
+		inverse="true"
+		cascade="none">
+		<meta attribute="adsm-parametrized-attribute">
+			com.mercurio.lms.expedicao.model.ProdutoCategoriaProduto
+		</meta>
+		<key>
+			<column name="ID_PRODUTO" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.expedicao.model.ProdutoCategoriaProduto" />
+	</bag>
+
+
+	<!-- bi-directional one-to-many association to NomeProduto -->
+	<bag
+		name="nomeProdutos"
+		lazy="true"
+		inverse="true"
+		cascade="none">
+		<meta attribute="adsm-parametrized-attribute">
+			com.mercurio.lms.expedicao.model.NomeProduto
+		</meta>
+		<key>
+			<column name="ID_PRODUTO" />
+		</key>
+		<one-to-many class="com.mercurio.lms.expedicao.model.NomeProduto" />
+	</bag>
+</class>
+</hibernate-mapping>

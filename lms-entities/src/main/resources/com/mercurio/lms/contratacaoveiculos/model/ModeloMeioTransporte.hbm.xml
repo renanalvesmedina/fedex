@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contratacaoveiculos.model.ModeloMeioTransporte" 
+    table="MODELO_MEIO_TRANSPORTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idModeloMeioTransporte"
+        type="java.lang.Long"
+        column="ID_MODELO_MEIO_TRANSPORTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MODELO_MEIO_TRANSPORTE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsModeloMeioTransporte"
+			        type="java.lang.String"
+            column="DS_MODELO_MEIO_TRANSPORTE"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoMeioTransporte -->
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_TIPO_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to MeioTransporte -->
+    <bag
+        name="meioTransportes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTransporte</meta>
+ 	        <key>
+            <column name="ID_MODELO_MEIO_TRANSPORTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MeioTransporteTerceiro -->
+    <bag
+        name="meioTransporteTerceiros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.MeioTransporteTerceiro</meta>
+ 	        <key>
+            <column name="ID_MODELO_MEIO_TRANSPORTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.MeioTransporteTerceiro"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to MarcaMeioTransporte -->
+    <many-to-one
+        name="marcaMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MarcaMeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_MARCA_MEIO_TRANSPORTE" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

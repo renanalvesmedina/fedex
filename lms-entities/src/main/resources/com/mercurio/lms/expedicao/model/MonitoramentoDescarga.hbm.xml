@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+<class name="com.mercurio.lms.expedicao.model.MonitoramentoDescarga" table="MONITORAMENTO_DESCARGA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id column="ID_MONITORAMENTO_DESCARGA" name="idMonitoramentoDescarga" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MONITORAMENTO_DESCARGA_SQ</param>
+        </generator>
+    </id>
+
+    <property column="TP_SITUACAO_DESCARGA" length="1" name="tpSituacaoDescarga" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_SITUACAO_DESCARGA</param>
+	    </type>
+    </property>
+
+	<property
+		name="qtVolumesTotal"
+		type="java.lang.Long"
+		column="QT_VOLUMES_TOTAL"
+		length="10"
+		not-null="false"
+	/>
+
+    <property 
+    	name="dhInicioDescarga" 
+    	type="jtdatetimetzr" 
+    	length="7" 
+		not-null="false"
+    ><column name="DH_INICIO_DESCARGA"/><column name="DH_INICIO_DESCARGA_TZR"/></property>
+    
+    <property 
+    	name="dhFimDescarga" 
+    	type="jtdatetimetzr" 
+    	length="7" 
+		not-null="false"
+    ><column name="DH_FIM_DESCARGA"/><column name="DH_FIM_DESCARGA_TZR"/></property>
+    
+    <property 
+    	name="dhUltimaAfericao" 
+    	type="jtdatetimetzr" 
+    	length="7" 
+		not-null="false"
+    ><column name="DH_ULTIMA_AFERICAO"/><column name="DH_ULTIMA_AFERICAO_TZR"/></property>
+    
+    <property 
+    	name="dhEmissaoCTRC" 
+    	type="jtdatetimetzr" 
+    	length="7" 
+		not-null="false"
+    ><column name="DH_EMISSAO_CTRC"/><column name="DH_EMISSAO_CTRC_TZR"/></property>
+    
+	<property
+		name="nrFrota"
+		type="java.lang.String"
+		column="NR_FROTA"
+		length="6"
+	/>
+
+	<property
+		name="nrPlaca"
+		type="java.lang.String"
+		column="NR_PLACA"
+		length="7"
+	/>
+	
+	<property
+		name="nrProcessamento"
+		type="java.lang.String"
+		column="NR_PROCESSAMENTO"
+		length="30"
+		not-null="false"
+	/>
+
+	<property
+		name="dsInfColeta"
+		type="java.lang.String"
+		column="DS_INF_COLETA"
+		length="20"
+	/>
+    
+    <property 
+    	name="dhChegadaVeiculo" 
+    	type="jtdatetimetzr" 
+    	length="7" 
+		not-null="false"
+    ><column name="DH_CHEGADA_VEICULO"/><column name="DH_CHEGADA_VEICULO_TZR"/></property>
+
+	<property
+			name="dhInclusao"
+			type="jtdatetimetzr"
+			length="7"
+			not-null="true"
+	><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+	
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filial"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true"
+	>
+		<column name="ID_FILIAL" />
+	</many-to-one>
+	
+	<!-- bi-directional many-to-one association to MeioTransporte -->
+	<many-to-one
+		name="meioTransporte"
+		class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+		not-null="true"
+	>
+		<column name="ID_MEIO_TRANSPORTE" />
+	</many-to-one>	
+	
+	<!-- bi-directional one-to-many association to VolumeNotaFiscal -->
+	<bag
+		name="volumesNotaFiscal"
+		lazy="false"
+		cascade="none" inverse="true"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.VolumeNotaFiscal</meta>
+ 		<key>
+			<column name="ID_MONITORAMENTO_DESCARGA" />
+		</key>
+		<one-to-many class="com.mercurio.lms.expedicao.model.VolumeNotaFiscal"/>
+	</bag>
+	
+</class>
+</hibernate-mapping>

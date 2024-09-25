@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.entrega.model.ManifestoEntrega" 
+    table="MANIFESTO_ENTREGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+	
+	<id name="idManifestoEntrega" column="ID_MANIFESTO_ENTREGA">
+        <generator class="foreign">
+            <param name="property">manifesto</param>
+        </generator>
+    </id>	
+ 
+    <property
+        name="nrManifestoEntrega"
+		type="java.lang.Integer"
+        column="NR_MANIFESTO_ENTREGA"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="dhEmissao"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+    <property
+        name="obManifestoEntrega"
+		type="java.lang.String"
+        column="OB_MANIFESTO_ENTREGA"
+        length="500"
+    />
+    <property
+        name="dhFechamento"
+		type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_FECHAMENTO"/><column name="DH_FECHAMENTO_TZR"/></property>
+    <one-to-one
+        name="manifesto"
+        class="com.mercurio.lms.carregamento.model.Manifesto"
+        constrained="true" lazy="proxy"/>
+    <many-to-one
+        name="setor"
+        class="com.mercurio.lms.configuracoes.model.Setor"
+        not-null="true"
+    >
+        <column name="ID_SETOR" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioFechamento"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_FECHAMENTO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ManifestoEntregaDocumento -->
+    <bag
+        name="manifestoEntregaDocumentos"
+        lazy="true"
+        inverse="true"
+		cascade="save-update"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ManifestoEntregaDocumento</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.ManifestoEntregaDocumento"
+        />
+    </bag>
+
+    <!-- bi-directional one-to-many association to ManifestoEntregaVolume -->
+    <bag
+        name="manifestoEntregaVolumes"
+        lazy="true"
+        inverse="true"
+		cascade="save-update"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ManifestoEntregaVolume</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.ManifestoEntregaVolume"
+        />
+    </bag>
+
+
+    <!-- bi-directional one-to-many association to Fatura -->
+    <bag
+        name="faturas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Fatura</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Fatura"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to NotaCreditoDocto -->
+    <bag name="notaCreditoDoctos"
+        lazy="true"
+        inverse="true"
+		cascade="none">
+ 	        <key>
+ 	        	<column name="ID_MANIFESTO_ENTREGA" />
+        	</key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoDocto" />
+    </bag>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,797 @@
+<style>
+	.glyphicon-open {
+		color: #D3D3DA !important;
+		font-size: 16px;
+	}
+	
+	.text-bold {
+		font-weight: bold;
+	}
+	
+	.panel-items-title {
+		padding: 10px 15px !important;		
+	}
+	
+	.table-items {
+		border-collapse: unset;
+    	border-spacing: 1px;
+	}
+	
+	.table-items-container {
+		padding: 0 10px !important;
+	}
+	
+	.badge {
+		float: right;
+	}
+	
+	.panel-title-subitems {
+		background-color: #fafafa;
+    	height: 26px;
+	}
+	
+	.table-items-container .panel-heading {
+		background: #FAFAFD;
+	}
+	
+	.table-items th {
+		background: #FFF !important;
+		color: #707070 !important; 
+	}
+	
+	#toggler, .table-link {
+		color: black;
+    	float: right;
+    	font-size: 12px;
+    	cursor: pointer;
+    	text-decoration: none;
+	}	
+	
+	.table-link {
+		height: 25px;
+	}
+	
+	.list-group {
+		margin-bottom: 5px !important;
+	}
+	
+	.badge-green {
+		background: #48B567 !important;
+	}
+	
+	.badge-blue {
+		background: #6A6AC4 !important;
+	}
+	
+	.badge-red {
+		background: #ED8484 !important;
+	}
+		
+	.list-group-item {
+		padding: 5px 15px !important;
+	}
+	
+	.scroll-horizontal-table {
+		clear: both;
+		display: block;	
+		position: relative;
+		overflow: auto;
+		overflow-y: visible;
+	}
+	
+	.message-type {
+		line-height: 30px;
+    	text-indent: 6px;
+    	font-weight: bold;
+	}
+</style>
+
+<div class="menu-top">
+	<button id="btEmitir"
+		type="button"
+		ng-if="!data.disabledEmitir"
+		ng-click="emitirNotaCredito($event)">
+		<span class="glyphicon glyphicon-print"></span>
+		{{'emitir' | translate }}
+	</button>
+	
+	<button id="btVisualizar"
+		type="button"
+		ng-if="!data.disabledVisualizar"
+		ng-click="visualizarNotaCredito($event)">
+		<span class="glyphicon glyphicon-eye-open"></span>
+		{{'visualizar' | translate }}
+	</button>		
+	
+	<button id="btEventos" 
+		type="button"
+		ng-click="openEventos($event)">
+		<span class="glyphicon glyphicon-list-alt"></span>
+		{{'eventos' | translate }}
+	</button>
+	
+	<button id="btRegerar"
+		type="button"
+		ng-if="!data.disabledRegerar"
+		ng-click="regerarNotaCredito($event)">
+		<span class="glyphicon glyphicon-repeat"></span>
+		{{'regerar' | translate }}
+	</button>
+	
+	<button id="btControleCarga" 
+		type="button" 
+		adsm-legacy 
+		ng-if="!data.workflow"
+		ng-click="openControleCarga($event)">
+		{{'controleCarga' | translate }}
+	</button>
+</div>
+
+<form class="form-horizontal content-padding" data-ng-submit="store($event)">
+	<div class="fixed-top">
+		<button type="submit" 
+			class="btn btn-default btn-lg pull-right" 
+			id="store" 
+			ng-disabled="data.disabledSalvar">
+			{{'salvar' | translate }}
+		</button>
+	</div>
+
+	<p class="message-type {{ data.messageType }}" ng-if="data.messageType">
+		<span class="glyphicon {{ data.messageTypeIcon }}"></span>
+		{{ data.messageText }}
+	</p>
+
+	<div class="clearfix">
+		<div adsm-sub-tab orientation="horizontal" data-params="subTabControl">
+			<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+				<div class="form-horizontal">										
+					<div class="row">
+						<div adsm-add-field data-boxSize="4" data-label="filial" data-labelSize="3" data-multiSize="3,9">
+							<input
+								lms-filial
+								ng-model="data.filial" 
+								id="filial" 
+								class="form-control"
+								ng-disabled="true"
+								required>
+				
+							<input
+								type="text"
+								class="form-control"
+								id="filial.nmFilial"
+								value="{{ data.filial.nmFilial }}"
+								readonly="readonly">
+						</div>	
+						
+						<div adsm-add-field data-boxSize="4" data-label="numeroNota" data-labelSize="5">
+							<input
+								type="text"
+								class="form-control text-right"
+								id="nrNotaCredito"
+								value="{{ data.nrNotaCredito | lpad: 10 }}"
+								readonly="readonly">
+						</div>						
+						
+						<div adsm-add-field data-label="tipo" data-labelSize="4" data-fieldSize="8">
+							<select 
+								adsm-domain="DM_TIPO_NOTA_CREDITO_PADRAO"
+								id="tpNotaCredito" 
+								ng-model="data.tpNotaCredito"
+								ng-disabled="true">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div adsm-add-field data-boxSize="4" data-label="preFatura" data-labelSize="3" data-multiSize="3,9">
+							<input type="text" 
+								disabled 
+								class="form-control" 
+								ng-model="data.reciboFreteCarreteiro.sgFilial" 
+								id="reciboFreteCarreteiro.sgFilial">	
+				
+							<input lms-recibo
+								type="text" 
+								ng-model="data.reciboFreteCarreteiro"
+								id="recibo"
+								class="form-control"
+								ng-disabled="true">
+						</div>
+						
+						<div adsm-add-field data-boxSize="4" data-label="moeda" data-labelSize="5">
+							<input
+								type="text"
+								class="form-control text-right"
+								id="dsSimboloMoeda"
+								value="{{ data.dsSimboloMoeda }}"
+								readonly="readonly">
+						</div>	
+						
+						<div adsm-add-field data-boxSize="4" data-label="valorTotal" data-labelSize="4">
+							<input
+								type="text"
+								class="form-control text-right"
+								id="valorTotal"
+								ng-model="data.vlTotal"
+								data-numeric
+								data-moeda
+								readonly="readonly">
+						</div>	
+					</div>
+					
+					<div class="row">
+						<div adsm-add-field data-label="situacao" data-labelSize="3" data-fieldSize="8">
+							<select 
+								adsm-domain="DM_SITUACAO_EMISSAO_NC"
+								id="tpSituacao" 
+								ng-model="data.tpSituacao"
+								ng-disabled="true">
+								<option value=""></option>
+							</select>
+						</div>		
+					</div>		
+										
+					<accordion close-others="false">
+						<accordion-group is-open="isInformacoesProprietarioOpen">
+							<accordion-heading>
+								<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesProprietarioOpen, 'glyphicon-chevron-right': !isInformacoesProprietarioOpen}"></span>
+								{{'proprietario' | translate}}
+							</accordion-heading>	
+						
+							<div class="row">							
+								<div adsm-add-field data-boxSize="6" data-label="proprietario" data-labelSize="2" data-multiSize="4,8">
+									<input 
+										type="text" 
+										disabled 
+										class="form-control" 
+										value="{{ data.proprietario.nrIdentificacao }}" 
+										id="proprietario.nrIdentificacao">
+									
+									<input
+										lms-proprietario
+										ng-model="data.proprietario" 
+										id="proprietario" 
+										class="form-control"
+										ng-disabled="true">								
+								</div>
+								
+								<div adsm-add-field data-boxSize="6" data-label="frotaPlaca" data-labelSize="3" data-multiSize="4,8">
+									<input type="text"
+										class="form-control" 
+										value="{{ data.meioTransporte.nrFrota }}"
+										disabled 
+										id="meioTransporte.nrFrota">
+												    
+							    	<input
+										lms-meio-transporte
+										type="text" 
+										ng-model="data.meioTransporte" 
+										id="meioTransporte" 
+										class="form-control"
+										ng-disabled="true">			   	
+							   </div>				
+							</div>
+						</accordion-group>
+						
+						<accordion-group is-open="isAcrescimoDescontoOpen">
+							<accordion-heading>
+								<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isAcrescimoDescontoOpen, 'glyphicon-chevron-right': !isAcrescimoDescontoOpen}"></span>
+								{{'acrescimoDesconto' | translate}}
+							</accordion-heading>	
+						
+							<div class="row">	
+								<div adsm-add-field data-boxSize="4" data-label="tipo" data-labelSize="3">
+									<select 
+										adsm-domain="DM_ACRESCIMO_DESCONTO"
+										id="tpAcrescimoDesconto" 
+										ng-model="data.tpAcrescimoDesconto"
+										ng-change="changeTpAcrescimoDesconto()"
+										ng-disabled="data.disabledTpAcrescimoDesconto">
+										<option value=""></option>
+									</select>
+								</div>
+											
+								<div adsm-add-field data-boxSize="4" data-label="valor" data-labelSize="3">
+									<input id="vlAcrescimoDesconto" 
+										type="text"
+										class="form-control text-right" 
+										ng-model="data.vlAcrescimoDesconto"
+										ng-disabled="data.disabledAcrescimoDesconto"
+										data-numeric
+										data-moeda>
+								</div>
+								
+								<div adsm-add-field data-boxSize="4" data-label="situacao" data-labelSize="3">
+									<input
+										type="text"
+										class="form-control"
+										id="tpSituacaoPendenciaDescricao"
+										ng-model="data.tpSituacaoPendenciaDescricao"
+										readonly="readonly">
+								</div>			
+							</div>							
+						</accordion-group>
+						
+						<accordion-group is-open="isInformacoesOpen">
+							<accordion-heading>
+								<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesOpen, 'glyphicon-chevron-right': !isInformacoesOpen}"></span>
+								{{'informacoes' | translate}}
+							</accordion-heading>	
+						
+							<div class="row">		
+								<div adsm-add-field data-boxSize="6" data-label="dataGeracao" data-labelSize="3" data-fieldSize="6">
+									<input id="dhGeracao" 
+										adsm-date-time 
+										ng-model="data.dhGeracao" 
+										class="form-control"
+										ng-disabled="true">
+								</div>
+							
+								<div adsm-add-field data-boxSize="6" data-label="dataEmissao" data-labelSize="5" data-fieldSize="6">
+									<input id="dhEmissao" 
+										adsm-date-time 
+										ng-model="data.dhEmissao" 
+										class="form-control"
+										ng-disabled="true">
+								</div>				
+							</div>	
+							
+							<div class="row">							
+								<div adsm-add-field data-boxSize="6" data-label="observacao" data-labelSize="3" data-fieldSize="9">
+									<textarea ng-model="data.obNotaCredito" 
+										id="observacao" 
+										maxlength="500"
+										rows="2"
+										class="form-control" 
+										ng-disabled="data.disabledSalvar"
+										ng-required="data.vlAcrescimoDesconto"
+										style="resize: none;"></textarea>
+								</div>		
+								
+								<div adsm-add-field data-boxSize="6" data-label="descontoUsoEquipamento" data-labelSize="5" data-fieldSize="6">
+									<input id="vlDescUsoEquipamento" 										
+										ng-model="data.vlDescUsoEquipamento" 
+										class="form-control text-right"
+										data-numeric
+										data-moeda
+										ng-disabled="true">
+								</div>
+							</div>						
+						</accordion-group>
+					</accordion>
+				</div>
+			</div>
+					
+			<div adsm-tab-panel="itens" heading="{{'itens' | translate}}" event="loadAbaItens()">
+				
+				<div class="row">
+					<div class="col-sm-12">	
+						<a ng-click="toggleAccordions()" id="toggler">
+							<div ng-if="!isTabelaOpen">
+								<span class="glyphicon glyphicon-collapse-down"></span>
+								{{ 'expandirTabela' | translate }}
+							</div>
+							<div ng-if="isTabelaOpen">
+								<span class="glyphicon glyphicon-collapse-up"></span>
+								{{ 'recolherTabela' | translate }}
+							</div>
+						</a>
+					</div>
+				</div>
+												
+				<div class="row">					
+					<div class="col-sm-12">
+						<ul class="list-group">
+							<li class="list-group-item" ng-if="data.vlTotalItens">
+						  		<span class="badge">
+						  			{{ data.dsSimboloMoeda }} {{ data.vlTotalItens | number:2 }}
+						  		</span>
+						  		<strong>{{ 'vlTotalItens' | translate }}</strong>
+						  	</li>
+						  	<li class="list-group-item" ng-if="data.vlTotalItens">
+						  		<span ng-class="{'badge badge-green': data.tpAcrescimoDesconto.value == 'A', 'badge badge-red': data.tpAcrescimoDesconto.value == 'D'}">
+						  			{{ data.dsSimboloMoeda }} {{ data.vlAcrescimoDesconto | number:2 }}
+						  		</span>
+						  		<strong ng-if="data.tpAcrescimoDesconto.value == 'A'">{{ 'acrescimo' | translate }}</strong>
+						  		<strong ng-if="data.tpAcrescimoDesconto.value == 'D'">{{ 'desconto' | translate }}</strong>
+						  	</li>						  	
+						  	<li class="list-group-item">
+						  		<span class="badge badge-blue">{{ data.dsSimboloMoeda }} {{ data.vlTotal | number:2 }}</span>
+						  		<strong>{{ 'valorTotal' | translate }}</strong>
+						  	</li>
+						</ul>
+					</div>
+				</div>				
+								
+				<div class="row">			
+					<div class="col-sm-12">									
+						<accordion close-others="false" ng-if="notaCreditoPadrao.summary">															
+							<accordion-group is-open="item.blAtivo" ng-repeat="item in notaCreditoPadrao.summary.itensEntrega">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': item.blAtivo, 'glyphicon-chevron-right': !item.blAtivo}"></span>
+									{{ item.nmTabela }}
+								</accordion-heading>	
+						
+								<div class="row">
+									<div class="col-sm-12">	
+										<div class="table-link">
+											<span class="glyphicon glyphicon-list-alt"></span>
+											<span ng-click="openTabelaFreteCarreteiro(item.idTabela, item.nmTabela)">{{'verTabela' | translate }}</span>
+										</div>										
+									</div>
+								</div>
+						
+								<div class="row table-items-container">										
+									<accordion close-others="false">															
+										<accordion-group is-open="item.blDoctoAtivo" ng-if="item.listDoctos.length > 0">
+											<accordion-heading>																	
+												<span class="badge">{{ item.listDoctos.length }} {{'documento' | translate }}(s)</span>
+												<span class="glyphicon glyphicon-file"></span>
+												{{ 'documentos' | translate }}
+											</accordion-heading>	
+											
+											<div class="row table-items-container">	
+												<div class="scroll-horizontal-table">
+													<table class="table table-condensed table-items">
+														<thead>
+															<tr>
+																<th style="min-width: 132px;">{{'documento' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'cteFedex' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'notasFiscais' | translate }}</th>
+																<th style="min-width: 60px;">{{'servico' | translate }}</th>
+																<th style="min-width: 215px;">{{'remetente' | translate }} / {{'ocorrencia' | translate }}</th>
+																<th style="min-width: 215px;">{{'destinatario' | translate }} / {{'enderecoEntrega' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'volume' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'volumeCalculado' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'pesoCalculo' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'pesoAferido' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'pesoDeclarado' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'pesoReferencia' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'pesoCalculado' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorMercadoria' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorMercadoriaCalculado' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorFreteLiquido' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorFreteBruto' | translate }}</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="docto in item.listDoctos">
+																<td>
+																	{{ docto.documento }}														
+																</td>
+																<td align="right">{{ docto.cteFedex}}</td>
+																<td title="{{ docto.notasFiscais}}" align="right">{{ docto.notasFiscaisEllipsis}}</td>
+																<td>{{ docto.tpModalServico }}</td>																
+																<td>
+																	<div>
+																		<div>{{ docto.nmPessoaRemetente }}</div>
+																		<div>{{ docto.dsOcorrenciaEntrega }}</div>
+																	</div>
+																</td>
+																<td>
+																	<div>
+																		<div>{{ docto.nmPessoaDestinario }}</div>
+																		<div>{{ docto.enderecoEntrega }}</div>
+																	</div>																
+																</td>
+																<td align="right">{{ docto.qtVolumes}}</td>
+																<td align="right">{{ docto.volumeCalculado}}</td>
+																<td align="right">{{ docto.psControleCarga }}</td>
+																<td align="right">{{ docto.psAferido }}</td>
+																<td align="right">{{ docto.psReal }}</td>
+																<td align="right">{{ docto.psReferenciaCalculo }}</td>
+																<td align="right">{{ docto.pesoCalculado }}</td>
+																<td align="right">{{ docto.vlMercadoria }}</td>
+																<td align="right">{{ docto.valorMercadoriaCalculado }}</td>
+																<td align="right">{{ docto.vlLiquidoControleCarga }}</td>
+																<td align="right">{{ docto.vlBrutoControleCarga }}</td>
+															</tr>
+														</tbody>												
+													</table>
+												</div>
+											</div>
+										</accordion-group>
+										
+										<accordion-group is-open="item.blCalculoAtivo">
+											<accordion-heading>
+												<span class="glyphicon glyphicon-usd"></span>	
+												<span class="badge">{{'total' | translate }}: {{ data.dsSimboloMoeda }} {{ item.vlTotalCalculo | number:2 }}</span>														
+												{{'fatoresCalculo' | translate }}
+											</accordion-heading>	
+											
+											<div class="row table-items-container">	
+												<div class="scroll-horizontal-table">
+													<table class="table table-condensed table-items">
+														<thead>
+															<tr>
+																<th>{{'tipo' | translate }}</th>
+																<th class="text-right">{{'quantidade' | translate }}</th>
+																<th class="text-right">{{'valor' | translate }}</th>
+																<th class="text-right">{{'total' | translate }}</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="calculo in item.listCalculo">
+																<td>{{ calculo.tpValorDescription }} </td>
+																<td align="right">{{ calculo.qtTotal }}</td>
+																<td align="right">{{ calculo.vlValor }}</td>
+																<td align="right">{{ calculo.vlTotal | number:2 }}</td>
+															</tr>
+														</tbody>												
+													</table>
+												</div>
+											</div>
+										</accordion-group>
+									</accordion>
+								</div>								
+							</accordion-group>						
+						
+							<accordion-group is-open="item.blAtivo" ng-repeat="item in notaCreditoPadrao.summary.itensColeta">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': item.blAtivo, 'glyphicon-chevron-right': !item.blAtivo}"></span>
+									{{ item.nmTabela }}
+								</accordion-heading>	
+												
+								<div class="row">
+									<div class="col-sm-12">	
+										<div class="table-link">
+											<span class="glyphicon glyphicon-list-alt"></span>
+											<span ng-click="openTabelaFreteCarreteiro(item.idTabela, item.nmTabela)">{{'verTabela' | translate }}</span>
+										</div>										
+									</div>
+								</div>
+						
+								<div class="row table-items-container">
+									<accordion close-others="false">															
+										<accordion-group is-open="item.blPedidoAtivo" ng-if="item.listPedidos.length > 0">
+											<accordion-heading>																	
+												<span class="badge">{{ item.listPedidos.length }} {{'pedido' | translate }}(s)</span>
+												<span class="glyphicon glyphicon-file"></span>
+												{{ 'pedidos' | translate }}
+											</accordion-heading>	
+											
+											<div class="row table-items-container">	
+												<div class="scroll-horizontal-table">
+													<table class="table table-condensed table-items" >
+														<thead>
+															<tr>
+																<th style="min-width: 130px;">{{'pedido' | translate }}</th>
+																<th style="min-width: 130px;">{{'manifestoColeta' | translate }}</th>
+																<th style="min-width: 215px;">{{'enderecoColeta' | translate }}</th>																
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="pedido in item.listPedidos">
+																<td>{{ pedido.pedidoColeta }}</td>
+																<td>{{ pedido.manifestoColeta }}</td>																																
+																<td>{{ pedido.enderecoColeta }}</td>																
+															</tr>
+														</tbody>												
+													</table>
+												</div>
+											</div>
+										</accordion-group>
+										
+										<accordion-group is-open="item.blCalculoAtivo">
+											<accordion-heading>
+												<span class="glyphicon glyphicon-usd"></span>	
+												<span class="badge">{{'total' | translate }}: {{ data.dsSimboloMoeda }} {{ item.vlTotalCalculo | number:2 }}</span>														
+												{{ 'fatoresCalculo' | translate }}
+											</accordion-heading>	
+											
+											<div class="row table-items-container">	
+												<div class="scroll-horizontal-table">
+													<table class="table table-condensed table-items">
+														<thead>
+															<tr>
+																<th>{{'tipo' | translate }}</th>
+																<th class="text-right">{{'quantidade' | translate }}</th>
+																<th class="text-right">{{'valor' | translate }}</th>
+																<th class="text-right">{{'total' | translate }}</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="calculo in item.listCalculo">
+																<td>{{ calculo.tpValorDescription }} </td>
+																<td align="right">{{ calculo.qtTotal }}</td>
+																<td align="right">{{ calculo.vlValor }}</td>
+																<td align="right">{{ calculo.vlTotal | number:2 }}</td>
+															</tr>															
+														</tbody>												
+													</table>
+												</div>
+											</div>
+										</accordion-group>
+									</accordion>
+								</div>								
+							</accordion-group>	
+						</accordion>
+						
+						<accordion close-others="false" ng-if="notaCreditoPadrao.summary.itensNaoExecutados">			
+							<accordion-group is-open="notaCreditoPadrao.blNaoExecutadoAtivo" ng-if="notaCreditoPadrao.summary.itensNaoExecutados.length > 0">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': item.blNaoExecutadoAtivo, 'glyphicon-chevron-right': !item.blNaoExecutadoAtivo}"></span>
+									{{ data.tpNotaCredito.description.value }}s {{ 'naoContabilizadas' | translate }}
+								</accordion-heading>	
+						
+								<div class="row table-items-container">
+									<accordion close-others="false">															
+										<accordion-group is-open="notaCreditoPadrao.blItemNaoExecutadoAtivo">
+											<accordion-heading>																	
+												<span class="badge">{{ notaCreditoPadrao.summary.itensNaoExecutados.length }} {{'item' | translate }}(s)</span>
+												<span class="glyphicon glyphicon-file"></span>
+												{{'itens' | translate }}
+											</accordion-heading>	
+											
+											<div class="row table-items-container" ng-if="data.tpNotaCredito.value == 'E' || data.tpNotaCredito.value == 'EP'">	
+												<div class="scroll-horizontal-table">
+													<table class="table table-condensed table-items">
+														<thead>
+															<tr>
+																<th style="min-width: 132px;">{{'documento' | translate }}</th>
+															    <th class="text-right" style="min-width: 140px;">{{'cteFedex' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'notasFiscais' | translate }}</th>
+																<th style="min-width: 60px;">{{'servico' | translate }}</th>
+																<th style="min-width: 215px;">{{'remetente' | translate }} / {{'ocorrencia' | translate }}</th>
+																<th style="min-width: 215px;">{{'destinatario' | translate }} / {{'enderecoEntrega' | translate }}</th>
+																<th class="text-right">{{'volume' | translate }}</th>
+																<th class="text-right">{{'peso' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorMercadoria' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorFreteLiquido' | translate }}</th>
+																<th class="text-right" style="min-width: 140px;">{{'valorFreteBruto' | translate }}</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="docto in notaCreditoPadrao.summary.itensNaoExecutados">
+																<td>
+																	{{ docto.documento }}														
+																</td>
+																<td align="right">{{ docto.cteFedex}}</td>
+																<td title="{{ docto.notasFiscais}}" align="right">{{ docto.notasFiscaisEllipsis}}</td>
+																<td>{{ docto.tpModalServico }}</td>																
+																<td>
+																	<div>
+																		<div>{{ docto.nmPessoaRemetente }}</div>
+																		<div>{{ docto.dsOcorrenciaEntrega }}</div>
+																	</div>
+																</td>
+																<td>
+																	<div>
+																		<div>{{ docto.nmPessoaDestinario }}</div>
+																		<div>{{ docto.enderecoEntrega }}</div>
+																	</div>																
+																</td>
+																<td align="right">{{ docto.qtVolumes}}</td>
+																<td align="right">{{ docto.psControleCarga }}</td>
+																<td align="right">{{ docto.vlMercadoria }}</td>
+																<td align="right">{{ docto.vlLiquidoControleCarga }}</td>
+																<td align="right">{{ docto.vlBrutoControleCarga }}</td>
+															</tr>															
+														</tbody>												
+													</table>
+												</div>
+											</div>
+											
+											<div class="row table-items-container" ng-if="data.tpNotaCredito.value == 'C' || data.tpNotaCredito.value == 'CP'">	
+												<div class="scroll-horizontal-table">
+													<table class="table table-condensed table-items">
+														<thead>
+															<tr>
+																<th style="min-width: 130px;">{{'pedido' | translate }}</th>
+																<th style="min-width: 130px;">{{'manifestoColeta' | translate }}</th>
+																<th style="min-width: 215px;">{{'enderecoColeta' | translate }}</th>
+																<th class="text-right">{{'volume' | translate }}</th>
+																<th class="text-right">{{'peso' | translate }}</th>
+																<th class="text-right">{{'valor' | translate }}</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr ng-repeat="pedido in notaCreditoPadrao.summary.itensNaoExecutados">
+																<td>{{ pedido.pedidoColeta }}</td>
+																<td>{{ pedido.manifestoColeta }}</td>																																
+																<td>{{ pedido.enderecoColeta }}</td>
+																<td align="right">{{ pedido.qtTotalVolumesInformado }}</td>				
+																<td align="right">{{ pedido.psTotalInformado }}</td>
+																<td align="right">{{ pedido.vlTotalInformado }}</td>
+															</tr>
+														</tbody>												
+													</table>
+												</div>
+											</div>
+										</accordion-group>										
+									</div>								
+								</accordion-group>	
+						</accordion>
+					</div>
+				</div>
+			</div>
+				
+			<div adsm-tab-panel="anexos" heading="{{'anexos' | translate}}" event="loadAbaAnexos()">
+				<div class="row">
+					<div class="col-sm-12" ng-hide="data.disabledSalvar">
+						<div class="form-group">
+							<label class="col-lg-2 control-label">{{'descricao' | translate }}</label>
+							<div class="col-lg-9" style="height: 35px;">
+								<input class="form-control" ng-model="notaCreditoPadrao.descricao" id="descAnexo" maxlength="250" ng-change="changeDescricao()">	
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row" ng-hide="data.disabledSalvar">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-lg-2 control-label">{{'arquivo' | translate }}</label>
+							<div class="col-lg-8">
+								<div data-adsm-file-upload="fileUploadParams"></div>
+							</div>
+							<div class="col-lg-1">
+								<button type="button" data-ng-click="addFile();" class="btn btn-default btn-lg pull-right" id="upload">
+									{{'adicionar' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+									
+				<div class="row" ng-hide="data.disabledSalvar">
+					<div class="col-sm-12">
+						<div class="grid-btn-container">
+							<button type="button" 
+								data-ng-click="removeAnexosByIds()" 
+								class="btn btn-default btn-lg" 
+								id="excluir" 
+								data-adsm-loading="excluindo" 
+								data-ng-disabled="data.disabledSalvar">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			
+				<table adsm-table="anexosTableParams"
+					class="table table-condensed adsm-table"							
+					data-show-checkboxes="!data.disabledSalvar"
+					style="width: 100%">
+					<tbody>
+						<tr ng-repeat="row in page" ng-class="{'text-bold' : !row.idAnexoNotaCredito}">	
+							<td column-title="descricao"
+								ng-attr-title="{{row.dsAnexo}}" 
+								style="min-width: 100px; max-width: 250px;">
+								{{ row.dsAnexo }}
+							</td>
+							<td column-title="nomeArquivo"
+								ng-attr-title="{{row.nmArquivo}}">
+								{{ row.nmArquivo }}
+							</td>
+							<td column-title="usuario"
+								style="min-width: 100px; max-width: 150px;">
+								{{ row.nmUsuario }}
+							</td>
+							<td column-title="dataCriacao"
+								style="min-width: 100px; max-width: 100px;"
+								align="center">
+								{{ row.dhCriacao | dateTimeZone }}
+							</td>					
+							<td column-title="download"
+								style="min-width: 30px; max-width: 30px;"
+								align="center">
+								<span ng-if="row.idAnexoNotaCredito"
+									data-adsm-loading="downloading"
+									data-ng-click="downloadFile(row.idAnexoNotaCredito)" 
+									class="glyphicon glyphicon-save"/>
+								<span ng-if="!row.idAnexoNotaCredito"
+									class="glyphicon glyphicon-open"
+									title="{{'aguardandoEnvio' | translate}}"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			
+		</div>
+	</div>		
+</form>

@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.CotacaoMoeda" 
+    table="COTACAO_MOEDA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idCotacaoMoeda"
+        type="java.lang.Long"
+        column="ID_COTACAO_MOEDA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">COTACAO_MOEDA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="vlCotacaoMoeda"
+			        type="java.math.BigDecimal"
+            column="VL_COTACAO_MOEDA"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dtCotacaoMoeda"
+			        type="jtyearmonthday"
+            column="DT_COTACAO_MOEDA"
+        not-null="true"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to Recibo -->
+    <bag
+        name="recibos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Recibo</meta>
+ 	        <key>
+            <column name="ID_COTACAO_MOEDA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Recibo"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Fatura -->
+    <bag
+        name="faturas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Fatura</meta>
+ 	        <key>
+            <column name="ID_COTACAO_MOEDA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Fatura"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to MoedaPais -->
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="true"
+    >
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

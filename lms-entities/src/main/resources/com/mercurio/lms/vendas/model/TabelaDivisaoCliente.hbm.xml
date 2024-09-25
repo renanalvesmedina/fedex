@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.vendas.model.TabelaDivisaoCliente" 
+	table="TABELA_DIVISAO_CLIENTE"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idTabelaDivisaoCliente"
+		type="java.lang.Long"
+		column="ID_TABELA_DIVISAO_CLIENTE"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">TABELA_DIVISAO_CLIENTE_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="blAtualizacaoAutomatica"
+		type="sim_nao"
+		column="BL_ATUALIZACAO_AUTOMATICA"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="pcAumento"
+		type="java.math.BigDecimal"
+		column="PC_AUMENTO"
+		length="5"
+	/>
+	<property
+		name="blObrigaDimensoes"
+		type="sim_nao"
+		column="BL_OBRIGA_DIMENSOES"
+		length="1"
+	/>
+	<property
+		name="blObrigaDimensoesSolicitado"
+		type="sim_nao"
+		column="BL_OBRIGA_DIMENSOES_SOLICITADO"
+		length="1"
+	/>
+	<property
+		name="blPagaFreteTonelada"
+		type="sim_nao"
+		column="BL_PAGA_FRETE_TONELADA"
+		length="1"
+	/>
+	<property
+		name="blPesoDeclarado"
+		type="sim_nao"
+		column="BL_PESO_DECLARADO"
+		length="1"
+	/>
+	<property
+		name="blPesoAferido"
+		type="sim_nao"
+		column="BL_PESO_AFERIDO"
+		length="1"
+	/>
+	<property
+		name="blPesoCubadoDeclarado"
+		type="sim_nao"
+		column="BL_PESO_CUBADO_DECLARADO"
+		length="1"
+	/>
+	<property
+		name="blPesoCubadoAferido"
+		type="sim_nao"
+		column="BL_PESO_CUBADO_AFERIDO"
+		length="1"
+	/>
+	<property
+		name="blImpBaseDevolucao"
+		type="sim_nao"
+		column="BL_IMP_BASE_DEVOL"
+		length="1"
+	/>
+	<property
+		name="blImpBaseReentrega"
+		type="sim_nao"
+		column="BL_IMP_BASE_REENT"
+		length="1"
+	/>
+	<property
+		name="blImpBaseRefaturamento"
+		type="sim_nao"
+		column="BL_IMP_BASE_REFAT"
+		length="1"
+	/>
+	<property
+		name="nrFatorCubagem"
+		type="java.math.BigDecimal"
+		column="NR_FATOR_CUBAGEM"
+		length="10"
+	/>
+	<property
+		name="nrFatorCubagemSolicitado"
+		type="java.math.BigDecimal"
+		column="NR_FATOR_CUBAGEM_SOLICITADO"
+		length="10"
+	/>
+	<property
+		name="nrFatorDensidade"
+		type="java.math.BigDecimal"
+		column="NR_FATOR_DENSIDADE"
+		length="10"
+	/>	
+	<property
+		name="nrFatorDensidadeSolicitado"
+		type="java.math.BigDecimal"
+		column="NR_FATOR_DENSIDADE_SOLICITADO"
+		length="10"
+	/>	
+	<property
+		name="nrLimiteMetragemCubica"
+		type="java.math.BigDecimal"
+		column="NR_LIMITE_METRAGEM_CUBICA"
+		length="10"
+	/>
+	<property
+		name="nrLimiteQuantVolume"
+		type="java.math.BigDecimal"
+		column="NR_LIMITE_QUANT_VOLUME"
+		length="5"
+	/>
+	
+	
+
+	<property name="tpPesoCalculo" column="TP_PESO_CALCULO" length="1">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_PESO_CALCULO</param>
+		</type>
+	</property>
+	<property name="tpPesoCalculoSolicitado" column="TP_PESO_CALCULO_SOLICITADO" length="1">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_PESO_CALCULO</param>
+		</type>
+	</property>
+
+	<!-- Associations -->
+
+	<!-- bi-directional one-to-many association to DivisaoParcela -->
+	<bag
+		name="divisaoParcelas"
+		lazy="true"
+		inverse="true"
+		cascade="save-update" 
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DivisaoParcela</meta>
+		<key>
+			<column name="ID_TABELA_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.DivisaoParcela"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ServicoAdicionalCliente -->
+	<bag
+		name="servicoAdicionalClientes"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ServicoAdicionalCliente</meta>
+		<key>
+			<column name="ID_TABELA_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.ServicoAdicionalCliente"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ParametroCliente -->
+	<bag
+		name="parametroClientes"
+		lazy="true"
+		inverse="true"
+		cascade="save-update" 
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ParametroCliente</meta>
+		<key>
+			<column name="ID_TABELA_DIVISAO_CLIENTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.ParametroCliente"
+		/>
+	</bag>
+	<!-- bi-directional many-to-one association to Servico -->
+	<many-to-one
+		name="servico"
+		class="com.mercurio.lms.configuracoes.model.Servico"
+		not-null="true"
+	>
+		<column name="ID_SERVICO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TabelaPreco -->
+	<many-to-one
+		name="tabelaPreco"
+		class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+		not-null="true"
+	>
+		<column name="ID_TABELA_PRECO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to DivisaoCliente -->
+	<many-to-one
+		name="divisaoCliente"
+		class="com.mercurio.lms.vendas.model.DivisaoCliente"
+		not-null="true"
+	>
+		<column name="ID_DIVISAO_CLIENTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TabelaPreco -->
+	<many-to-one
+		name="tabelaPrecoFob"
+		class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+		not-null="false"
+	>
+		<column name="ID_TABELA_PRECO_FOB" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

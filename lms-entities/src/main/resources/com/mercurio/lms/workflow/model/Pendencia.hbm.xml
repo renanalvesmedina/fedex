@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.workflow.model.Pendencia" 
+    table="PENDENCIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPendencia"
+        type="java.lang.Long"
+        column="ID_PENDENCIA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PENDENCIA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="idProcesso"
+			        type="java.lang.Long"
+            column="ID_PROCESSO"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="tpSituacaoPendencia"
+		    column="TP_SITUACAO_PENDENCIA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="dsPendencia"
+			        type="java.lang.String"
+            column="DS_PENDENCIA"
+        length="4000"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Ocorrencia -->
+    <many-to-one
+        name="ocorrencia"
+        class="com.mercurio.lms.workflow.model.Ocorrencia"
+        not-null="true"
+    >
+        <column name="ID_OCORRENCIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to Acao -->
+    <bag
+        name="acoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.Acao</meta>
+ 	        <key>
+            <column name="ID_PENDENCIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.workflow.model.Acao"
+        />
+    </bag>
+
+    <!-- Associations -->
+    	
+    <!-- bi-directional one-to-many association to ProdutoCliente -->
+    <bag cascade="none" inverse="true" lazy="true" name="produtosCliente">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ProdutoCliente</meta>
+ 	        <key>
+            <column name="ID_PENDENCIA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.ProdutoCliente"/>
+    </bag>        
+</class>
+</hibernate-mapping>

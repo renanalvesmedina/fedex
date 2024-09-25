@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tributos.model.DescricaoTributacaoIcms" 
+    table="DESCRICAO_TRIBUTACAO_ICMS"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idDescricaoTributacaoIcms"
+        type="java.lang.Long"
+        column="ID_DESCRICAO_TRIBUTACAO_ICMS"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">DESCRICAO_TRIBUTACAO_ICMS_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+    
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoTributacaoIcms -->
+    <many-to-one
+        name="tipoTributacaoIcms"
+        class="com.mercurio.lms.tributos.model.TipoTributacaoIcms"
+        not-null="true"
+    >
+        <column name="ID_TIPO_TRIBUTACAO_ICMS" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to UnidadeFederativa -->
+    <many-to-one
+        name="unidadeFederativa"
+        class="com.mercurio.lms.municipios.model.UnidadeFederativa"
+        not-null="true"
+    >
+        <column name="ID_UNIDADE_FEDERATIVA" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to ItemNotaDebitoNacional -->
+    <bag
+        name="observacoesICMS"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.ObservacaoICMS</meta>
+ 	        <key>
+            <column name="ID_DESCRICAO_TRIBUTACAO_ICMS" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.ObservacaoICMS"
+        />
+    </bag>    
+</class>
+</hibernate-mapping>

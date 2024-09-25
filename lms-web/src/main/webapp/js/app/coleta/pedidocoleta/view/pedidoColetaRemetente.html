@@ -1,0 +1,381 @@
+
+	<div class="nav-content">
+		<div adsm-sub-tab orientation="horizontal">
+			<div adsm-tab-panel="PedidoColeta" heading="PedidoColeta">
+				<form class="form-horizontal content-padding" data-ng-submit="customStore()">
+					<div class="fixed-top">
+						<button type="button" data-ng-click="clearData()" class="btn btn-default btn-lg pull-right" id="limparDados" ng-disabled="editando">
+							{{'limpar' | translate }}</button>
+						<!-- será cancelar <button type="button" data-ng-click="removeById()" class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir" data-ng-disabled="isRemoveByIdDisabled()">
+							{{'excluir' |  translate }}
+						</button> -->
+						<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar">{{'salvar' | translate }}</button>
+						<button type="button" id="botaoEmitir" class="btn btn-default btn-lg pull-right" ng-click="visualizaRelatorioPedidoColeta()">
+							{{'emitirPedidoColeta' | translate }}</button>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="coleta" data-labelSize="4" data-multiSize="3">
+							<input type="text" class="form-control" value="{{data.sgFilialColeta}}" id="sgFilialColeta" disabled="true" />
+							<input type="text" class="form-control" value="{{data.nrColeta}}" id="nrColeta" disabled="true" />
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="modo" data-labelSize="4">
+							<select adsm-domain="DM_MODO_PEDIDO_COLETA" id="tpModoPedidoColeta" ng-model="data.tpModoPedidoColeta" filter="['TE','BA']"
+								ng-required="componentesRequired['tpModoPedidoColeta']" ng-disabled="componentesDisabled['tpModoPedidoColeta']"
+							>
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="cliente" data-labelSize="4" data-multiSize="3">
+							<input lms-cliente ng-model="data.cliente" id="cliente" class="form-control" ng-change="validarBloqueioCreditoColeta()"
+								ng-required="componentesRequired['cliente']" ng-disabled="componentesDisabled['cliente']"
+							/>
+							<input type="text" ng-model="data.cliente.nmPessoa" id="nmPessoa" class="form-control" disabled="true" />
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="telefone" data-labelSize="4" data-multiSize="3" >
+							<input type="text" ng-model="data.nrDddCliente" id="nrDddCliente" ng-disabled="componentesDisabled['nrDddCliente']"
+								ng-required="componentesRequired['nrDddCliente']" data-numeric
+							/>
+							<input type="text" ng-model="data.nrTelefoneCliente" id="nrTelefoneCliente" ng-disabled="componentesDisabled['nrTelefoneCliente']"
+								ng-required="componentesRequired['nrTelefoneCliente']" data-numeric
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="contato" data-labelSize="4">
+							<input type="text" ng-model="data.nmContatoCliente" id="nmContatoCliente" ng-change="setaContatoClienteEmSolicitante(data.nmContatoCliente)"
+								ng-required="componentesRequired['nmContatoCliente']" ng-disabled="componentesDisabled['nmContatoCliente']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="novoTelefone" data-labelSize="4" data-multiSize="3">
+							<input type="text" ng-model="data.nrNovoDddCliente" id="nrNovoDddCliente" ng-disabled="componentesDisabled['nrNovoDddCliente']"
+								ng-required="componentesRequired['nrNovoDddCliente']"
+							/>
+							<input type="text" ng-model="data.nrNovoTelefoneCliente" id="nrNovoTelefoneCliente" ng-disabled="componentesDisabled['nrNovoTelefoneCliente']"
+								ng-required="componentesRequired['nrNovoTelefoneCliente']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="tipo" data-labelSize="4">
+							<select adsm-domain="DM_TIPO_PEDIDO_COLETA" id="tpPedidoColeta" ng-model="data.tpPedidoColeta"
+								ng-required="componentesRequired['tpPedidoColeta']" ng-disabled="componentesDisabled['tpPedidoColeta']"
+							>
+								<option value=""></option>
+							</select>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="horarioLimite" data-labelSize="4">
+							<input type="time" ng-model="data.hrLimiteColeta" id="hrLimiteColeta" class="form-control" ng-required="componentesRequired['hrLimiteColeta']"
+								ng-disabled="componentesDisabled['hrLimiteColeta']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="disponibilidadeColeta" data-labelSize="4">
+							<input adsm-date-time ng-model="data.dhColetaDisponivel" id="dhColetaDisponivel" ng-change="verificaDataDisponibilidade(data)"
+								ng-required="componentesRequired['dhColetaDisponivel']" ng-disabled="componentesDisabled['dhColetaDisponivel']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="horarioCorte" data-labelSize="4">
+							<input type="time" ng-model="data.horarioCorte" id="horarioCorte" class="form-control" ng-disabled="componentesDisabled['horarioCorte']" />
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="dataPrevColeta" data-labelSize="4">
+							<input adsm-date-picker ng-model="data.dtPrevisaoColeta" mask="date" id="dtPrevisaoColeta" ng-required="componentesRequired['dtPrevisaoColeta']"
+								ng-disabled="componentesDisabled['dtPrevisaoColeta']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="status" data-labelSize="4">
+							<select adsm-domain="DM_STATUS_COLETA" id="tpStatusColeta" ng-model="data.tpStatusColeta" ng-disabled="componentesDisabled['tpStatusColeta']">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="12" data-label="enderecosColeta" data-labelSize="2">
+							<textarea rows="3" maxLength="300" ng-model="data.endereco" id="endereco" class="form-control" style="resize: none;" serializable="false"
+								ng-required="componentesRequired['endereco']" ng-disabled="componentesDisabled['endereco']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="municipio" data-labelSize="4">
+							<input lms-municipio="{idUnidadeFederativa : data.sgUnidadeFederativaMunicipio}" class="form-control" ng-model="data.nmMunicipio"
+								id="nmMunicipio" ng-disabled="componentesDisabled['nmMunicipio']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="uf" data-labelSize="4">
+							<input lms-unidade-federativa="{ idPais : 30 }" class="form-control" ng-model="data.nmUnidadeFederativa" id="sgUnidadeFederativa"
+								ng-disabled="componentesDisabled['sgUnidadeFederativa']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="filial" data-labelSize="4" data-multiSize="3">
+							<input lms-filial ng-model="data.filialByIdFilialResponsavel" id="filial" class="form-control" ng-disabled="componentesDisabled['filial']" />
+							<input type="text" class="form-control" id="nmFilial" value="{{ data.filialByIdFilialResponsavel.nmFilial }}" disabled="true">
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="rotaColetaEntrega" data-labelSize="4" data-multiSize="9">
+							<input lms-rota-coleta-entrega="{ idFilial : data.filialByIdFilialResponsavel.idFilial }" type="text" ng-model="data.rotaColetaEntrega"
+								id="rotaColetaEntrega" class="form-control" ng-disabled="componentesDisabled['rotaColetaEntrega']"
+							/>
+							<input type="text" class="form-control" ng-model="data.rotaColetaEntrega.nrRota" id="rotaColetaEntrega.nrRota" disabled="true" />
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="valorTotalInformado" data-labelSize="4">
+							<input data-numeric data-moeda ng-model="data.vlTotalInformado" id="vlTotalInformado" class="form-control"
+								ng-disabled="componentesDisabled['vlTotalInformado']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="volumesInformado" data-labelSize="4">
+							<input type="text" ng-model="data.qtTotalVolumesInformado" id="qtTotalVolumesInformado" class="form-control"
+								ng-disabled="componentesDisabled['qtTotalVolumesInformado']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="pesoInformado" data-labelSize="4">
+							<input data-numeric="{mDec: 3}" ng-model="data.psTotalInformado" id="psTotalInformado" class="form-control"
+								ng-disabled="componentesDisabled['psTotalInformado']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="pesoAforadoInformado" data-labelSize="4">
+							<input data-numeric="{mDec: 3}" ng-model="data.psTotalAforadoInformado" id="psTotalAforadoInformado" class="form-control"
+								ng-disabled="componentesDisabled['psTotalAforadoInformado']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="valorTotalVerificado" data-labelSize="4">
+							<input data-numeric data-moeda ng-model="data.vlTotalVerificado" id="vlTotalVerificado" class="form-control"
+								ng-disabled="componentesDisabled['vlTotalVerificado']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="volumesVerificado" data-labelSize="4">
+							<input type="text" ng-model="data.qtTotalVolumesVerificado" id="qtTotalVolumesVerificado" class="form-control"
+								ng-disabled="componentesDisabled['qtTotalVolumesVerificado']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="pesoVerificado" data-labelSize="4">
+							<input data-numeric="{mDec: 3}" ng-model="data.psTotalVerificado" id="psTotalVerificado" class="form-control"
+								ng-disabled="componentesDisabled['psTotalVerificado']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="pesoAforadoVerificado" data-labelSize="4">
+							<input data-numeric="{mDec: 3}" ng-model="data.psTotalAforadoVerificado" id="psTotalAforadoVerificado" class="form-control"
+								ng-disabled="componentesDisabled['psTotalAforadoVerificado']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="cotacao" data-labelSize="4" data-multiSize="3">
+							<input type="text" class="form-control" ng-model="data.cotacao.sgfilialByIdFilialOrigem" id="sgfilialByIdFilialOrigem"
+								ng-disabled="componentesDisabled['sgfilialByIdFilialOrigem']"
+							/>
+							<input type="text" class="form-control" ng-model="data.cotacao.nrCotacao" id="nrCotacao" ng-disabled="true" />
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="infoColeta" data-labelSize="4">
+							<input type="text" ng-model="data.dsInfColeta" id="dsInfColeta" ng-disabled="componentesDisabled['dsInfColeta']" />
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="12" data-label="observacoes" data-labelSize="2">
+							<textarea rows="2" maxlength="500" ng-model="data.obPedidoColeta" id="obPedidoColeta" class="form-control" style="resize: none;"
+								ng-disabled="componentesDisabled['obPedidoColeta']"
+							/>
+						</div>
+					</div>
+				</form>
+			</div>
+		
+			<div adsm-tab-panel="Detalhamento" heading="Detalhamento">
+				<form class="form-horizontal content-padding" name="myForm" >
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="servico" data-labelSize="4">
+							<select lms-servico id="servico" ng-change="habilitaCampos()" ng-model="detalheColeta.servico"
+								ng-disabled="componentesDisabledDetalhe['servico']" ng-required="componentesRequiredDetalhe['servico']"
+							>
+								<option value=""></option>
+							</select>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="naturezaProduto" data-labelSize="4">
+							<select id="naturezaProduto" lms-natureza-produto ng-model="detalheColeta.naturezaProduto.id"
+								ng-disabled="componentesDisabledDetalhe['naturezaProduto']" ng-required="componentesRequiredDetalhe['naturezaProduto']"
+							>
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="tipoFrete" data-labelSize="4">
+							<select adsm-domain="DM_TIPO_FRETE" ng-change="verificaObrigatoriedadeDestinatario()" id="tpFrete" ng-model="detalheColeta.tpFrete"
+								ng-disabled="componentesDisabledDetalhe['tpFrete']" ng-required="componentesRequiredDetalhe['tpFrete']"
+							>
+								<option value=""></option>
+							</select>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="destino" data-labelSize="4">
+							<select adsm-domain="DM_MUNICIPIO_LOCALIDADE_ESPECIAL" ng-change="habilitaMunicipioOuLocalidade()" id="destino" ng-model="detalheColeta.destino"
+								ng-disabled="componentesDisabledDetalhe['destino']" ng-required="componentesRequiredDetalhe['destino']"
+							>
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="municipioDestino" data-labelSize="4">
+							<input lms-municipio-filial type="text" ng-model="detalheColeta.municipioFilial" id="municipio" class="form-control" autocomplete="off"
+								ng-disabled="componentesDisabledDetalhe['municipio']" ng-required="componentesRequiredDetalhe['municipio']"
+							>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="localidadeEspecial" data-labelSize="4">
+							<input type="text" lms-localidade-especial ng-model="detalheColeta.localidadeEspecial" id="localidadeEspecial" class="form-control"
+								autocomplete="off" ng-disabled="componentesDisabledDetalhe['localidadeEspecial']"
+								ng-required="componentesRequiredDetalhe['localidadeEspecial']"
+							>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="filialDestino" data-labelSize="4" data-multiSize="3">
+							<input lms-filial type="text" ng-model="detalheColeta.municipioFilial" class="form-control" id="filialDestino"
+								ng-disabled="componentesDisabledDetalhe['filialDestino']"
+							/>
+							<input ng-model="detalheColeta.municipioFilial.nmFantasia" id="filialDestinoNm" ng-disabled="true" type="text"
+								ng-disabled="componentesDisabledDetalhe['filialDestinoNm']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="uf" data-labelSize="4">
+							<input lms-unidade-federativa="{ idPais : 30 }" type="text" ng-model="detalheColeta.municipioFilial.sgUnidadeFederativa" id="uf"
+								class="form-control" ng-disabled="componentesDisabledDetalhe['uf']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="destinatario" data-labelSize="4" data-multiSize="3">
+							<input lms-cliente type="text" ng-model="detalheColeta.destinatario.nrIdentificacao" id="destinatario" class="form-control"
+								ng-required="componentesRequiredDetalhe['destinatario']" ng-disabled="componentesDisabledDetalhe['destinatario']"
+							>
+							<input type="text" class="form-control" id="destinatarioNmPessoa" ng-model="detalheColeta.destinatario.nmPessoa" disabled
+								ng-required="componentesRequiredDetalhe['destinatarioNmPessoa']"
+							>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="volumes" data-labelSize="4">
+							<input type="text" ng-model="detalheColeta.qtVolumes" ng-change="desmarcaAforado()" id="qtVolumes" class="form-control" data-numeric
+								ng-disabled="componentesDisabledDetalhe['qtVolumes']" ng-required="componentesRequiredDetalhe['qtVolumes']"
+							/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="valor" data-labelSize="4" data-multiSize="3">
+							<select adsm-chosen id="moeda" ng-model="detalheColeta.idMoeda" ng-options="data.idMoeda as data.siglaSimbolo for data in moeda"
+								ng-disabled="componentesDisabledDetalhe['moeda']"
+							>
+								<input type="text" ng-model="detalheColeta.vlMercadoria" id="vlMercadoria" class="form-control"
+									ng-disabled="componentesDisabledDetalhe['vlMercadoria']" ng-required="componentesRequiredDetalhe['valor']"
+								/>
+						</div>
+						<div adsm-add-field data-boxSize="3" data-label="aforado" data-labelSize="8">
+							<input type="checkbox" id="aforado" ng-model="detalheColeta.aforado" ng-disabled="componentesDisabledDetalhe['aforado']">
+						</div>
+						<div adsm-add-field data-boxSize="3" data-label="entregaDireta" data-labelSize="8">
+							<input type="checkbox" id="blEntregaDireta" ng-model="detalheColeta.blEntregaDireta" ng-disabled="componentesDisabledDetalhe['blEntregaDireta']">
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="peso" data-labelSize="4">
+							<input type="text" ng-model="detalheColeta.psMercadoria" ng-change="desmarcaAforado()" id="psMercadoria" class="form-control" data-numeric
+								ng-disabled="componentesDisabledDetalhe['psMercadoria']" ng-required="componentesRequiredDetalhe['psMercadoria']"
+							/>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="pesoAforado" data-labelSize="4">
+							<input type="text" ng-model="detalheColeta.psAforado" id="psAforado" class="form-control" ng-disabled="componentesDisabledDetalhe['psAforado']" data-numeric/>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="preAwbAwb" data-labelSize="4" data-multiSize="4">
+							<select adsm-domain="DM_LOOKUP_AWB" id="tpStatusAwb" ng-model="detalheColeta.tpStatusAwb"
+								ng-disabled="componentesDisabledDetalhe['tpStatusAwb']"
+							/>
+							<input lms-awb='{ tpStatusAwb:detalheColeta.tpStatusAwb.value }' type="text" ng-model="detalheColeta.awb" id="awb" class="form-control"
+								ng-disabled="componentesDisabledDetalhe['awb']"
+							>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="documentoServico" data-labelSize="4" data-multiSize="4">
+							<input type="text" disabled class="form-control" value="{{ detalheColeta.doctoServico.tpDoctoServico.value }}" id="tpDoctoServico"
+								ng-disabled="componentesDisabledDetalhe['tpDoctoServico']"
+							>
+							<input lms-docto-servico type="text" ng-model="detalheColeta.doctoServico.dsDoctoServico" id="doctoServico" class="form-control"
+								permission="doctoServico" ng-disabled="componentesDisabledDetalhe['doctoServico']"
+							>
+						</div>
+					</div>
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="notaFiscal" data-labelSize="4">
+							<div adsm-list-options ng-model="detalheColeta.notaFiscalColetas" equals="nrNotaFiscal" view="nrNotaFiscal" not-null="nrNotaFiscal" ng-disabled="componentesDisabledDetalhe['notaFiscal']" >
+								<input type="text" ng-model="nrNotaFiscal" id="nrNotaFiscal" class="form-control" ng-disabled="componentesDisabledDetalhe['nrNotaFiscal']">
+							</div>
+						</div>
+						<div adsm-add-field data-boxSize="6" data-label="chaveNfe" data-labelSize="4">
+							<div adsm-list-options ng-model="detalheColeta.nrChaveNfe" equals="nrChave" view="nrChave" not-null="nrChave" ng-disabled="componentesDisabledDetalhe['nrChaveNfe']" on-before-add="validateChaveNfe" on-after-add="setaValorNotaFiscal" on-before-remove="contentChange">
+								<input type="text" ng-model="nrChave" id="nrChave" class="form-control" ng-disabled="componentesDisabledDetalhe['nrChave']">
+							</div>
+						</div>
+					</div>
+					<!-- 				<div class="row"> -->
+					<!-- 					<div adsm-add-field data-boxSize="6" data-label="numeroCRT" data-labelSize="4"> -->
+					<!-- 						<input type="text" ng-model="data.ctoInternacional.sgPais" id="crt" class="form-control"> -->
+					<!-- 					</div> -->
+					<!-- 				</div> -->
+					<div class="row">
+						<div adsm-add-field data-boxSize="12" data-label="observacao" data-labelSize="2">
+							<textarea rows="2" class="form-control" maxlength="300" ng-model="detalheColeta.obDetalheColeta" id="obDetalheColeta" class="form-control"
+								ng-disabled="componentesDisabledDetalhe['obDetalheColeta']"
+							></textarea>
+						</div>
+					</div>
+					<div class="row">
+						<button type="button" id="btnSalvarDetalhe" ng-click="salvarDetalhe(detalheColetaRef)" class="btn btn-default btn-lg pull-right " ng-disabled="!myForm.$valid"
+						>{{'salvarDetalhe' | translate }}</button>
+						<button type="button" id="btnLimparDetalhe" class="btn btn-default btn-lg pull-right" ng-click="limparDetalhe()" ng-disabled="componentesDisabledDetalhe['btnLimparDetalhe']"
+						>{{'limpar' | translate }}</button>
+						
+					</div>
+				</form>
+				
+				<div class="row">
+					<div class="col-sm-12">
+						<table adsm-table="listTabledetalheColeta" show-checkboxes="true" adsm-table-internal-loading="true">
+							<tbody>
+								<tr ng-repeat="row in page" ng-click="carregarDadosDetalheColeta(row)">
+									<td column-title="servico" sortable="servico.dsServico" inline-property-filter="servico.dsServico">{{row.servico.dsServico}}</td>
+									<td column-title="naturezaProduto" sortable="naturezaProduto.dsNaturezaProduto" inline-property-filter="naturezaProduto.dsNaturezaProduto">{{row.naturezaProduto.dsNaturezaProduto}}</td>
+									<td column-title="frete" sortable="tpFreteDescription" inline-property-filter="tpFreteDescription">{{row.tpFreteDescription}}</td>
+									<td column-title="volumes" sortable="qtVolumes" inline-property-filter="qtVolumes">{{row.qtVolumes}}</td>
+									<td column-title="peso" sortable="psMercadoria" inline-property-filter="psMercadoria" align="right">{{row.psMercadoria}}</td>
+									<td column-title="pesoAforado" sortable="psAforado" inline-property-filter="psAforado" align="right">{{row.psAforado}}</td>
+									<td column-title="valor" sortable="vlMercadoria" inline-property-filter="vlMercadoria" align="right">{{row.vlMercadoria | currency}}</td>
+									<td column-title="preAwbAwb" sortable="awb" inline-property-filter="awb">{{row.awb}}</td>
+									<td column-title="documentoServico" sortable="tpDoctoSgFilial" inline-property-filter="tpDoctoSgFilial">{{row.tpDoctoSgFilial}}</td>
+									<td column-title="entregaDireta" sortable="blEntregaDireta" inline-property-filter="blEntregaDireta">{{row.blEntregaDireta}}</td>
+									<td column-title="destinatario" sortable="destinatario.nmCliente" inline-property-filter="destinatario.nmCliente">{{row.destinatario.nmCliente}}</td>
+									<td column-title="municipioDestino" sortable="municipioFilial.nmMunicipio" inline-property-filter="municipioFilial.nmMunicipio">{{row.municipioFilial.nmMunicipio}}</td>
+									<td column-title="localidadeEspecial" sortable="localidadeEspecial.dsLocalidadeEspecial"
+										inline-property-filter="localidadeEspecial.dsLocalidadeEspecial"
+									>{{row.localidadeEspecial.dsLocalidadeEspecial}}</td>
+									<td column-title="filialDestino" sortable="municipioFilial.sgFilial" inline-property-filter="municipioFilial.sgFilial">{{row.municipioFilial.sgFilial}}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+

@@ -1,0 +1,245 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+<class 
+	name="com.mercurio.lms.contasreceber.model.RedecoLog" 
+	table="LOG$_REDECO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+	<id
+		name="idRedecoLog"
+		type="java.lang.Long"
+		column="ID_REDECO_LOG"
+	>
+		<meta attribute="use-in-equals">true</meta>
+        	<generator class="sequence">
+            	<param name="sequence">LOG$_REDECO_SQ</param>
+        	</generator>
+	</id>
+
+	<property
+		name="nrRedeco"
+		column="NR_REDECO"
+		not-null="true"
+		length="22"
+		type="java.lang.Long"
+	>
+	</property>
+	<property
+		name="vlDiferencaCambialCotacao"
+		column="VL_DIFERENCA_CAMBIAL_COTACAO"
+		not-null="true"
+		length="18"
+		type="java.math.BigDecimal"
+	>
+	</property>
+	<property
+		name="dtEmissao"
+		column="DT_EMISSAO"
+		not-null="true"
+		length="7"
+		type="jtyearmonthday"
+	>
+	</property>
+	<property
+		name="tpSituacaoRedeco"
+		column="TP_SITUACAO_REDECO"
+		not-null="true"
+		length="2"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_STATUS_REDECO</param>
+		</type>
+	</property>
+	<property
+		name="tpFinalidade"
+		column="TP_FINALIDADE"
+		not-null="true"
+		length="2"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_FINALIDADE_REDECO</param>
+		</type>
+	</property>
+	<property
+		name="nmResponsavelCobranca"
+		column="NM_RESPONSAVEL_COBRANCA"
+		not-null="true"
+		length="60"
+		
+	>
+	</property>
+	<property
+		name="tpRecebimento"
+		column="TP_RECEBIMENTO"
+		not-null="true"
+		length="2"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_TIPO_RECEBIMENTO</param>
+		</type>
+	</property>
+	<property
+		name="tpSituacaoWorkflow"
+		column="TP_SITUACAO_WORKFLOW"
+		not-null="false"
+		length="1"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_STATUS_WORKFLOW</param>
+		</type>
+	</property>
+	<property
+		name="dtLiquidacao"
+		column="DT_LIQUIDACAO"
+		not-null="false"
+		length="7"
+		type="jtyearmonthday"
+	>
+	</property>
+	<property
+		name="dtRecebimento"
+		column="DT_RECEBIMENTO"
+		not-null="false"
+		length="7"
+		type="jtyearmonthday"
+	>
+	</property>
+	<property
+		name="dhTransmissao"
+		column="DH_TRANSMISSAO"
+		not-null="false"
+		length="13"
+		type="jtdatetime"
+	>
+	</property>
+	<property
+		name="obRedeco"
+		column="OB_REDECO"
+		not-null="false"
+		length="60"
+		
+	>
+	</property>
+	<property
+		name="tpAbrangencia"
+		column="TP_ABRANGENCIA"
+		not-null="true"
+		length="1"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_ABRANGENCIA</param>
+		</type>
+	</property>
+	<property
+		name="nrVersao"
+		column="NR_VERSAO"
+		not-null="true"
+		length="22"
+		type="java.lang.Long"
+	>
+	</property>
+	<property
+		name="dhTransmissaoTzr"
+		column="DH_TRANSMISSAO_TZR"
+		not-null="false"
+		length="50"
+		
+	>
+	</property>
+	<property
+		name="tpOrigemLog"
+		column="TP_ORIGEM_LOG"
+		not-null="true"
+		length="3"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_ORIGEM_LOG</param>
+		</type>
+	</property>
+	<property
+		name="loginLog"
+		column="LOGIN_LOG"
+		not-null="true"
+		length="10"
+		type="java.lang.String"
+	>
+	</property>
+	<property
+		name="dhLog"
+		column="DH_LOG"
+		not-null="true"
+		length="7"
+		type="jtdatetime"
+	>
+	</property>
+	<property
+		name="opLog"
+		column="OP_LOG"
+		not-null="true"
+		length="1"
+		
+	>
+		<type name="domain">
+			<param name="domainName">DM_OP_LOG</param>
+		</type>
+	</property>
+	<many-to-one
+        	name="redeco"
+        	class="com.mercurio.lms.contasreceber.model.Redeco"
+        	not-null="true"
+        	fetch="join"
+    	>
+        	<column name="ID_REDECO" />
+    </many-to-one>
+	<many-to-one
+        	name="empresaCobranca"
+        	class="com.mercurio.lms.configuracoes.model.EmpresaCobranca"
+        	not-null="false"
+        	fetch="join"
+    	>
+        	<column name="ID_EMPRESA_COBRANCA" />
+    </many-to-one>
+	<many-to-one
+        	name="filial"
+        	class="com.mercurio.lms.municipios.model.Filial"
+        	not-null="true"
+        	fetch="join"
+    	>
+        	<column name="ID_FILIAL" />
+    </many-to-one>
+	<many-to-one
+        	name="pendenciaDesconto"
+        	class="com.mercurio.lms.workflow.model.Pendencia"
+        	not-null="false"
+        	fetch="join"
+    	>
+        	<column name="ID_PENDENCIA_DESCONTO" />
+    </many-to-one>
+	<many-to-one
+        	name="pendenciaLucrosPerdas"
+        	class="com.mercurio.lms.workflow.model.Pendencia"
+        	not-null="false"
+        	fetch="join"
+    	>
+        	<column name="ID_PENDENCIA_LUCROS_PERDAS" />
+    </many-to-one>
+	<many-to-one
+        	name="pendenciaRecebimento"
+        	class="com.mercurio.lms.workflow.model.Pendencia"
+        	not-null="false"
+        	fetch="join"
+    	>
+        	<column name="ID_PENDENCIA_RECEBIMENTO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

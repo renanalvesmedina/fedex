@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.carregamento.model.TipoDispositivoUnitizacao" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="TIPO_DISPOSITIVO_UNITIZACAO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_TIPO_DISPOSITIVO_UNITIZACAO" name="idTipoDispositivoUnitizacao" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_DISPOSITIVO_UNITIZACAO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_TIPO_DISP_UNITIZACAO_I" length="500" name="dsTipoDispositivoUnitizacao" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_CONTROLE_DISPOSITIVO" length="1" name="tpControleDispositivo" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_CONTROLE_DISPOSITIVO</param>
+	    </type>
+    </property>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to DispositivoUnitizacao -->
+    <bag cascade="none" inverse="true" lazy="true" name="dispositivoUnitizacoes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.DispositivoUnitizacao</meta>
+ 	        <key>
+            <column name="ID_TIPO_DISPOSITIVO_UNITIZACAO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.DispositivoUnitizacao"/>
+    </bag>
+    <!-- bi-directional one-to-many association to DispCarregDescQtde -->
+    <bag cascade="none" inverse="true" lazy="true" name="dispCarregDescQtdes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.DispCarregDescQtde</meta>
+ 	        <key>
+            <column name="TIPO_DISPOSITIVO_UNITIZACAO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.DispCarregDescQtde"/>
+    </bag>
+    <!-- bi-directional one-to-many association to EstoqueDispositivoQtde -->
+    <bag cascade="none" inverse="true" lazy="true" name="estoqueDispositivoQtdes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.EstoqueDispositivoQtde</meta>
+ 	        <key>
+            <column name="ID_TIPO_DISPOSITIVO_UNITIZACAO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.EstoqueDispositivoQtde"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

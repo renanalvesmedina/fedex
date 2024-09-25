@@ -1,0 +1,227 @@
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+		<div ng-include src="contextPath+'js/app/common/view/templates/form-buttons-list.html'"></div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="filial" data-labelSize="3" data-multiSize="3,9">
+			<input
+				lms-filial
+				ng-model="filter.filial" 
+				id="filial" 
+				class="form-control"
+				ng-disabled="!notaCreditoPadrao.isMatriz"
+				required>
+
+			<input
+				type="text"
+				class="form-control"
+				id="filial.nmFilial"
+				value="{{ filter.filial.nmFilial }}"
+				readonly="readonly">
+		</div>	
+		
+		<div adsm-add-field data-boxSize="4" data-label="numeroNota" data-labelSize="4">
+			<input
+				type="text"
+				class="form-control text-right"
+				id="nrNotaCredito"
+				data-numeric
+				maxlength="10"
+				ng-model="filter.nrNotaCredito">
+		</div>
+		
+		<div adsm-add-field data-label="tipo" data-labelSize="4" data-fieldSize="8">
+			<select 
+				adsm-domain="DM_TIPO_NOTA_CREDITO_PADRAO_FILTRO"
+				id="tpNotaCredito" 
+				ng-model="filter.tpNotaCredito">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>		
+	
+	<div class="row">					
+		<div adsm-add-field data-boxSize="4" data-label="preFatura" data-labelSize="3" data-multiSize="3,9">
+			<input type="text" 
+				disabled 
+				class="form-control" 
+				ng-model="filter.filial.sgFilial" 
+				id="filter.sgFilial">	
+
+			<input lms-recibo="{ sgFilial : filter.filial.sgFilial }"
+				type="text" 
+				ng-model="filter.reciboFreteCarreteiro"
+				id="recibo"
+				class="form-control">
+		</div>
+		
+		<div adsm-add-field data-boxSize="4" data-label="dataGeracao" data-labelSize="4" data-multiSize="6,6">
+			<input id="dhGeracaoInicial" 
+				adsm-date-time 
+				ng-model="filter.dhGeracaoInicial" 
+				class="form-control" 
+				min-interval="0" 
+				max-interval="30"
+				max="filter.dhGeracaoFinal">
+			
+			<input id="dhGeracaoFinal" 
+				adsm-date-time  
+				ng-model="filter.dhGeracaoFinal"
+				class="form-control" 
+				min-interval="0" 
+				max-interval="30"
+				min="filter.dhGeracaoInicial">
+		</div>
+	
+		<div adsm-add-field data-boxSize="4" data-label="dataEmissao" data-labelSize="4" data-multiSize="6,6">
+			<input id="dhEmissaoInicial" 
+				adsm-date-time 
+				ng-model="filter.dhEmissaoInicial" 
+				class="form-control" 
+				min-interval="0" 
+				max-interval="30"
+				max="filter.dhEmissaoFinal">
+			
+			<input id="dhEmissaoFinal" 
+				adsm-date-time  
+				ng-model="filter.dhEmissaoFinal"
+				class="form-control" 
+				min-interval="0" 
+				max-interval="30"
+				min="filter.dhEmissaoInicial">
+		</div>
+	</div>
+		
+	<accordion close-others="false">
+		<accordion-group is-open="isFiltroBasicoOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroBasicoOpen, 'glyphicon-chevron-right': !isFiltroBasicoOpen}"></span>
+				{{'criteriosComplementares' | translate}}
+			</accordion-heading>	
+		
+			<div class="row">											
+				<div adsm-add-field data-boxSize="6" data-label="proprietario" data-labelSize="2" data-multiSize="4,8">
+					<input 
+						type="text" 
+						disabled 
+						class="form-control" 
+						value="{{ filter.proprietario.nrIdentificacao }}" 
+						id="proprietario.nrIdentificacao">
+					
+					<input
+						lms-proprietario
+						ng-model="filter.proprietario" 
+						id="proprietario" 
+						class="form-control">								
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="frotaPlaca" data-labelSize="3" data-multiSize="4,8">
+					<input type="text"
+						class="form-control" 
+						value="{{ filter.meioTransporte.nrFrota }}"
+						disabled 
+						id="meioTransporte.nrFrota">
+								    
+			    	<input
+						lms-meio-transporte
+						type="text" 
+						ng-model="filter.meioTransporte" 
+						id="meioTransporte" 
+						class="form-control">			   	
+			   </div>				
+			</div>
+						
+			<div class="row">	
+				<div adsm-add-field data-boxSize="6" data-label="situacao" data-labelSize="2" data-fieldSize="5">
+					<select 
+						adsm-domain="DM_SITUACAO_EMISSAO_NC"
+						id="tpSituacao" 
+						ng-model="filter.tpSituacao">
+						<option value=""></option>
+					</select>
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="notasZeradas" data-labelSize="3" data-fieldSize="5">
+					<select 
+						adsm-domain="DM_SIM_NAO"
+						id="tpMostrarNotaZerada" 
+						ng-model="filter.tpMostrarNotaZerada">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</accordion-group>
+	</accordion>
+	
+	<div class="row">
+		<div class="col-sm-12">
+			<table adsm-table="listTableParams"
+				class="table adsm-table-hover table-condensed table-clickable adsm-table"
+				style="width: 100%">
+				<tbody>
+					<tr ng-repeat="row in page" ng-click="detail(row)">
+						<td column-title="filial"
+							sortable="filial.sgFilial"
+							style="min-width: 50px; max-width: 60px;">{{row.filial.sgFilial}}
+						</td>
+						<td column-title="numeroNota"
+							sortable="nrNotaCredito"
+							align="right"
+							style="min-width: 150px; max-width: 160px;">{{row.nrNotaCredito | lpad: 10 }}
+						</td>
+						<td column-title="tipo"
+							sortable="tpNotaCredito"
+							style="min-width: 150px; max-width: 160px;">{{row.tpNotaCredito.description.value }}
+						</td>
+						<td column-title="total"
+							sortable="vlTotal"
+							align="right"
+							style="min-width: 150px; max-width: 160px;">
+							<span class="pull-left">{{ row.dsSimboloMoeda }}</span>
+							<span class="pull-right">{{ row.vlTotal | number: 2 }}</span>
+						</td>	
+						<td column-title="preFatura"
+							sortable="nrReciboFreteCarreteiro"
+							style="min-width: 130px; max-width: 200px;">
+							<span class="pull-left">{{row.reciboFreteCarreteiro.sgFilial}}</span>
+							<span class="pull-right">{{row.reciboFreteCarreteiro.nrReciboFreteCarreteiro | lpad : 10}}</span>							
+						</td>
+						<td column-title="situacao"
+							sortable="tpSituacao.description.value"
+							align="center"
+							style="min-width: 90px; max-width: 100px;">{{row.tpSituacao.description.value }}
+						</td>	
+						<td column-title="identificacao"
+							sortable="nrIdentificacao" 
+							style="min-width: 165px; max-width: 300px;">
+							<span class="pull-left">{{row.proprietario.tpIdentificacao.description.value }}</span>
+							<span class="pull-right"> {{row.proprietario.tpIdentificacaoFormatado}}</span>								
+						</td>
+						<td column-title="proprietario"
+							sortable="proprietario.nmPessoa" 
+							style="min-width: 150px; max-width: 400px;">
+							{{row.proprietario.nmPessoa}}
+						</td>
+						<td column-title="meioTransporte"
+							sortable="meioTransporteRodoviario.meioTransporte.nrIdentificador" 
+							style="min-width: 100px; max-width: 260px;">
+							{{row.meioTransporte.nrFrota}} / {{row.meioTransporte.nrIdentificador}}
+						</td>	
+						<td column-title="geracao"
+							sortable="dhGeracao"
+							align="center"
+							style="min-width: 150px; max-width: 160px;">{{row.dhGeracao | dateTimeZone }}
+						</td>
+						<td column-title="emissao"
+							sortable="dhEmissao"
+							align="center"
+							style="min-width: 150px; max-width: 160px;">{{row.dhEmissao | dateTimeZone }}
+						</td>					
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</form>

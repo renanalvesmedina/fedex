@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteirocoletaentrega.model.ParamSimulacaoHistorica" 
+    table="PARAM_SIMULACAO_HISTORICA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idParamSimulacaoHistorica"
+        type="java.lang.Long"
+        column="ID_PARAM_SIMULACAO_HISTORICA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PARAM_SIMULACAO_HISTORICA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsParamSimulacaoHistorica"
+			        type="java.lang.String"
+            column="DS_PARAM_SIMULACAO_HISTORICA"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="dhCriacao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_CRIACAO"/><column name="DH_CRIACAO_TZR"/></property>
+    <property
+        name="blPercentual"
+			        type="sim_nao"
+            column="BL_PERCENTUAL"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="dtEmissaoInicial"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO_INICIAL"
+        length="7"
+    />
+    <property
+        name="dtEmissaoFinal"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoMeioTransporte -->
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_TIPO_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to NcParcelaSimulacao -->
+    <bag
+        name="ncParcelaSimulacoes"
+        lazy="true"
+		inverse="true"
+		cascade="all,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.NcParcelaSimulacao</meta>
+ 	        <key>
+            <column name="ID_PARAM_SIMULACAO_HISTORICA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NcParcelaSimulacao"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to TipoTabelaColetaEntrega -->
+    <many-to-one
+        name="tipoTabelaColetaEntrega"
+        class="com.mercurio.lms.fretecarreteirocoletaentrega.model.TipoTabelaColetaEntrega"
+        not-null="true"
+    >
+        <column name="ID_TIPO_TABELA_COLETA_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporteRodoviario -->
+    <many-to-one
+        name="meioTransporteRodoviario"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

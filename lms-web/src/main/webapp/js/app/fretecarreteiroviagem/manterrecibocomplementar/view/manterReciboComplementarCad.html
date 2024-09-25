@@ -1,0 +1,602 @@
+<style>
+	.ui-datepicker {
+		z-index: 1200 !important;
+	}
+	
+	.glyphicon-open {
+		color: #D3D3DA !important;
+		font-size: 16px;
+	}
+	
+	.text-bold {
+		font-weight: bold;
+	}
+</style>
+
+<div class="menu-top">
+	<button id="btOcorrencias" 
+		type="button" 
+		adsm-legacy 
+		ng-hide="data.workflow || !data.idReciboFreteCarreteiro" 
+		ng-disabled="data.btOcorrencias" 
+		ng-click="openOcorrencias($event)">
+		{{'ocorrencias' | translate}}
+	</button>
+	
+	<button id="btControleCarga" 
+		type="button" 
+		adsm-legacy 
+		ng-hide="data.workflow || !data.idReciboFreteCarreteiro" 
+		ng-disabled="data.btControleCarga" 
+		ng-click="openControleCarga($event)">
+		{{'controleCarga' | translate}}
+	</button>
+	
+	<button id="btEmitir"
+		type="button"
+		ng-hide="data.workflow || !data.idReciboFreteCarreteiro"
+		ng-disabled="data.btEmitir" 
+		ng-click="emitirRecibo($event)">
+		<span class="glyphicon glyphicon-print"></span>
+		{{'emitir' | translate}}
+	</button>		
+</div>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form name="reciboForm" ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="store($event)">
+		<div class="fixed-top">
+			<div class="content">	
+				<button type="button" 
+					data-ng-click="limparDados()" 
+					ng-disabled="data.workflow"
+					class="btn btn-default btn-lg pull-right" 
+					id="limpar">
+					{{'limpar' | translate }}
+				</button>	
+							
+				<button type="button" 
+					data-ng-click="cancel()" 
+					ng-disabled="!data.idReciboFreteCarreteiro || data.btCancelar || data.workflow"
+					class="btn btn-default btn-lg pull-right" 
+					id="cancelar">
+					{{'cancelar' | translate }}
+				</button>
+							
+				<button type="button"
+				data-ng-click="store($event)" 
+					class="btn btn-default btn-lg pull-right"
+					ng-disabled="data.btSalvar"
+					id="store">
+					{{'salvar' | translate }}
+				</button>				
+			</div>
+		</div>
+	
+		<div class="clearfix">		
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+					<div class="form-horizontal">						
+						<div class="row">
+							<div adsm-add-field data-boxSize="4" data-label="filial" data-labelSize="2" data-multiSize="3,9">
+								<input
+									lms-filial
+									ng-model="data.filial" 
+									id="filial" 
+									class="form-control"
+									ng-disabled="recibo.blockSuggest"
+									ng-init="searchText=''"
+									>
+					
+								<input
+									type="text"
+									class="form-control"
+									id="filial.nmFilial"
+									value="{{ data.filial.nmFilial }}"
+									readonly="readonly"
+									ng-init="searchText=''"
+									>
+							</div>	
+							
+							<div adsm-add-field data-boxSize="4" data-label="preFatura" data-labelSize="2" data-multiSize="3,9">
+								<input type="text" 
+									disabled 
+									class="form-control" 
+									ng-model="recibo.reciboComplementado.sgFilial" 
+									id="recibo.sgFilial"
+									ng-init="searchText=''"
+									>	
+					
+								<input lms-recibo="{ sgFilial : recibo.reciboComplementado.sgFilial }"
+									type="text" 
+									ng-model="data.reciboComplementado"
+									ng-disabled="!data.filial || recibo.blockSuggest"
+									id="recibo"
+									class="form-control"
+									ng-init="searchText=''"
+									>
+							</div>
+							
+							<div adsm-add-field data-boxSize="4" data-label="tipoRecibo" data-labelSize="4">
+								<input type="text" 
+									readonly="readonly"
+									class="form-control" 
+									ng-model="data.tpReciboFreteCarreteiro.description.value" 
+									id="tpReciboFreteCarreteiro"
+									ng-init="searchText=''"
+									>
+							</div>									
+						</div>		
+						
+						<accordion close-others="false" id="accordionDadosRecibo">
+							<accordion-group is-open="isDadosReciboOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isDadosReciboOpen, 'glyphicon-chevron-right': !isDadosReciboOpen}"></span>
+									{{'dadosRecibo' | translate}}
+								</accordion-heading>
+								
+								<div class="row">
+									<div adsm-add-field data-boxSize="8" data-label="proprietario" data-labelSize="2" data-multiSize="3,9">
+										<input type="text" 
+											readonly="readonly" 
+											id="nrIdentificacaoProprietarioFormatado" 
+											class="form-control" 
+											ng-model="data.proprietario.nrIdentificacao"
+											ng-init="searchText=''"
+											>
+											
+										<input type="text" 
+											readonly="readonly" 
+											id="nmPessoaProprietario" 
+											class="form-control" 
+											ng-model="data.proprietario.nmPessoa"
+											ng-init="searchText=''"
+											>
+									</div>
+								
+									<div adsm-add-field data-boxSize="4" data-label="meioTransporte" data-labelSize="4" data-multiSize="6,6">
+										<input type="text" 
+											readonly="readonly" 
+											id="nrFrota" 
+											class="form-control" 
+											ng-model="data.meioTransporteRodoviario.nrFrota"
+											ng-init="searchText=''"
+											>
+											
+										<input type="text" 
+											readonly="readonly" 
+											id="nrIdentificador" 
+											class="form-control" 
+											ng-model="data.meioTransporteRodoviario.nrIdentificador"
+											ng-init="searchText=''"
+											>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div adsm-add-field data-label="marca" data-labelSize="4">
+										<input type="text" 
+											readonly="readonly" 
+											ng-model="data.meioTransporteRodoviario.dsMarcaMeioTransporte" 
+											id="dsMarcaMeioTransporte" 
+											class="form-control"
+											ng-init="searchText=''"
+											>
+									</div>
+										
+									<div adsm-add-field data-label="modelo" data-labelSize="4">
+										<input type="text" 
+											readonly="readonly" 
+											ng-model="data.meioTransporteRodoviario.dsModeloMeioTransporte" 
+											id="dsModeloMeioTransporte" 
+											class="form-control"
+											ng-init="searchText=''"
+											>	
+									</div>
+									
+									<div adsm-add-field data-label="controleCarga" data-labelSize="4" data-multiSize="4,8">
+										<input type="text" 
+											readonly="readonly" 
+											id="cc_sgFilial" 
+											class="form-control" 
+											ng-model="data.controleCarga.sgFilial"
+											ng-init="searchText=''"
+											>
+											
+										<input type="text" 
+											readonly="readonly" 
+											id="cc_cc.nrControleCarga" 
+											class="form-control" 
+											ng-model="data.controleCarga.nrControleCarga"
+											ng-init="searchText=''"
+											>
+									</div>
+								</div>								
+										
+							</accordion-group>
+
+							<accordion-group is-open="isDadosReciboComplementarOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isDadosReciboComplementarOpen, 'glyphicon-chevron-right': !isDadosReciboComplementarOpen}"></span>
+									{{'dadosReciboComplementar' | translate}}
+								</accordion-heading>
+												
+								<div class="row">
+									<div adsm-add-field data-boxSize="4" data-label="reciboComplementar" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="nrReciboFreteCarreteiro" 
+											class="form-control" 
+											ng-model="data.nrReciboFreteCarreteiro"
+											ng-init="searchText=''"
+											>	
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="situacao" data-labelSize="3">
+										<select
+											adsm-domain="DM_STATUS_RECIBO_PAGAMENTO_FRETE_CARRETE"
+											id="tpSituacaoRecibo"
+											ng-disabled="data.btSituacao || !data.idReciboFreteCarreteiro"
+											ng-model="data.tpSituacaoRecibo">
+											<option value=""></option>
+										</select>
+									</div>							
+										
+									<div adsm-add-field data-boxSize="4" data-label="situacaoPendencia" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="tpSituacaoReciboDesc" 
+											class="form-control" 
+											ng-model="data.pendencia.tpSituacaoPendencia.description.value"
+											ng-init="searchText=''"
+											>	
+									</div>
+								</div>
+								
+								<div class="row">	
+									<div adsm-add-field data-boxSize="4" data-label="relacaoPagamento" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="nrRelacaoPagamento" 
+											class="form-control" 
+											ng-model="data.nrRelacaoPagamento"
+											ng-init="searchText=''"
+											>		
+									</div>		
+								
+									<div adsm-add-field data-boxSize="4" data-label="moeda" data-labelSize="3">
+										<select 
+											adsm-chosen
+											id="idMoedaPais"
+											ng-model="data.moedaPais.idMoedaPais"
+											ng-options="data.id as data.sigla for data in recibo.moedas"
+											ng-disabled="data.txtMoeda"
+											ng-init="searchText=''"
+											>
+											<option value=""></option>
+										</select>
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="valorComplementar" data-labelSize="5">
+										<input type="text" 
+											id="vlBruto" 
+											class="form-control text-right" 
+											ng-model="data.vlBruto" 
+											ng-disabled="data.txtMoeda"
+											data-numeric 
+											data-moeda 
+											ng-init="searchText=''"
+											>		
+									</div>
+								</div>
+								
+								<div class="row">									
+									<div adsm-add-field data-boxSize="4" data-label="notaFiscalCarreteiro" data-labelSize="5">
+										<input type="text" 
+											ng-model="data.nrNfCarreteiro" 
+											id="nrNfCarreteiro" 
+											class="form-control"
+											ng-disabled="data.txtNrNfCarreteiro"
+											maxlength="15"
+											ng-init="searchText=''"
+											>		
+									</div>
+								
+									<div adsm-add-field data-boxSize="6" data-label="motivo" data-labelSize="2" data-fieldSize="7">
+										<textarea rows="2" 
+											maxlength="300" 
+											ng-model="data.obReciboFreteCarreteiro"
+											id="obReciboFreteCarreteiro" 
+											ng-disabled="data.txtObservacao"
+											class="form-control" 
+											ng-init="searchText=''"
+											style="resize: none;"></textarea>		
+									</div>
+								</div>																			
+							</accordion-group>
+
+							<accordion-group is-open="isDatasOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isDatasOpen, 'glyphicon-chevron-right': !isDatasOpen}"></span>
+									{{'datas' | translate}}
+								</accordion-heading>
+						
+								<div class="row">
+									<div adsm-add-field data-boxSize="4" data-label="dataContabilizacao" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="dtContabilizacao" 
+											class="form-control disabled" 
+											value="{{ data.dtContabilizacao | dateTimeZone }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="dataPagamentoReal" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="dtPagtoReal" 
+											class="form-control disabled" 
+											value="{{ data.dtPagtoReal | dateTimeZone }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="dataGeracaoMovimento" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="dhGeracaoMovimento" 
+											class="form-control disabled" 
+											value="{{ data.dhGeracaoMovimento | dateTimeZone }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+								</div>
+								
+								<div class="row">	
+									<div adsm-add-field data-boxSize="4" data-label="dataPagamentoProgramada" data-labelSize="5">
+										<input id="dtSugeridaPagto" 
+											adsm-date-picker 
+											ng-model="data.dtProgramadaPagto"
+											mask="date"
+											class="form-control" 
+											ng-disabled="data.dtProgramadaPagtoC || !data.idReciboFreteCarreteiro"
+											ng-init="searchText=''"
+											>
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="dataPagamentoSugerida" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="dhPagamentoSugerida" 
+											ng-disabled="data.dtProgramadaPagtoC || !data.idReciboFreteCarreteiro"
+											class="form-control disabled" 
+											value="{{ data.dhPagamentoSugerida | dateTimeZone }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="dtEnvioJde" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="dtEnvioJde" 											
+											class="form-control disabled" 
+											value="{{ data.dhEnvioJde | dateTimeZone }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+								</div>	
+							</accordion-group>
+
+							<accordion-group is-open="isInssOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInssOpen, 'glyphicon-chevron-right': !isInssOpen}"></span>
+									{{'inss' | translate}}
+								</accordion-heading>
+							 	
+							 	<div class="row">
+							 		<div adsm-add-field data-boxSize="4" data-label="salarioContribuicao" data-labelSize="5" ng>
+										<input type="text" 
+											readonly="readonly" 
+											id="siglaSimboloMoeda" 
+											class="form-control text-right"
+											value="{{ data.vlSalarioContribuicao | number:2 }}"
+											
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="percentualAliquotaINSS" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="pcAliquotaInss" 
+											class="form-control disabled text-right" 
+											value="{{ data.pcAliquotaInss | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+								
+									<div adsm-add-field data-boxSize="4" data-label="valorOutrasFontes" data-labelSize="5">
+										<input type="text"
+											readonly="readonly" 
+											id="valorOutrasFontes" 
+											class="form-control disabled text-right" 
+											value="{{ data.vlOutrasFontes | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>								
+								</div>
+								
+								<div class="row">	
+									<div adsm-add-field data-boxSize="4" data-label="valorApuradoINSS" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="vlApuradoInss" 
+											class="form-control disabled text-right" 
+											value="{{ data.vlInss | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+								</div>				
+							</accordion-group>
+
+							<accordion-group is-open="isOutrosImpostosOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOutrosImpostosOpen, 'glyphicon-chevron-right': !isOutrosImpostosOpen}"></span>
+									{{'outrosImpostos' | translate}}
+								</accordion-heading>
+							 	
+							 	<div class="row">
+									<div adsm-add-field data-boxSize="4" data-label="percentualAliquotaISSQN" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly"
+											id="pcAliquotaIssqn" 
+											class="form-control disabled text-right" 
+											value="{{ data.pcAliquotaIssqn | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="valorISSQN" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="vlIssqn" 
+											class="form-control disabled text-right" 
+											value="{{ data.vlIssqn | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+									
+									<div adsm-add-field data-boxSize="4" data-label="percentualAliquotaIRRF" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="pcAliquotaIrrf" 
+											class="form-control disabled text-right" 
+											value="{{ data.pcAliquotaIrrf | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>								
+								</div>
+								
+								<div class="row">	
+									<div adsm-add-field data-boxSize="4" data-label="valorIRRF" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="vlIrrf" 
+											class="form-control disabled text-right"
+											value="{{ data.vlIrrf | number:2 }}"
+											ng-init="searchText=''"
+											>									
+									</div>
+								</div>								
+							</accordion-group>
+
+							<accordion-group is-open="isValoresOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isValoresOpen, 'glyphicon-chevron-right': !isValoresOpen}"></span>
+									{{'valores' | translate}}
+								</accordion-heading>
+							 	
+								<div class="row">
+									<div adsm-add-field data-boxSize="4" data-label="valorLiquido" data-labelSize="5">
+										<input type="text" 
+											readonly="readonly" 
+											id="vlLiquido" 
+											class="form-control disabled text-right" 
+											value="{{ data.vlLiquido | number:2 }}"
+											ng-init="searchText=''"
+											>		
+									</div>
+								</div>				
+							</accordion-group>
+						</accordion>
+					</div>
+				</div>
+				
+				<div adsm-tab-panel="anexos" heading="{{'anexos' | translate}}" event="loadAbaAnexos()" disable="!isColetaEntrega()">
+				
+					<div class="row" ng-hide="false">
+						<div adsm-add-field data-boxSize="12" data-label="descricao" data-labelSize="2" data-fieldSize="9" ng-hide="false">
+							<input class="form-control" 
+								ng-model="recibo.descricao" 
+								id="descAnexo" 
+								maxlength="250" 
+								ng-change="changeDescricao()"
+								ng-init="searchText=''"
+								>
+						</div>
+					</div>
+					
+					<div class="row" ng-hide="false">	
+						<div adsm-add-field data-boxSize="12" data-label="arquivo" data-labelSize="2" data-fieldSize="9" data-multiSize="10,2">
+							<div id="anexoData" data-adsm-file-upload="fileUploadParams"></div>
+								
+							<button type="button" 
+								data-ng-click="addFile();" 
+								class="btn btn-default btn-lg pull-right" 
+								id="upload">
+								{{'adicionar' | translate }}
+							</button>
+						</div>
+					</div>
+										
+					<div class="row" ng-hide="false">
+						<div class="col-sm-12">
+							<div class="grid-btn-container">
+								<button type="button" 
+									data-ng-click="removeAnexosByIds()" 
+									class="btn btn-default btn-lg" 
+									id="excluir" 
+									data-adsm-loading="excluindo" 
+									data-ng-disabled="data.btAnexar">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				
+						<table adsm-table="anexosTableParams"
+							data-adsm-table-internal-loading="true" 
+							class="table table-condensed adsm-table"							
+							data-show-checkboxes="!data.btAnexar"
+							style="width: 100%">
+							<tbody>
+								<tr ng-repeat="row in page" ng-class="{'text-bold' : !row.idAnexoReciboFc}">	
+									<td column-title="descricao"
+										ng-attr-title="{{row.descAnexo}}" 
+										style="min-width: 100px; max-width: 250px;">
+										{{ row.descAnexo }}
+									</td>
+									<td column-title="nomeArquivo"
+										ng-attr-title="{{row.nmArquivo}}" 
+										>
+										{{ row.nmArquivo }}
+									</td>
+									<td column-title="usuario" 
+										style="min-width: 100px; max-width: 150px;">
+										{{ row.nmUsuario }}
+									</td>
+									<td column-title="dataCriacao" 
+										style="min-width: 100px; max-width: 100px;" 
+										align="center">
+										{{ row.dhCriacao | dateTimeZone }}
+									</td>					
+									<td column-title="download" 
+										style="min-width: 30px; max-width: 30px;" 
+										align="center">
+										<span ng-if="row.idAnexoReciboFc"
+											data-adsm-loading="downloading"
+											data-ng-click="downloadFile(row.idAnexoReciboFc)"
+											class="glyphicon glyphicon-save"/>
+										<span ng-if="!row.idAnexoReciboFc"
+											class="glyphicon glyphicon-open"
+											title="{{'aguardandoEnvio' | translate}}"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+				</div>
+			</div>		
+		</div>
+	</form>
+</div>

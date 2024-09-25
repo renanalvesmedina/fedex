@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.RotaViagem" 
+    table="ROTA_VIAGEM"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRotaViagem"
+        type="java.lang.Long"
+        column="ID_ROTA_VIAGEM"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ROTA_VIAGEM_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="tpRota"
+		    column="TP_ROTA"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ROTA_VIAGEM</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpSistemaRota"
+		    column="TP_SISTEMA_ROTA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SISTEMA_ROTA</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoMeioTransporte -->
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_TIPO_MEIO_TRANSPORTE" />
+    </many-to-one>
+
+	<!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+
+    <!-- bi-directional one-to-many association to RotaIdaVolta -->
+    <bag
+        name="rotaIdaVoltas"
+        lazy="true"
+        inverse="true"
+		cascade="all-delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.RotaIdaVolta</meta>
+ 	        <key>
+            <column name="ID_ROTA_VIAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.RotaIdaVolta"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ConfiguracaoAuditoriaFil -->
+    <bag
+        name="configuracaoAuditoriaFis"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.ConfiguracaoAuditoriaFil</meta>
+ 	        <key>
+            <column name="ID_ROTA_VIAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.ConfiguracaoAuditoriaFil"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MotoristaRotaViagem -->
+    <bag
+        name="motoristaRotaViagems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MotoristaRotaViagem</meta>
+ 	        <key>
+            <column name="ID_ROTA_VIAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MotoristaRotaViagem"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ServicoRotaViagem -->
+    <bag
+        name="servicoRotaViagems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.ServicoRotaViagem</meta>
+ 	        <key>
+            <column name="ID_ROTA_VIAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.ServicoRotaViagem"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MeioTransporteRotaViagem -->
+    <bag
+        name="meioTransporteRotaViagems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MeioTransporteRotaViagem</meta>
+ 	        <key>
+            <column name="ID_ROTA_VIAGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MeioTransporteRotaViagem"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

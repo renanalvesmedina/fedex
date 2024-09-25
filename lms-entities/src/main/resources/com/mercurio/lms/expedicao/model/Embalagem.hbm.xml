@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.expedicao.model.Embalagem" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="EMBALAGEM">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_EMBALAGEM" name="idEmbalagem" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EMBALAGEM_SQ</param>
+        </generator>
+    </id>
+
+    <property column="NR_ALTURA" length="5" name="nrAltura" not-null="true" type="java.lang.Integer"/>
+    <property column="NR_LARGURA" length="5" name="nrLargura" not-null="true" type="java.lang.Integer"/>
+    <property column="NR_COMPRIMENTO" length="5" name="nrComprimento" not-null="true" type="java.lang.Integer"/>
+    <property column="DS_EMBALAGEM_I" length="500" name="dsEmbalagem" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="BL_PRECIFICADA" length="1" name="blPrecificada" not-null="true" type="sim_nao">
+    </property>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to AwbEmbalagem -->
+    <bag cascade="none" inverse="true" lazy="true" name="awbEmbalagems">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.AwbEmbalagem</meta>
+ 	        <key>
+            <column name="ID_EMBALAGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.AwbEmbalagem"/>
+    </bag>
+    <!-- bi-directional one-to-many association to CtoCtoCooperada -->
+    <bag cascade="none" inverse="true" lazy="true" name="ctoCtoCooperadas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.CtoCtoCooperada</meta>
+ 	        <key>
+            <column name="ID_EMBALAGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.CtoCtoCooperada"/>
+    </bag>
+    <!-- bi-directional one-to-many association to ServicoEmbalagem -->
+    <bag cascade="none" inverse="true" lazy="true" name="servicoEmbalagems">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.ServicoEmbalagem</meta>
+ 	        <key>
+            <column name="ID_EMBALAGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.ServicoEmbalagem"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

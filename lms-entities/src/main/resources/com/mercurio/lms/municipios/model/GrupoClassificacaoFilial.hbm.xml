@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.GrupoClassificacaoFilial" 
+    table="GRUPO_CLASSIFICACAO_FILIAL"
+>
+
+    <id
+        name="idGrupoClassificacaoFilial"
+        type="java.lang.Long"
+        column="ID_GRUPO_CLASSIFICACAO_FILIAL"
+    >
+        <generator class="sequence">
+            <param name="sequence">GRUPO_CLASSIFICACAO_FILIAL_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dtVigenciaInicial"
+        type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+        type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+   <!-- bi-directional one-to-many association to LimiteDesconto -->
+    <bag
+        name="limiteDescontos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.LimiteDesconto</meta>
+ 	        <key>
+            <column name="ID_GRUPO_CLASSIFICACAO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.LimiteDesconto"
+        />
+    </bag>
+
+    <!-- uni-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- uni-directional many-to-one association to DivisaoGrupoClassificacao -->
+    <many-to-one
+        name="divisaoGrupoClassificacao"
+        class="com.mercurio.lms.municipios.model.DivisaoGrupoClassificacao"
+		not-null="true"
+    >
+        <column name="ID_DIVISAO_GRUPO_CLASSIFICACAO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+
+	<class name="com.mercurio.lms.configuracoes.model.UsuarioLMS" table="USUARIO_LMS">
+
+		<meta attribute="implement-equals" inherit="false">true</meta>
+
+		<id name="idUsuario" type="java.lang.Long" column="ID_USUARIO">
+			<meta attribute="use-in-equals">true</meta>
+
+			<generator class="foreign">
+				<param name="property">usuarioADSM</param>
+			</generator>
+		</id>
+
+		<!-- Associations -->
+		<one-to-one name="usuarioADSM"
+			class="com.mercurio.adsm.framework.model.pojo.UsuarioADSM" constrained="true"/>
+
+		<property
+			name="blIrrestritoCliente"
+			type="sim_nao"
+			column="BL_IRRESTRITO_CLIENTE"
+			not-null="true" length="1"
+		/>
+
+		<property
+			name="blAdminCliente"
+			type="sim_nao"
+			column="BL_ADMIN_CLIENTE"
+			not-null="true"
+			length="1"
+		/>
+
+		<property
+			name="blAdminFilial"
+			type="sim_nao"
+			column="BL_ADMIN_FILIAL"
+			not-null="true"
+			length="1"
+		/>
+
+		<property
+			name="blTermoComp"
+			type="sim_nao"
+			column="BL_TERMO_COMP"
+			not-null="true"
+			length="1"
+		/>
+
+		<many-to-one
+			name="empresaPadrao"
+			class="com.mercurio.lms.municipios.model.Empresa"
+			not-null="false"
+			insert="true"
+			update="true"
+		>
+			<column name="ID_EMPRESA_PADRAO" />
+		</many-to-one>
+
+		<many-to-one
+			name="filial"
+			class="com.mercurio.lms.municipios.model.Filial"
+			not-null="false"
+		>
+			<column name="ID_FILIAL_ADMIN" />
+		</many-to-one>
+
+		<many-to-one
+			name="cliente"
+			class="com.mercurio.lms.vendas.model.Cliente"
+			not-null="false"
+		>
+			<column name="ID_CLIENTE_USUARIO" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to EmpresaUsuario -->
+		<bag
+			name="empresasUsuario"
+			lazy="true"
+			inverse="true"
+			cascade="all"
+		>
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.EmpresaUsuario</meta>
+			<key>
+				<column name="ID_USUARIO" />
+			</key>
+			<one-to-many
+				class="com.mercurio.lms.configuracoes.model.EmpresaUsuario" />
+		</bag>
+
+	</class>
+
+</hibernate-mapping>

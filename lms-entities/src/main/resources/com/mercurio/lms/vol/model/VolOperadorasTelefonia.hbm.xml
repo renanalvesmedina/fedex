@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vol.model.VolOperadorasTelefonia" 
+    table="OPERADORA_TELEFONIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idOperadora"
+        type="java.lang.Long"
+        column="ID_OPERADORA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>
+	<property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_PESSOA</param>
+	    </type>
+    </property>
+    <property
+        name="dsUrlSms"
+			        type="java.lang.String"
+            column="DS_URL_SMS"
+        length="255"
+    />
+    <property
+        name="dsSenha"
+			        type="java.lang.String"
+            column="DS_SENHA"
+        length="10"
+    />
+    <property
+        name="dsCorpoSms"
+			        type="java.lang.String"
+            column="DS_CORPO_SMS"
+        length="255"
+    />
+    <property
+        name="dsUsuario"
+			        type="java.lang.String"
+            column="DS_USUARIO"
+        length="10"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    <one-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        outer-join="auto"
+        constrained="true"
+    />
+    <!-- bi-directional many-to-one association to Contato -->
+    <many-to-one
+        name="contato"
+        class="com.mercurio.lms.configuracoes.model.Contato"
+        not-null="true"
+    >
+        <column name="ID_CONTATO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to VolEquipamentos -->
+    <bag
+        name="volEquipamentos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolEquipamentos</meta>
+ 	        <key>
+            <column name="ID_OPERADORA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolEquipamentos"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

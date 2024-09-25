@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="emitirBoletoHSBC"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="830"
+		 columnWidth="539"
+		 columnSpacing="0"
+		 leftMargin="28"
+		 rightMargin="28"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.contasreceber.report.emitirBoletos">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<reportFont name="Label" isDefault="false" fontName="Verdana" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+	<reportFont name="Field" isDefault="false" fontName="Verdana" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+
+	<parameter name="LMS_URL" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["http://localhost:8080/lms"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="BaseDir" isForPrompting="false" class="java.io.File">
+		<defaultValueExpression ><![CDATA[new File(".")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="intervaloBoletoNaoInformado" isForPrompting="false" class="java.lang.Boolean"/>
+	<parameter name="SERVICE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="reemissao" isForPrompting="false" class="java.lang.Boolean"/>
+	<parameter name="BL_ATUALIZA_VCTO_CARTA_COB" isForPrompting="false" class="java.lang.Boolean"/>
+	<parameter name="PC_MULTA_ATRASO_BOLETO" isForPrompting="false" class="java.math.BigDecimal"/>
+	<parameter name="DT_VENCIMENTO_FUTURO" isForPrompting="false" class="java.util.Date"/>
+	<parameter name="MORA_MULTA" isForPrompting="false" class="java.math.BigDecimal"/>
+	<parameter name="VALOR_COBRADO" isForPrompting="false" class="java.math.BigDecimal"/>
+	<queryString><![CDATA[select 1 from lmsweb.emitirDescontosFretes where rownum <= 1]]></queryString>
+
+	<field name="NR_BANCO" class="java.lang.Short"/>
+	<field name="ID_BOLETO" class="java.lang.Long"/>
+	<field name="QT_DOCUMENTOS" class="java.lang.Long"/>
+	<field name="TP_SITUACAO_BOLETO" class="java.lang.String"/>
+	<field name="DADOS" class="java.util.List"/>
+
+	<variable name="totalPagina" class="java.lang.Integer" resetType="None" incrementType="Page" calculation="Nothing">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+	</variable>
+
+		<group  name="boleto" isStartNewPage="true" >
+			<groupExpression><![CDATA[$F{ID_BOLETO}]]></groupExpression>
+			<groupHeader>
+			<band height="830"  isSplitAllowed="true" >
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="5"
+						y="0"
+						width="524"
+						height="830"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-1"/>
+					<subreportParameter  name="intervaloBoletoNaoInformado">
+						<subreportParameterExpression><![CDATA[$P{intervaloBoletoNaoInformado}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="nrBanco">
+						<subreportParameterExpression><![CDATA[$F{NR_BANCO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="idBoleto">
+						<subreportParameterExpression><![CDATA[$F{ID_BOLETO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SERVICE">
+						<subreportParameterExpression><![CDATA[$P{SERVICE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="reemissao">
+						<subreportParameterExpression><![CDATA[$P{reemissao}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="QT_DOCUMENTOS">
+						<subreportParameterExpression><![CDATA[$F{QT_DOCUMENTOS}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="DT_VENCIMENTO_FUTURO">
+						<subreportParameterExpression><![CDATA[$P{DT_VENCIMENTO_FUTURO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="MORA_MULTA">
+						<subreportParameterExpression><![CDATA[$P{MORA_MULTA}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="VALOR_COBRADO">
+						<subreportParameterExpression><![CDATA[$P{VALOR_COBRADO}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="BL_ATUALIZA_VCTO_CARTA_COB">
+						<subreportParameterExpression><![CDATA[$P{BL_ATUALIZA_VCTO_CARTA_COB}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="DADOS">
+						<subreportParameterExpression><![CDATA[$F{DADOS}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{DADOS})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/boletoHSBCTop.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

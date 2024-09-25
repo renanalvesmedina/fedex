@@ -1,0 +1,9 @@
+<%@ taglib uri="/WEB-INF/adsm.tld" prefix="adsm"%>
+
+<adsm:window title="reemitirFaturasNacionais" type="main">
+
+	<adsm:tabGroup selectedTab="0">
+		<adsm:tab title="relatorio" id="pesq" src="/contasReceber/reemitirFaturasNacionais" cmd="pesq"/>
+	</adsm:tabGroup>
+
+</adsm:window>

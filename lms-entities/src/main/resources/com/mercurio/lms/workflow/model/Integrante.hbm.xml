@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.workflow.model.Integrante" 
+    table="INTEGRANTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idIntegrante"
+        type="java.lang.Long"
+        column="ID_INTEGRANTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">INTEGRANTE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrOrdemAprovacao"
+			        type="java.lang.Byte"
+            column="NR_ORDEM_APROVACAO"
+        not-null="true"
+        length="2"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SITUACAO</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Comite -->
+    <many-to-one
+        name="comite"
+        class="com.mercurio.lms.workflow.model.Comite"
+        not-null="true"
+    >
+        <column name="ID_COMITE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Cargo -->
+    <many-to-one
+        name="perfil"
+        class="com.mercurio.adsm.framework.model.pojo.Perfil"
+        not-null="false"
+    >
+        <column name="ID_PERFIL" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to Acao -->
+    <bag
+        name="acoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.Acao</meta>
+ 	        <key>
+            <column name="ID_INTEGRANTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.workflow.model.Acao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to SubstitutoFalta -->
+    <bag
+        name="substitutoFaltas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.SubstitutoFalta</meta>
+ 	        <key>
+            <column name="ID_INTEGRANTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.workflow.model.SubstitutoFalta"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

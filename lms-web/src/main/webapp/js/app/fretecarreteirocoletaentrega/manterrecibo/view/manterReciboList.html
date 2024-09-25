@@ -1,0 +1,227 @@
+<form novalidate ng-class="{submitted: submitted}" class="form-horizontal content-padding" ng-submit="consultar()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate }}
+		</button>
+		<button type="button" data-ng-click="exportarExcel()" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">
+			{{'exportarExcel' | translate }}
+		</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate }}
+		</button>
+	</div>
+	
+	<div class="form-horizontal">
+		<div class="row">
+			<div class="col-sm-6">
+					<div class="form-group">
+						<label for="filialEmissao" class="col-lg-3 control-label">{{'filialEmissao' | translate}}</label>
+						<div class="col-lg-8">
+							<div class="multi-input">
+							    <div class="col-xs-3">
+						    	<input
+									lms-filial
+									ng-model="filter.filialEmissao" 
+									id="filialEmissao" 
+									class="form-control"
+									ng-disabled="!filter.isMatriz"
+									required>
+						    </div>
+						    <div class="col-xs-9">
+								<input type="text" disabled class="form-control" value="{{ filter.filialEmissao.nmFilial }}" id="filialEmissao.nmFilial">
+							</div>
+						</div>
+											
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="nrReciboFreteCarreteiro" class="col-lg-5 control-label">{{'numero' | translate}}</label>
+					<div class="col-lg-7">
+						<input type="text" class="form-control" id="nrReciboFreteCarreteiro" ng-model="filter.nrReciboFreteCarreteiro" maxlength="10">
+					</div>
+				</div>
+			</div>
+		</div>	
+		
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="modal" class="col-lg-3 control-label">{{'tpSituacao' | translate}}</label>
+					<div class="col-lg-5">
+						<select 
+							adsm-domain="DM_STATUS_RECIBO_PAGAMENTO_FRETE_CARRETE"
+							id="tpSituacaoRecibo" 
+							ng-model="filter.tpSituacaoRecibo">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+			</div>
+		
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="periodoEmissaoInicial" class="col-lg-5 control-label">{{'periodoEmissao' | translate}}</label>
+					<div class="col-lg-7">
+						<div class="row">
+							<div class="col-sm-6">
+									<input id="periodoEmissaoInicial" adsm-date-picker ng-model="filter.periodoEmissaoInicial" mask="date" class="form-control" data-end="filter.periodoEmissaoFinal">
+							</div>
+							<div class="col-sm-6">
+									<input id="periodoEmissaoFinal" adsm-date-picker ng-model="filter.periodoEmissaoFinal" mask="date" class="form-control" data-start="filter.periodoEmissaoInicial">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+		
+		<accordion close-others="false">
+			<accordion-group is-open="isFiltroBasicoOpen">
+				<accordion-heading>
+					<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroBasicoOpen, 'glyphicon-chevron-right': !isFiltroBasicoOpen}"></span>
+					{{'criteriosComplementares' | translate}}
+				</accordion-heading>
+	
+				<div class="form-horizontal">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="proprietario" class="col-lg-4 control-label">{{'proprietario' | translate}}</label>
+								<div class="col-lg-8">
+									<div class="multi-input">
+										<div class="col-xs-4">
+											<input type="text" disabled class="form-control" value="{{ filter.proprietario.nrIdentificacao }}" id="proprietario.nrIdentificacao">
+										</div>
+									    <div class="col-xs-8">
+									    	<input
+												lms-proprietario
+												ng-model="filter.proprietario" 
+												id="proprietario" 
+												class="form-control">
+									    </div>						    
+									</div>															
+								</div>
+							</div>
+						</div>
+					
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="meioTransporte" class="col-lg-5 control-label">{{'frotaPlaca' | translate}}</label>
+								<div class="col-lg-7">
+									<div class="multi-input">
+										<div class="col-xs-5">
+											<input type="text" disabled class="form-control" value="{{ filter.meioTransporte.nrFrota }}" id="meioTransporte.nrFrota">
+										</div>
+									    <div class="col-xs-7">
+									    	<input
+												lms-meio-transporte
+												type="text" 
+												ng-model="filter.meioTransporte" 
+												id="meioTransporte" 
+												class="form-control">
+									    </div>						    
+									</div>
+														
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="periodoPagamentoInicial" class="col-lg-4 control-label">{{'periodoPagamentoReal' | translate}}</label>
+								<div class="col-lg-8">
+									<div class="row">
+										<div class="col-sm-6">
+												<input id="periodoPagamentoInicial" adsm-date-picker ng-model="filter.periodoPagamentoInicial" mask="date" class="form-control" data-end="filter.periodoPagamentoFinal">
+										</div>
+										<div class="col-sm-6">
+												<input id="periodoPagamentoFinal" adsm-date-picker ng-model="filter.periodoPagamentoFinal" mask="date" class="form-control" data-start="filter.periodoPagamentoInicial">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="periodoPagtoProgramadoInicial" class="col-lg-5 control-label">{{'periodoPagamentoProgramado' | translate}}</label>
+								<div class="col-lg-7">
+									<div class="row">
+										<div class="col-sm-6">
+												<input id="periodoPagtoProgramadoInicial" adsm-date-picker ng-model="filter.periodoPagtoProgramadoInicial" mask="date" class="form-control" data-end="filter.periodoPagtoPagamentoFinal">
+										</div>
+										<div class="col-sm-6">
+												<input id="periodoPagtoProgramadoFinal" adsm-date-picker ng-model="filter.periodoPagtoProgramadoFinal" mask="date" class="form-control" data-start="filter.periodoPagtoPagamentoInicial">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row">							
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="nrRelacaoPagamento" class="col-lg-4 control-label">{{'relacaoPagamento' | translate}}</label>
+								<div class="col-lg-4">
+									<input type="text" class="form-control" id="nrRelacaoPagamento" ng-model="filter.nrRelacaoPagamento" mask="integer" maxlength="10">
+								</div>
+							</div>
+						</div>							
+					</div>	
+				</div>
+			</accordion-group>
+		</accordion>	
+	</div>
+	
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					style="width: 100%">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="abreDetalhe(row)">
+							<td column-title="numeroPreFatura" style="min-width: 150px; max-width: 300px;">
+								{{row.filial_sgFilial}} {{row.nrReciboFreteCarreteiro | lpad : 10}}
+							</td>
+							<td column-title="situacao" >
+								{{row.tpSituacaoRecibo.descriptionAsString}}
+							</td>
+							<td column-title="identificacao" style="min-width: 160px; max-width: 300px;">
+								{{row.proprietario_tpIdentificacao.descriptionAsString}} {{row.proprietario_nrIdentificacao}}
+							</td>
+							<td column-title="proprietario" style="min-width: 150px; max-width: 400px;">
+								{{row.proprietario_nmPessoa}}
+							</td>
+							<td column-title="meioTransporte" style="min-width: 100px; max-width: 260px;">
+								{{row.meioTransporte_nrFrota}} / {{row.meioTransporte_nrIdentificador}}
+							</td>
+							<td column-title="marca" style="min-width: 100px; max-width: 260px;">
+								{{row.meioTransporte_dsMarca}}
+							</td>
+							<td column-title="modelo" style="min-width: 100px; max-width: 260px;">
+								{{row.meioTransporte_dsModelo}}
+							</td>
+							<td column-title="dtAprovacaoFinal" style="min-width: 100px; max-width: 260px;">
+								{{row.dhEmissao | dateTimeZone}}
+							</td>
+							<td column-title="dataPagamentoReal" style="min-width: 100px; max-width: 260px;">
+								{{row.dtPgtoReal | dateTimeZone}}
+							</td>
+							<td column-title="valorLiquido" style="min-width: 160px; max-width: 400px;">								
+								<span class="pull-left">{{row.sgMoeda}}</span>
+								<span class="pull-left" style="text-indent: 10px;">{{row.dsSimbolo}}</span>
+								<span class="pull-right">{{row.vlLiquido | number:2}}</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.LigacaoCobranca" 
+    table="LIGACAO_COBRANCA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idLigacaoCobranca"
+        type="java.lang.Long"
+        column="ID_LIGACAO_COBRANCA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LIGACAO_COBRANCA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhLigacaoCobranca"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_LIGACAO_COBRANCA"/><column name="DH_LIGACAO_COBRANCA_TZR"/></property>
+    <property
+        name="dsLigacaoCobranca"
+			        type="java.lang.String"
+            column="DS_LIGACAO_COBRANCA"
+        not-null="true"
+        length="255"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to TelefoneContato -->
+    <many-to-one
+        name="telefoneContato"
+        class="com.mercurio.lms.configuracoes.model.TelefoneContato"
+        not-null="true"
+    >
+        <column name="ID_TELEFONE_CONTATO" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to AgendaCobranca -->
+    <bag
+        name="agendaCobrancas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.AgendaCobranca</meta>
+ 	        <key>
+            <column name="ID_LIGACAO_COBRANCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.AgendaCobranca"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ItemLigacao -->
+    <bag
+        name="itemLigacoes"
+        lazy="true"
+        inverse="true"
+		cascade="all,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ItemLigacao</meta>
+ 	        <key>
+            <column name="ID_LIGACAO_COBRANCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ItemLigacao"
+        />
+    </bag>
+    
+    <!-- bi-directional many-to-one association to CobrancaInadimplencia -->
+    <many-to-one
+        name="cobrancaInadimplencia"
+        class="com.mercurio.lms.contasreceber.model.CobrancaInadimplencia"
+        not-null="true"
+    >
+        <column name="ID_COBRANCA_INADIMPLENCIA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

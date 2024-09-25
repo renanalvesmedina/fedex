@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.vendas.model.ProdutoCliente" 
+	table="PRODUTO_CLIENTE"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idProdutoCliente"
+		type="java.lang.Long"
+		column="ID_PRODUTO_CLIENTE"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">PRODUTO_CLIENTE_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="psReal"
+		type="java.math.BigDecimal"
+		column="PS_REAL"
+		length="18"
+	/>
+	<property
+		name="psAforado"
+		type="java.math.BigDecimal"
+		column="PS_AFORADO"
+		length="18"
+	/>
+	<property
+		name="blPesoAforado"
+		type="sim_nao"
+		column="BL_PESO_AFORADO"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="vlMedioProdutoKilo"
+		type="java.math.BigDecimal"
+		column="VL_MEDIO_PRODUTO_KILO"
+		length="18"
+	/>
+	<property
+		name="dsTipoIdentificacaoVolumes"
+		type="java.lang.String"
+		column="DS_TIPO_IDENTIFICACAO_VOLUMES"
+		length="30"
+	/>
+	<property
+		name="dsTipoClassificacao"
+		type="java.lang.String"
+		column="DS_TIPO_CLASSIFICACAO"
+		length="30"
+	/>
+	
+	<property
+		name="psMedioVolume"
+		type="java.math.BigDecimal"
+		column="PS_MEDIO_VOLUME"
+		length="18"
+	/>
+	
+	<property
+		name="psMedioDespacho"
+		type="java.math.BigDecimal"
+		column="PS_MEDIO_DESPACHO"
+		length="18"
+	/>
+	
+	<property
+		name="nrMedioVolumesDespacho"
+		type="java.lang.Integer"
+		column="NR_MEDIO_VOLUMES_DESPACHO"
+		length="8"
+	/>
+	
+	<property column="TP_SITUACAO_APROVACAO" length="1" name="situacaoAprovacao" not-null="false">
+		<type name="domain">
+			<param name="domainName">DM_STATUS_WORKFLOW</param>
+		</type>
+	</property>
+	
+	<!-- Associations -->
+  
+	<!-- bi-directional many-to-one association to Pendencia -->
+	<many-to-one class="com.mercurio.lms.workflow.model.Pendencia" name="pendencia" not-null="false">
+		<column name="ID_PENDENCIA"/>
+	</many-to-one>	 	
+  
+	<!-- bi-directional many-to-one association to Cliente -->
+	<many-to-one
+		name="cliente"
+		class="com.mercurio.lms.vendas.model.Cliente"
+		not-null="true"
+	>
+		<column name="ID_CLIENTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Produto -->
+	<many-to-one
+		name="produto"
+		class="com.mercurio.lms.expedicao.model.Produto"
+		not-null="true"
+	>
+		<column name="ID_PRODUTO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Moeda -->
+	<many-to-one
+		name="moeda"
+		class="com.mercurio.lms.configuracoes.model.Moeda"
+		not-null="true"
+	>
+		<column name="ID_MOEDA" />
+	</many-to-one>
+	
+	<!-- bi-directional many-to-one association to Embalagem -->
+	<many-to-one
+		name="embalagem"
+		class="com.mercurio.lms.expedicao.model.Embalagem"
+		not-null="false"
+		outer-join="true"		
+	>
+		<column name="ID_EMBALAGEM" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

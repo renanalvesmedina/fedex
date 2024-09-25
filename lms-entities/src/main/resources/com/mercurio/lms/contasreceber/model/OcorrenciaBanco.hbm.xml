@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.OcorrenciaBanco" 
+    table="OCORRENCIA_BANCO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idOcorrenciaBanco"
+        type="java.lang.Long"
+        column="ID_OCORRENCIA_BANCO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">OCORRENCIA_BANCO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrOcorrenciaBanco"
+			        type="java.lang.Short"
+            column="NR_OCORRENCIA_BANCO"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="tpOcorrenciaBanco"
+		    column="TP_OCORRENCIA_BANCO"
+        not-null="true"
+        length="3"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_OCOR_BANCO</param>
+	    </type>
+    </property>
+    <property
+        name="dsOcorrenciaBanco"
+			        type="java.lang.String"
+            column="DS_OCORRENCIA_BANCO"
+        not-null="true"
+        length="60"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to HistoricoBoleto -->
+    <bag
+        name="historicoBoletos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.HistoricoBoleto</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.HistoricoBoleto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TarifaBoleto -->
+    <bag
+        name="tarifaBoletos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.TarifaBoleto</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.TarifaBoleto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MotivoOcorrenciaBanco -->
+    <bag
+        name="motivoOcorrenciaBancos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.MotivoOcorrenciaBanco</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.MotivoOcorrenciaBanco"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Banco -->
+    <many-to-one
+        name="banco"
+        class="com.mercurio.lms.configuracoes.model.Banco"
+        not-null="true"
+    >
+        <column name="ID_BANCO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.vendas.model.FormaAgrupamento" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="FORMA_AGRUPAMENTO">
+	<meta attribute="implement-equals" inherit="false">true</meta>
+	
+
+	<cache usage="read-write"/>
+
+	<id column="ID_FORMA_AGRUPAMENTO" name="idFormaAgrupamento" type="java.lang.Long">
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">FORMA_AGRUPAMENTO_SQ</param>
+		</generator>
+	</id>
+
+	<property column="DS_FORMA_AGRUPAMENTO_I" length="500" name="dsFormaAgrupamento" not-null="true" type="varcharI18n"/>
+	<property column="BL_AUTOMATICO" length="1" name="blAutomatico" not-null="true" type="sim_nao"/>
+	<property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+	<property column="NR_ORDEM_PRIORIDADE" name="nrOrdemPrioridade" not-null="true" type="java.lang.Long"/>
+	<property column="SQ_CORPORATIVO" length="10" name="sqCorporativo" not-null="false" type="java.lang.Long"/>
+	
+
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to Cliente -->
+	<many-to-one class="com.mercurio.lms.vendas.model.Cliente" name="cliente" not-null="true">
+		<column name="ID_CLIENTE"/>
+	</many-to-one>
+	<!-- bi-directional one-to-many association to DominioAgrupamento -->
+	<bag cascade="all" inverse="true" lazy="true" name="dominioAgrupamentos">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DominioAgrupamento</meta>
+		<key>
+			<column name="ID_FORMA_AGRUPAMENTO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.DominioAgrupamento"/>
+	</bag>
+	<!-- bi-directional one-to-many association to AgrupamentoCliente -->
+	<bag cascade="none" inverse="true" lazy="true" name="agrupamentoClientes">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.AgrupamentoCliente</meta>
+		<key>
+			<column name="ID_FORMA_AGRUPAMENTO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.AgrupamentoCliente"/>
+	</bag>
+
+	
+	
+</class>
+</hibernate-mapping>

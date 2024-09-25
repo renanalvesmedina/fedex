@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vendas.model.SeguroCliente" 
+    table="SEGURO_CLIENTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idSeguroCliente"
+        type="java.lang.Long"
+        column="ID_SEGURO_CLIENTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SEGURO_CLIENTE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpModal"
+		    column="TP_MODAL"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property
+        name="tpAbrangencia"
+		    column="TP_ABRANGENCIA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ABRANGENCIA</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        not-null="true"
+        length="7"
+    />
+    
+    <property
+		name="percTaxa"
+		type="java.math.BigDecimal"
+		column="PC_TAXA"
+		length="6"
+		not-null="false"
+	/>
+	
+    <property
+        name="vlLimite"
+			        type="java.math.BigDecimal"
+            column="VL_LIMITE"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dsApolice"
+		type="java.lang.String"
+        column="DS_APOLICE"
+        not-null="false"
+        length="60"    
+	/>
+    <property
+        name="dcCartaIsencao"
+			        type="binaryblob"
+            column="DC_CARTA_ISENCAO"
+    />
+    <property
+        name="blFimVigenciaInformado"
+        type="sim_nao"
+		column="BL_FIM_VIGENCIA_INFORMADO"
+		not-null="false"
+		length="1"            
+    />
+    
+    <property
+        name="dhEnvioAviso"
+        type="jtdatetimetzr"
+        length="7"
+        not-null="false">
+    	<column name="DH_ENVIO_AVISO"/><column name="DH_ENVIO_AVISO_TZR"/>
+    </property>
+
+	<property
+		column="VL_LIMITE_CONTROLE_CARGA"
+		length="18"
+		name="vlLimiteControleCarga"
+		not-null="false"
+		type="java.math.BigDecimal"
+	/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="tipoSeguro"
+        class="com.mercurio.lms.seguros.model.TipoSeguro"
+        not-null="true"
+    >
+        <column name="ID_TIPO_SEGURO" />
+    </many-to-one>
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ReguladoraSeguro -->
+    <many-to-one
+        name="reguladoraSeguro"
+        class="com.mercurio.lms.seguros.model.ReguladoraSeguro"
+        not-null="false"
+    >
+        <column name="ID_PESSOA_REGULADORA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+
+	<property
+        name="blEmEmissao"
+        type="sim_nao"
+		column="BL_EM_EMISSAO"
+		not-null="true"
+		length="1"  
+    />
+
+	<!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipioOrigem"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="false"
+    >
+        <column name="ID_MUNICIPIO_ORIGEM" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipioDestino"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="false"
+    >
+        <column name="ID_MUNICIPIO_DESTINO" />
+    </many-to-one>
+	
+	<property
+        name="nmCartaIsencao"
+		type="java.lang.String"
+        column="NM_CARTA_ISENCAO"
+        not-null="false"
+        length="60"
+    />
+	
+	<!-- bi-directional many-to-one association to Seguradora -->
+    <many-to-one
+        name="seguradora"
+        class="com.mercurio.lms.seguros.model.Seguradora"
+        not-null="false"
+    >
+        <column name="ID_SEGURADORA" />
+    </many-to-one>
+
+	<!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioAviso"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO_AVISO" />
+    </many-to-one>
+
+	<property
+        name="dsCobertura"
+		type="java.lang.String"
+        column="DS_COBERTURA"
+        not-null="false"
+        length="1500"
+    />
+
+	<property
+        name="dsMercadoria"
+		type="java.lang.String"
+        column="DS_MERCADORIA"
+        not-null="false"
+        length="1500"
+    />	
+
+	<property
+        name="dsEmbalagem"
+		type="java.lang.String"
+        column="DS_EMBALAGEM"
+        not-null="false"
+        length="1500"
+    />
+
+</class>
+</hibernate-mapping>

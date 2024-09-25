@@ -1,0 +1,96 @@
+<form class="form-horizontal content-padding" data-ng-submit="storeServicosAdicionais()" id="servicosForm">
+
+	<div class="alert-container" data-ng-show="popupAlerts.length">
+		<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+			<span data-ng-bind="alert.msg"></span>
+		</alert>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="cliente" data-labelSize="3" data-multiSize="5,7">
+			<input lms-cliente type="text" ng-model="simulacao.cliente" id="cliente" class="form-control" disabled>
+			<input type="text" id="razaoSocial" ng-model="simulacao.cliente.nmPessoa"	class="form-control" disabled>
+		</div>
+
+		<div adsm-add-field data-boxSize="6" data-label="divisao" data-labelSize="3">
+			<input type="text" id="divisaoCliente" ng-model="simulacao.divisaoCliente.nmDivisaoCliente" class="form-control" disabled>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="tabelaBase" data-labelSize="3" data-multiSize="4,8">
+			<input lms-tabela-preco type="text" ng-model="simulacao.tabelaPreco" id="tabelaPreco" class="form-control" disabled>
+			<input type="text" id="descricao" ng-model="simulacao.tabelaPreco.descricao" class="form-control" disabled>
+		</div>
+
+		<div adsm-add-field data-boxSize="6" data-label="servico" data-labelSize="3">
+			<input type="text" id="servico" ng-model="simulacao.servico.nomeServico" class="form-control" disabled>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="moeda" data-labelSize="3" disabled data-fieldSize="3">
+			<input type="text" id="servico" ng-model="simulacao.tabelaPreco.moeda.siglaSimbolo" class="form-control" disabled>
+		</div>
+
+		<div adsm-add-field data-boxSize="6" data-label="servicoAdicional" data-labelSize="3">
+			<select adsm-chosen id="idParcelaPreco" required ng-change="idParcelaPrecoChange()"
+				ng-model="servicoAdicionalCliente.parcelaPreco.idParcelaPreco"
+				ng-options="data.parcelaPreco.idParcelaPreco as data.parcelaPreco.nmParcelaPreco for data in servicos">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="indicador" data-labelSize="3">
+			<select adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE" id="tpIndicador" ng-model="servicoAdicionalCliente.tpIndicador" required ng-change="tpIndicadorChange()">
+				<option value=""></option>
+			</select>
+		</div>
+
+		<div adsm-add-field data-boxSize="6" data-label="valor" data-labelSize="3" data-fieldSize="5">
+ 			<input type="text" id="valor" ng-model="servicoAdicionalCliente.vlValor" class="form-control" data-numeric data-moeda required ng-disabled="vlValorDisabled" ng-blur="vlValorBlur()">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="quantidadeDias" data-labelSize="3" data-fieldSize="3">
+			<input type="text" id="nrQuantidadeDias" ng-model="servicoAdicionalCliente.nrQuantidadeDias" class="form-control" data-numeric ng-blur="nrQuantidadeDiasBlur()">
+		</div>
+
+		<div adsm-add-field data-boxSize="6" data-label="valorMinimo" data-labelSize="3" data-fieldSize="5">
+			<input type="text" id="vlMinimo" ng-model="servicoAdicionalCliente.vlMinimo" class="form-control" data-numeric data-moeda ng-disabled="vlMinimoDisabled" ng-blur="vlMinimoBlur()">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="formaCobranca" data-labelSize="3">
+			<select adsm-domain="DM_FORMA_COBRANCA_SERVICO" id="tpFormaCobranca" ng-model="servicoAdicionalCliente.tpFormaCobranca">
+				<option value=""></option>
+			</select>
+		</div>
+
+		<div adsm-add-field data-boxSize="6" data-label="cobrancaRetroativa" data-labelSize="3" data-fieldSize="5">
+			<input type="checkbox" ng-model="servicoAdicionalCliente.blCobrancaRetroativa">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="decursoPrazo" data-labelSize="3" data-fieldSize="3">
+			<input type="text" id="nrDecursoPrazo" ng-model="servicoAdicionalCliente.nrDecursoPrazo" class="form-control" data-numeric ng-blur="nrDecursoPrazoBlur()">
+		</div>
+		
+		<div adsm-add-field data-boxSize="6" data-label="unidadeCalculoServicoAdicional" data-labelSize="3" data-fieldSize="5">
+			<select adsm-domain="DM_TIPO_CALCULO_COBRANCA_SERV_AD" id="tpUnidMedidaCalcCobr" ng-model="servicoAdicionalCliente.tpUnidMedidaCalcCobr" ng-disabled="tpUnidMedidaCalcCobrDisabled" ng-required="tpUnidMedidaCalcCobrRequired">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		<button type="button" data-ng-click="limparServicoAdicionalCliente()" class="btn btn-default btn-lg pull-right" id="limpar"> {{'limpar' |  translate }} </button>
+		<button type="button" data-ng-click="removeServicoAdicionalClienteById()" class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir" ng-disabled="!servicoAdicionalCliente.idServicoAdicionalCliente">{{'excluir' |  translate }}</button>
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar">	{{'salvar' |  translate }}	</button>
+	</div>
+</form>

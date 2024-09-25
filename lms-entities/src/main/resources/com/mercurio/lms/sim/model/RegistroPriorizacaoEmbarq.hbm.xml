@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.sim.model.RegistroPriorizacaoEmbarq" 
+    table="REGISTRO_PRIORIZACAO_EMBARQ"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRegistroPriorizacaoEmbarq"
+        type="java.lang.Long"
+        column="ID_REGISTRO_PRIORIZACAO_EMBARQ"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">REGISTRO_PRIORIZACAO_EMBARQ_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhRegistro"
+		type="jtdatetimetzr"
+        not-null="true"
+    ><column name="DH_REGISTRO"/><column name="DH_REGISTRO_TZR"/></property>
+    <property
+        name="dhRegistroEmbarque"
+        type="jtdatetimetzr"
+        not-null="true"
+    ><column name="DH_LIMITE_EMBARQUE"/><column name="DH_LIMITE_EMBARQUE_TZR"/></property>
+    <property
+        name="obPriorizacao"
+		type="java.lang.String"
+        column="OB_PRIORIZACAO"
+        not-null="true"
+        length="600"
+    />
+    <property
+        name="nmSolicitante"
+		type="java.lang.String"
+        column="NM_SOLICITANTE"
+        not-null="true"
+        length="60"
+    />
+    
+    <property
+        name="dhCancelamento"
+		type="jtdatetimetzr"
+    ><column name="DH_CANCELAMENTO"/><column name="DH_CANCELAMENTO_TZR"/></property>
+    <property
+        name="obCancelamanto"
+		type="java.lang.String"
+        column="OB_CANCELAMENTO"
+        length="600"
+    />
+ 
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="remetente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_REMETENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="destinatario"
+        class="com.mercurio.lms.vendas.model.Cliente"
+    >
+        <column name="ID_DESTINATARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioCriacao"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_CRIACAO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioCancelamento"
+        entity-name="usuario"
+    >
+        <column name="ID_USUARIO_CANCELAMENTO" />
+    </many-to-one>
+     <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+     <bag
+        name="registroPriorizacaoDocto"
+		lazy="true"
+        inverse="true"
+		cascade="all,delete-orphan">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.RegistroPriorizacaoDocto</meta>
+ 	        <key>
+            	<column name="ID_REGISTRO_PRIORIZACAO_EMBARQ"/>
+        	</key>
+        <one-to-many class="com.mercurio.lms.sim.model.RegistroPriorizacaoDocto" />
+    </bag>
+</class>
+</hibernate-mapping>

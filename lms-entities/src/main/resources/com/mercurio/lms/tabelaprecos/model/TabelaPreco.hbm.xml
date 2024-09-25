@@ -1,0 +1,253 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.tabelaprecos.model.TabelaPreco" 
+	table="TABELA_PRECO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idTabelaPreco"
+		type="java.lang.Long"
+		column="ID_TABELA_PRECO"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">TABELA_PRECO_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="dtGeracao"
+		type="jtyearmonthday"
+		column="DT_GERACAO"
+		not-null="true"
+		length="7"
+		update="false"
+	/>
+	<property
+		name="blEfetivada"
+		type="sim_nao"
+		column="BL_EFETIVADA"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="blImprimeTabela"
+		type="sim_nao"
+		column="BL_IMPRIME"
+		length="1"
+	/>
+	<property
+		name="dtVigenciaInicial"
+		type="jtyearmonthday"
+		column="DT_VIGENCIA_INICIAL"
+		length="7"
+	/>
+	<property
+		name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+		column="DT_VIGENCIA_FINAL"
+		length="7"
+	/>
+	<property
+		name="pcReajuste"
+		type="java.math.BigDecimal"
+		column="PC_REAJUSTE"
+		length="5"
+	/>
+	<property
+		name="tpTarifaReajuste"
+		column="TP_TARIFA_REAJUSTE"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_TARIFA_REAJUSTE</param>
+		</type>
+	</property>
+	<property
+		name="psMinimo"
+		type="java.math.BigDecimal"
+		column="PS_MINIMO"
+		length="18"
+	/>
+	<property
+		name="tpCalculoFretePeso"
+		column="TP_CALCULO_FRETE_PESO"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_CALCULO_FRETE_PESO</param>
+		</type>
+	</property>
+	<property
+		name="tpCalculoPedagio"
+		column="TP_CALCULO_PEDAGIO"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_CALCULO_PEDAGIO</param>
+		</type>
+	</property>
+	
+	<property
+		name="tpCategoria"
+		column="TP_CATEGORIA"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_CATEGORIA_TABELA</param>
+		</type>
+	</property>
+	
+	
+	<property
+		name="tpServico"
+		column="TP_SERVICO"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_SERVICO_TABELA</param>
+		</type>
+	</property>
+	
+	<property
+		name="dsDescricao"
+		type="string"
+		column="DS_DESCRICAO"
+		length="60"
+	/>
+
+	<property
+		name="obTabelaPreco"
+		type="string"
+		column="OB_TABELA_PRECO"
+		length="4000"
+	/>
+
+	<property
+			name="blIcmsDestacado"
+			type="sim_nao"
+			column="BL_ICMS_DESTACADO"
+			length="1"
+	/>
+
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to Moeda -->
+	<many-to-one
+		name="moeda"
+		class="com.mercurio.lms.configuracoes.model.Moeda"
+		not-null="true"
+	>
+		<column name="ID_MOEDA" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TipoTabelaPreco -->
+	<many-to-one
+		name="tipoTabelaPreco"
+		class="com.mercurio.lms.tabelaprecos.model.TipoTabelaPreco"
+		not-null="true"
+	>
+		<column name="ID_TIPO_TABELA_PRECO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Usuario -->
+	<many-to-one
+		name="usuario"
+		entity-name="usuario"
+		not-null="true"
+	>
+		<column name="ID_USUARIO" />
+	</many-to-one>
+	<!-- bi-directional one-to-many association to TabelaPrecoParcela -->
+	<bag
+		name="tabelaPrecoParcelas"
+		lazy="true"
+		inverse="true"
+		cascade="save-update,delete,delete-orphan"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.TabelaPrecoParcela</meta>
+		<key>
+			<column name="ID_TABELA_PRECO" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.tabelaprecos.model.TabelaPrecoParcela"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to TabelaPreco -->
+	<bag
+		name="tabelaPrecos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.TabelaPreco</meta>
+		<key>
+			<column name="ID_TABELA_PRECO_ORIGEM" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+		/>
+	</bag>
+	<!-- bi-directional many-to-one association to TabelaPreco -->
+	<many-to-one
+		name="tabelaPreco"
+		class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+		not-null="true"
+	>
+		<column name="ID_TABELA_PRECO_ORIGEM" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TabelaPreco--> 
+	<many-to-one
+		name="tabelaPrecoCustoTnt"
+		class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+		not-null="true"
+	>
+		<column name="ID_TABELA_CUSTO_TNT" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to SubtipoTabelaPreco -->
+	<many-to-one
+		name="subtipoTabelaPreco"
+		class="com.mercurio.lms.tabelaprecos.model.SubtipoTabelaPreco"
+		not-null="true"
+	>
+		<column name="ID_SUBTIPO_TABELA_PRECO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Pendencia -->
+	<many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="true"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one>
+	<!-- bi-directional many-to-one association to Pendencia -->
+	<many-to-one
+        name="pendenciaDesefetivacao"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="true"
+    >
+        <column name="ID_PENDENCIA_DESEFETIVACAO" />
+    </many-to-one>
+	<!-- bi-directional many-to-one association to Pendencia -->
+	<many-to-one
+        name="pendenciaEfetivacao"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="true"
+    >
+        <column name="ID_PENDENCIA_EFETIVACAO" />
+    </many-to-one>
+    
+	<property
+		name="pcDescontoFreteMinimo"
+		type="java.math.BigDecimal"
+		column="PC_DESCONTO_FRETE_MINIMO"
+		length="5"
+	/>
+</class>
+</hibernate-mapping>

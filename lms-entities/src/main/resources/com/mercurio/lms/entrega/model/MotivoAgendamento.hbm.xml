@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.entrega.model.MotivoAgendamento" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="MOTIVO_AGENDAMENTO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_MOTIVO_AGENDAMENTO" name="idMotivoAgendamento" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MOTIVO_AGENDAMENTO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_MOTIVO_AGENDAMENTO_I" length="500" name="dsMotivoAgendamento" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to AgendamentoEntrega -->
+    <bag cascade="none" inverse="true" lazy="true" name="agendamentoEntregasByIdMotivoCancelamento">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.AgendamentoEntrega</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_CANCELAMENTO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.AgendamentoEntrega"/>
+    </bag>
+    <!-- bi-directional one-to-many association to AgendamentoEntrega -->
+    <bag cascade="none" inverse="true" lazy="true" name="agendamentoEntregasByIdMotivoReagendamento">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.AgendamentoEntrega</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_REAGENDAMENTO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.AgendamentoEntrega"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

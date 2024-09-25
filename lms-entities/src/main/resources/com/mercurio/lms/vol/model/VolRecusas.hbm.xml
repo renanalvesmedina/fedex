@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vol.model.VolRecusas" 
+    table="RECUSA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRecusa"
+        type="java.lang.Long"
+        column="ID_RECUSA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">RECUSA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="contato"
+			        type="java.lang.String"
+            column="CONTATO"
+        length="240"
+    />
+    <property
+        name="dhEnvio"
+			        type="jtdatetimetzr"
+        length="13"
+    ><column name="DH_ENVIO"/><column name="DH_ENVIO_TZR"/></property>
+    <property
+        name="obResolucao"
+			        type="java.lang.String"
+            column="OB_RESOLUCAO"
+        length="255"
+    />
+    <property
+        name="dhResolucao"
+			        type="jtdatetimetzr"
+        length="13"
+    ><column name="DH_RESOLUCAO"/><column name="DH_RESOLUCAO_TZR"/></property>
+    <property
+        name="obTratativa"
+			        type="java.lang.String"
+            column="OB_TRATATIVA"
+        length="255"
+    />
+    <property
+        name="obEnvio"
+			        type="java.lang.String"
+            column="OB_ENVIO"
+        length="255"
+    />
+    <property
+        name="dhTratativa"
+			        type="jtdatetimetzr"
+        length="13"
+    ><column name="DH_TRATATIVA"/><column name="DH_TRATATIVA_TZR"/></property>
+    <property
+        name="dhRecusa"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="13"
+    ><column name="DH_RECUSA"/><column name="DH_RECUSA_TZR"/></property>
+    <property
+        name="tpRecusa"
+            column="TP_RECUSA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_RECUSA</param>
+	    </type>
+    </property>
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to VolEmailsRecusa -->
+    <bag
+        name="volEmailsRecusas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolEmailsRecusa</meta>
+ 	        <key>
+            <column name="ID_RECUSA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolEmailsRecusa"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to VolEmailsRecusa -->
+    <many-to-one
+        name="volEmailsRecusa"
+        class="com.mercurio.lms.vol.model.VolEmailsRecusa"
+        not-null="true"
+    >
+        <column name="ID_EMAIL_RECUSA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdEnviou"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_ENVIOU" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdResolucao"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_RESOLUCAO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ManifestoEntregaDocumento -->
+    <many-to-one
+        name="manifestoEntregaDocumento"
+        class="com.mercurio.lms.entrega.model.ManifestoEntregaDocumento"
+        not-null="true"
+    >
+        <column name="ID_MANIFESTO_ENTREGA_DOCUMENTO" />
+    </many-to-one>
+    
+        <!-- bi-directional many-to-one association to OcorrenciaEntrega -->
+    <many-to-one
+        name="ocorrenciaEntrega"
+        class="com.mercurio.lms.entrega.model.OcorrenciaEntrega"
+        not-null="true"
+    >
+        <column name="ID_OCORRENCIA_ENTREGA" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to ManifestoEntregaDocumento -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+</class>
+</hibernate-mapping>

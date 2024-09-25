@@ -1,0 +1,150 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.MoedaPais" 
+    table="MOEDA_PAIS"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idMoedaPais"
+        type="java.lang.Long"
+        column="ID_MOEDA_PAIS"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MOEDA_PAIS_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="blIndicadorPadrao"
+			        type="sim_nao"
+            column="BL_INDICADOR_PADRAO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blIndicadorMaisUtilizada"
+			        type="sim_nao"
+            column="BL_INDICADOR_MAIS_UTILIZADA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to Cheque -->
+    <bag
+        name="cheques"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Cheque</meta>
+ 	        <key>
+            <column name="ID_MOEDA_PAIS" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Cheque"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to CotacaoMoeda -->
+    <bag
+        name="cotacaoMoedas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.CotacaoMoeda</meta>
+ 	        <key>
+            <column name="ID_MOEDA_PAIS" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.CotacaoMoeda"
+        />
+    </bag>
+     <!-- bi-directional one-to-many association to RotaIdaVolta -->
+    <bag
+        name="rotaIdaVoltas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.RotaIdaVolta</meta>
+ 	        <key>
+            <column name="ID_MOEDA_PAIS" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.RotaIdaVolta"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to SolicMonitPreventivo -->
+    <bag
+        name="solicMonitPreventivos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+   		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.SolicMonitPreventivo</meta>
+        <key>
+            <column name="ID_MOEDA_PAIS" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.SolicMonitPreventivo"
+        />
+    </bag>
+    
+    <!-- bi-directional many-to-one association to Pais -->
+    <many-to-one
+        name="pais"
+        class="com.mercurio.lms.municipios.model.Pais"
+        not-null="true"
+    >
+        <column name="ID_PAIS" />
+    </many-to-one>
+</class>
+
+<query name="moedaPais.findMoedaByPaisSituacao">
+	select new map(m.idMoeda as idMoeda, (m.sgMoeda || ' ' || m.dsSimbolo) as dsSimbolo,
+      	mp.blIndicadorMaisUtilizada as blIndicadorMaisUtilizada) 
+      from com.mercurio.lms.configuracoes.model.MoedaPais as mp join mp.moeda as m
+      		where mp.pais.id = :idPais 
+      			and  mp.tpSituacao = :tpSituacaoMoedaPais
+      			and  m.tpSituacao = :tpSituacaoMoeda
+</query>
+
+</hibernate-mapping>

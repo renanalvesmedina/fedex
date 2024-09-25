@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteiroviagem.model.SimulacaoReajusteRota" 
+    table="SIMULACAO_REAJUSTE_ROTA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idSimulacaoReajusteRota"
+        type="java.lang.Long"
+        column="ID_SIMULACAO_REAJUSTE_ROTA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SIMULACAO_REAJUSTE_ROTA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsSimulacaoReajusteRota"
+			        type="java.lang.String"
+            column="DS_SIMULACAO_REAJUSTE_ROTA"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    
+    <!-- CRIADOS NA MÃO -->    
+    <property
+        name="tpReajuste"
+        column="TP_REAJUSTE"
+        not-null="true"
+        length="1">
+	    <type name="domain">
+        	<param name="domainName">DM_TIPO_REAJUSTE_ROTA</param>
+	    </type>
+	</property>
+	
+	<property
+        name="vlReajuste"
+		type="java.math.BigDecimal"
+        column="VL_REAJUSTE"
+        not-null="true"
+        length="18"
+    />
+    
+    <property
+        name="tpSituacaoRota"
+        column="TP_SITUACAO_ROTA"
+        not-null="true"
+        length="1">
+	    <type name="domain">
+        	<param name="domainName">DM_STATUS_REAJUSTE_ROTA</param>
+	    </type>
+	</property>
+
+    <property
+        name="tpRota"
+        column="TP_ROTA"
+        not-null="false"
+        length="1">
+	    <type name="domain">
+        	<param name="domainName">DM_TIPO_ROTA_VIAGEM</param>
+	    </type>
+	</property>
+
+    <many-to-one
+        name="filialDestino"
+        class="com.mercurio.lms.municipios.model.Filial">
+        <column name="ID_FILIAL_DESTINO"/>
+    </many-to-one>
+    <many-to-one
+        name="filialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial">
+        <column name="ID_FILIAL_ORIGEM"/>
+    </many-to-one>
+    
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte">
+        <column name="ID_TIPO_MEIO_TRANSPORTE"/>
+    </many-to-one>
+    
+    <many-to-one
+        name="proprietario"
+        class="com.mercurio.lms.contratacaoveiculos.model.Proprietario">
+        <column name="ID_PROPRIETARIO"/>
+    </many-to-one>
+    
+    <many-to-one
+        name="regionalOrigem"
+        class="com.mercurio.lms.municipios.model.Regional">
+        <column name="ID_REGIONAL_ORIGEM"/>
+    </many-to-one>
+    <many-to-one
+        name="regionalDestino"
+        class="com.mercurio.lms.municipios.model.Regional">
+        <column name="ID_REGIONAL_DESTINO"/>
+    </many-to-one>
+    
+    <many-to-one
+        name="meioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte">
+        <column name="ID_MEIO_TRANSPORTE"/>
+    </many-to-one>
+
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais">
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+    
+        
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ParametroSimulacaoRota -->
+    <bag
+        name="parametroSimulacaoRotas"
+        lazy="true"
+        inverse="true"
+		cascade="all,delete-orphan">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.AplicaReajusteRota</meta>
+ 	        <key>
+    	        <column name="ID_SIMULACAO_REAJUSTE_ROTA" />
+	        </key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteiroviagem.model.AplicaReajusteRota"/>
+    </bag>
+</class>
+</hibernate-mapping>

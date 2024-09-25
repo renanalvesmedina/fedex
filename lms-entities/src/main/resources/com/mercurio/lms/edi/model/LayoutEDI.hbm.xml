@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.edi.model.LayoutEDI"
+    table="LAYOUT_EDI"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idLayoutEdi"
+        type="java.lang.Long"
+        column="ID_LAYOUT_EDI"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LAYOUT_EDI_SQ</param>
+        </generator>
+    </id>
+
+	<property
+		name="nmLayoutEdi"
+		type="java.lang.String"
+		column="NOME_LAYOUT" not-null="true"
+		length="50"
+	/>
+	
+	<property
+		name="dsLayoutEdi"
+		type="java.lang.String"
+		column="DESCRICAO" 
+		length="100"
+	/>
+	
+	<property
+		name="tpLayoutEdi"
+		column="TP_LAYOUT"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_TIPO_LAYOUT</param>
+		</type>
+	</property>	
+	
+	<property
+		name="qtLayoutEdi"
+		type="java.lang.Integer"
+		column="QTDE_REGISTROS"
+		length="2"
+	/>	
+		
+    <!-- bi-directional many-to-one association to TipoLayoutDocumento -->
+    <many-to-one
+        name="tipoLayoutDocumento"
+        class="com.mercurio.lms.edi.model.TipoLayoutDocumento"
+        not-null="true"
+    >
+        <column name="TLD_ID_TIPO_LAYOUT_DOCUMENTO" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to TipoArquivoEDI -->
+    <many-to-one
+        name="tipoArquivoEDI"
+        class="com.mercurio.lms.edi.model.TipoArquivoEDI"
+        not-null="true"
+    >
+        <column name="TIAE_ID_TIPO_ARQUIVO_EDI" />
+    </many-to-one>
+    
+    
+   	<bag name="clienteEdiLayout"
+		lazy="true" 
+		inverse="true"
+		cascade="delete-orphan" >
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.edi.model.ClienteLayoutEDI</meta>
+		<key>
+			<column name="LAED_ID_LAYOUT_EDI" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.edi.model.ClienteLayoutEDI"
+		/>
+	</bag>
+    
+</class>
+</hibernate-mapping>

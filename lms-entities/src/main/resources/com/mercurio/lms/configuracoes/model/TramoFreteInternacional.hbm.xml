@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.configuracoes.model.TramoFreteInternacional" table="TRAMO_FRETE_INTERNACIONAL">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <id column="ID_TRAMO_FRETE_INTERNACIONAL" name="idTramoFreteInternacional" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TRAMO_FRETE_INTERNACIONAL_SQ</param>
+        </generator>
+    </id>
+    
+    <version column="NR_VERSAO" name="versao"/>
+
+    <property column="NR_TRAMO_FRETE_INTERNACIONAL" length="2" name="nrTramoFreteInternacional" not-null="true" type="java.lang.Byte"/>
+    <property column="PC_FRETE" length="5" name="pcFrete" not-null="true" type="java.math.BigDecimal"/>
+    <property column="DS_TRAMO_FRETE_INTERNACIONAL" length="60" name="dsTramoFreteInternacional" not-null="true" type="string"/>
+	<property column="BL_CRUZE" length="1" name="blCruze" not-null="true" type="sim_nao">
+	</property>
+	<property column="BL_TRAMO_ORIGEM" length="1" name="blTramoOrigem" not-null="true" type="sim_nao">
+	</property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TrechoCtoInt -->
+    <bag cascade="none" inverse="true" lazy="true" name="trechoCtoInts">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.TrechoCtoInt</meta>
+ 	        <key>
+            <column name="TRAMO_FRETE_INTERNACIONAL"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.TrechoCtoInt"/>
+    </bag>
+    <!-- bi-directional many-to-one association to DistrFreteInternacional -->
+    <many-to-one class="com.mercurio.lms.vendas.model.Cliente" name="cliente" not-null="true">
+        <column name="ID_CLIENTE"/>
+    </many-to-one>
+    <many-to-one class="com.mercurio.lms.configuracoes.model.DistrFreteInternacional" name="distrFreteInternacional" not-null="true">
+        <column name="ID_DISTR_FRETE_INTERNACIONAL"/>
+    </many-to-one>
+
+	
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vendas.model.LiberacaoEmbarque" 
+    table="LIBERACAO_EMBARQUE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idLiberacaoEmbarque"
+        type="java.lang.Long"
+        column="ID_LIBERACAO_EMBARQUE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LIBERACAO_EMBARQUE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpModal"
+		    column="TP_MODAL"
+        length="1"
+        not-null="false"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    
+    <property name="blEfetivado" column="BL_EFETIVADO" type="sim_nao" 
+    	length="1" not-null="true"/>
+    	
+    <property name="blLiberaGrandeCapital" column="BL_LIBERA_GRANDE_CAPITAL" type="sim_nao"
+    	length="1"/>
+    	
+    <property name="dtAprovacao" column="DT_APROVACAO" type="jtyearmonthday" length="7"/>
+    
+    <property name="tpSituacaoAprovacao" column="TP_SITUACAO_APROVACAO" length="1">
+    	<type name="domain">
+    		<param name="domainName">DM_STATUS_ACAO_WORKFLOW</param>
+    	</type>
+    </property>
+	
+	<many-to-one name="pendencia" class="com.mercurio.lms.workflow.model.Pendencia">
+		<column name="ID_PENDENCIA_APROVACAO"/>
+	</many-to-one>
+	
+	<many-to-one name="usuarioAprovacao" entity-name="usuario">
+		<column name="ID_USUARIO_APROVOU"/>
+	</many-to-one>   	
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one name="cliente" class="com.mercurio.lms.vendas.model.Cliente" not-null="true">
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one name="municipio" class="com.mercurio.lms.municipios.model.Municipio" not-null="true">
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    
+</class>
+</hibernate-mapping>

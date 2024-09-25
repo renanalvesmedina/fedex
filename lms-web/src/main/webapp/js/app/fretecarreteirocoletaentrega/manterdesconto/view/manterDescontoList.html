@@ -1,0 +1,189 @@
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+		<div ng-include src="contextPath+'js/app/common/view/templates/form-buttons-list.html'"></div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="filial" data-labelSize="3" data-multiSize="3,9">
+			<input
+				lms-filial
+				ng-model="filter.filial" 
+				id="filial" 
+				class="form-control"
+				ng-disabled="!desconto.isMatriz"
+				required>
+
+			<input
+				type="text"
+				class="form-control"
+				id="filial.nmFilial"
+				value="{{ filter.filial.nmFilial }}"
+				readonly="readonly">
+		</div>	
+		
+		<div adsm-add-field data-boxSize="4" data-label="tipoOperacao" data-labelSize="5">
+			<select 
+				adsm-domain="DM_TIPO_OPERACAO_PROPRIETARIO"
+				id="tpOperacao" 
+				ng-model="filter.tpOperacao">
+				<option value=""></option>
+			</select>
+		</div>
+		
+		<div adsm-add-field data-label="motivo" data-labelSize="4" data-fieldSize="6">
+			<select 
+				adsm-chosen
+				id="idTipoDescontoRfc"
+				ng-model="filter.tipoDescontoRfc"
+				ng-options="data as data.dsTipoDescontoRfc for data in desconto.listTipoDescontoRfc">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>		
+	
+	<div class="row">					
+		<div adsm-add-field data-boxSize="4" data-label="situacao" data-labelSize="3" data-fieldSize="6">
+			<select 
+				adsm-domain="DM_STATUS_DESCONTO_RFC"
+				id="tpSituacao" 
+				ng-model="filter.tpSituacao">
+				<option value=""></option>
+			</select>
+		</div>
+		
+		<div adsm-add-field data-boxSize="4" data-label="numeroDesconto" data-labelSize="5">
+			<input
+				type="text"
+				class="form-control text-right"
+				id="nrDesconto"
+				data-numeric
+				maxlength="10"
+				ng-model="filter.nrDescontoRfc">
+		</div>
+	</div>
+		
+	<accordion close-others="false">
+		<accordion-group is-open="isFiltroBasicoOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroBasicoOpen, 'glyphicon-chevron-right': !isFiltroBasicoOpen}"></span>
+				{{'criteriosComplementares' | translate}}
+			</accordion-heading>	
+		
+			<div class="row">							
+				<div adsm-add-field data-boxSize="6" data-label="proprietario" data-labelSize="3" data-multiSize="4,8">
+					<input 
+						type="text" 
+						disabled 
+						class="form-control" 
+						value="{{ filter.proprietario.nrIdentificacao }}" 
+						id="proprietario.nrIdentificacao">
+					
+					<input
+						lms-proprietario
+						ng-model="filter.proprietario" 
+						id="proprietario" 
+						class="form-control">								
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="frotaPlaca" data-labelSize="3" data-multiSize="4,8">
+					<input type="text" disabled class="form-control" value="{{ filter.meioTransporte.nrFrota }}" id="meioTransporte.nrFrota">
+								    
+			    	<input
+						lms-meio-transporte
+						type="text" 
+						ng-model="filter.meioTransporte" 
+						id="meioTransporte" 
+						class="form-control">			   	
+			   </div>
+				
+			</div>	
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="periodoAtualizacao" data-labelSize="3" data-multiSize="6,6">
+					<input id="dtAtualizacaoInicial" 
+						adsm-date-picker 
+						ng-model="filter.dtAtualizacaoInicial" 
+						mask="date" 
+						class="form-control" 
+						data-mininterval="0" 
+						data-maxinterval="30"
+						data-end="filter.dtAtualizacaoFinal">
+					
+					<input id="dtAtualizacaoFinal" 
+						adsm-date-picker 
+						ng-model="filter.dtAtualizacaoFinal" 
+						mask="date" 
+						class="form-control" 
+						data-mininterval="0" 
+						data-maxinterval="30"
+						data-start="filter.dtAtualizacaoInicial">
+				</div>
+			
+				<div adsm-add-field data-boxSize="6" data-label="periodoVigencia" data-labelSize="3" data-multiSize="6,6">
+					<input id="dtInicioDescontoInicial" 
+						adsm-date-picker 
+						ng-model="filter.dtInicioDescontoInicial" 
+						mask="date" 
+						class="form-control" 
+						data-mininterval="0" 
+						data-maxinterval="30"
+						data-end="filter.dtInicioDescontoFinal">
+					
+					<input id="dtInicioDescontoFinal" 
+						adsm-date-picker 
+						ng-model="filter.dtInicioDescontoFinal" 
+						mask="date" 
+						class="form-control" 
+						data-mininterval="0" 
+						data-maxinterval="30"
+						data-start="filter.dtInicioDescontoInicial">
+				</div>
+			</div>	
+		</accordion-group>
+	</accordion>
+	
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					style="width: 100%">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+							<td column-title="sigla"
+								sortable="filial.sgFilial"
+								style="min-width: 50px; max-width: 60px;">{{row.filial.sgFilial}}</td>
+							<td column-title="filial"
+								sortable="filial.nmFilial"
+								>{{row.filial.nmFilial}}</td>
+							<td column-title="numeroDesconto"
+								sortable="nrDescontoRfc"
+								align="right"
+								style="min-width: 150px; max-width: 160px;">{{row.nrDescontoRfc | lpad: 10 }}</td>
+							<td column-title="motivo"
+								sortable="tipoDescontoRfc.dsTipoDescontoRfc"
+								style="min-width: 140px; max-width: 220px;">{{row.tipoDescontoRfc.dsTipoDescontoRfc }}</td>
+							<td column-title="proprietario"
+								sortable="proprietario.nmPessoa"
+								>{{row.proprietario.nmPessoa }}</td>
+							<td column-title="valorTotal"
+								sortable="vlTotalDesconto"
+								align="right"
+								style="min-width: 100px; max-width: 120px;">{{row.vlTotalDesconto | currency }}</td>	
+							<td column-title="situacao"
+								sortable="tpSituacao.description.value"
+								align="center"
+								style="min-width: 90px; max-width: 100px;">{{row.tpSituacao.description.value }}</td>
+							<td column-title="valorSaldoDevedor"
+								sortable="vlSaldoDevedor"
+								align="right"
+								style="min-width: 100px; max-width: 120px;">{{row.vlSaldoDevedor | currency }}</td>							
+							<td column-title="dataInicio"
+								sortable="dtInicioDesconto"
+								align="center"
+								style="min-width: 150px; max-width: 160px;">{{row.dtInicioDesconto | dateTimeZone }}</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</form>

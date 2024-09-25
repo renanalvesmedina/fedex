@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCredito" 
+    table="NOTA_CREDITO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idNotaCredito"
+        type="java.lang.Long"
+        column="ID_NOTA_CREDITO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">NOTA_CREDITO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrNotaCredito"
+			        type="java.lang.Long"
+            column="NR_NOTA_CREDITO"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="dhGeracao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_GERACAO"/><column name="DH_GERACAO_TZR"/></property>
+    <property
+        name="dhEmissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+    <property
+        name="vlAcrescimoSugerido"
+			        type="java.math.BigDecimal"
+            column="VL_ACRESCIMO_SUGERIDO"
+        length="18"
+    />
+    <property
+        name="vlAcrescimo"
+			        type="java.math.BigDecimal"
+            column="VL_ACRESCIMO"
+        length="18"
+    />
+    <property
+        name="vlDescontoSugerido"
+			        type="java.math.BigDecimal"
+            column="VL_DESCONTO_SUGERIDO"
+        length="18"
+    />
+    <property
+        name="vlDesconto"
+			        type="java.math.BigDecimal"
+            column="VL_DESCONTO"
+        length="18"
+    />
+    <property
+        name="vlDescUsoEquipamento"
+			        type="java.math.BigDecimal"
+            column="VL_DESC_USO_EQUIPAMENTO"
+        length="18"
+    />    
+    <property
+        name="tpSituacaoAprovacao"
+		    column="TP_SITUACAO_APROVACAO"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SITUACAO_APROVACAO_NOTA_CREDITO</param>
+	    </type>
+    </property>
+    <property
+        name="obNotaCredito"
+			        type="java.lang.String"
+            column="OB_NOTA_CREDITO"
+        length="500"
+    />
+    
+    <property name="vlTotal" type="java.math.BigDecimal" column="VL_TOTAL" length="18" />
+
+    <!-- Associations -->
+
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="false">
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+
+    <!-- bi-directional one-to-many association to NotaCreditoParcela -->
+    <bag
+        name="notaCreditoParcelas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoParcela</meta>
+ 	        <key>
+            <column name="ID_NOTA_CREDITO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoParcela"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ControleCarga -->
+    <bag
+        name="controleCargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.ControleCarga</meta>
+ 	        <key>
+            <column name="ID_NOTA_CREDITO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.ControleCarga"
+        />
+    </bag>
+    
+    
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one>
+    
+    
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to ReciboFreteCarreteiro -->
+    <many-to-one
+        name="reciboFreteCarreteiro"
+        class="com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro"
+        not-null="false"
+    >
+        <column name="ID_RECIBO_FRETE_CARRETEIRO" />
+    </many-to-one>
+
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="true"
+    >
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+
+    <!-- bi-directional one-to-many association to NotaCreditoColeta -->
+    <bag name="notaCreditoColetas"
+        lazy="true"
+        inverse="true"
+		cascade="none">
+ 	        <key>
+ 	        	<column name="ID_NOTA_CREDITO" />
+        	</key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoColeta" />
+    </bag>
+
+    <!-- bi-directional one-to-many association to NotaCreditoDocto -->
+    <bag name="notaCreditoDoctos"
+        lazy="true"
+        inverse="true"
+		cascade="none">
+ 	        <key>
+ 	        	<column name="ID_NOTA_CREDITO" />
+        	</key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoDocto" />
+    </bag>
+    
+     <!-- bi-directional one-to-many association to NotaCreditoCalcPadrao -->
+    <bag name="notaCreditoCalculoPadraoItens"
+        lazy="true"
+        inverse="true"
+		cascade="none">
+ 	        <key>
+ 	        	<column name="ID_NOTA_CREDITO" />
+        	</key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoCalcPadrao" />
+    </bag>
+    
+    <property
+		name="tpNotaCredito"
+		column="TP_NOTA_CREDITO"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_NOTA_CREDITO_PADRAO</param>
+		</type>
+	</property>    
+    
+    <!-- bi-directional one-to-many association to NotaCreditoCalcPadrao -->
+    <bag name="notaCreditoDoctoItens"
+        lazy="true"
+        inverse="true"
+		cascade="none">
+ 	        <key>
+ 	        	<column name="ID_NOTA_CREDITO" />
+        	</key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoCalcPadraoDocto" />
+    </bag>
+
+</class>
+</hibernate-mapping>

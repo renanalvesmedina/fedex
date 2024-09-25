@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+	<!-- 
+		Created by the Middlegen Hibernate plugin 2.1 for ADSM
+		
+		http://boss.bekk.no/boss/middlegen/
+		http://www.hibernate.org/
+	-->
+
+	<class name="com.mercurio.lms.contasreceber.model.LoteCheque"
+		table="LOTE_CHEQUE">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+
+
+		<id name="idLoteCheque" type="java.lang.Long"
+			column="ID_LOTE_CHEQUE">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">LOTE_CHEQUE_SQ</param>
+			</generator>
+		</id>
+
+		<version name="versao" column="NR_VERSAO" />
+
+		<property name="nrLoteCheque" type="java.lang.Long"
+			column="NR_LOTE_CHEQUE" not-null="true" unique="true" length="10" />
+		<property name="dtEmissao" type="java.sql.Date"
+			column="DT_EMISSAO" not-null="true" length="7" />
+		<property name="blFechado" type="sim_nao" column="BL_FECHADO"
+			not-null="true" length="1">
+		</property>
+		<property name="tpSituacaoLoteCheque"
+			column="TP_SITUACAO_LOTE_CHEQUE" not-null="true" length="2">
+			<type name="domain">
+				<param name="domainName">DM_STATUS_LOTE</param>
+			</type>
+		</property>
+		<property name="vlTotalLote" type="java.math.BigDecimal"
+			column="VL_TOTAL_LOTE" not-null="true" length="18" />
+
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to Redeco -->
+		<many-to-one name="redeco"
+			class="com.mercurio.lms.contasreceber.model.Redeco"
+			not-null="true">
+			<column name="ID_REDECO" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to Moeda -->
+		<many-to-one name="moeda"
+			class="com.mercurio.lms.configuracoes.model.Moeda"
+			not-null="true">
+			<column name="ID_MOEDA" />
+		</many-to-one>
+
+		<!-- bi-directional one-to-many association to Cheque -->
+		<bag name="cheques" lazy="true" inverse="true" cascade="delete-orphan">
+			<meta attribute="adsm-parametrized-attribute">
+				com.mercurio.lms.contasreceber.model.Cheque
+			</meta>
+			<key>
+				<column name="ID_LOTE_CHEQUE" />
+			</key>
+			<one-to-many
+				class="com.mercurio.lms.contasreceber.model.Cheque" />
+		</bag>
+	</class>
+</hibernate-mapping>

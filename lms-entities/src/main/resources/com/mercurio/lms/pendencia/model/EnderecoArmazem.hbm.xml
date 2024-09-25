@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.EnderecoArmazem" 
+    table="ENDERECO_ARMAZEM"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idEnderecoArmazem"
+        type="java.lang.Long"
+        column="ID_ENDERECO_ARMAZEM"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ENDERECO_ARMAZEM_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrRua"
+			        type="java.lang.Short"
+            column="NR_RUA"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="nrPredio"
+			        type="java.lang.Short"
+            column="NR_PREDIO"
+        not-null="true"
+        length="3"
+    />    
+    <property
+        name="nrAndar"
+			        type="java.lang.Short"
+            column="NR_ANDAR"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="nrApartamento"
+			        type="java.lang.Short"
+            column="NR_APARTAMENTO"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="tpFinalidade"
+		    column="TP_FINALIDADE"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_FINALIDADE_ENDERECO_ARMAZEM</param>
+	    </type>
+    </property>
+
+    <property
+        name="tpSituacaoEndereco"
+		    column="DM_STATUS_ENDERECO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_ENDERECO</param>
+	    </type>
+    </property>
+
+    <property
+        name="tpTipo"
+		    column="TP_TIPO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ENDERECO_ARMAZEM</param>
+	    </type>
+    </property>
+
+    <property
+        name="tpCapacidade"
+		    column="TP_CAPACIDADE"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_UNID_CAPACIDADE</param>
+	    </type>
+    </property>
+
+    <property
+        name="tpLadoRua"
+		    column="TP_LADO_RUA"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_LADO_RUA</param>
+	    </type>
+    </property>
+
+    <property
+        name="nrAltitudeEnderecos"
+			        type="java.lang.Long"
+            column="NR_ALTITUDE_ENDERECOS"
+        not-null="false"
+        length="10"
+    />
+
+    <property
+        name="qtPaleteReservado"
+			        type="java.lang.Integer"
+            column="QT_PALETE_RESERVADO"
+        not-null="false"
+        length="6"
+    />
+
+    <property
+        name="qtIndCapacidadeEndereco"
+			        type="java.lang.Integer"
+            column="QT_IND_CAPACIDADE_ENDERECO"
+        not-null="false"
+        length="6"
+    />
+    
+    <property
+        name="qtPaleteOcupado"
+			        type="java.lang.Integer"
+            column="QT_PALETE_OCUPADO"
+        not-null="false"
+        length="5"
+    />      
+
+    <property
+        name="dtUltimoInventario"
+			        type="jtyearmonthday"
+            column="DT_ULTIMO_INVENTARIO"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Modulo -->
+    <many-to-one
+        name="modulo"
+        class="com.mercurio.lms.pendencia.model.Modulo"
+        not-null="true"
+    >
+        <column name="ID_MODULO" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Posto -->
+    <many-to-one
+        name="posto"
+        class="com.mercurio.lms.pendencia.model.Posto"
+        not-null="false"
+    >
+        <column name="ID_POSTO" />
+    </many-to-one>
+    
+	<!-- bi-directional one-to-many association to EntradaPendenciaMatriz -->
+	<bag name="entradaPendenciaMatrizs" lazy="true" inverse="true"
+		cascade="none">
+		<meta attribute="adsm-parametrized-attribute">
+			com.mercurio.lms.pendencia.model.EntradaPendenciaMatriz
+		</meta>
+		<key>
+			<column name="ID_ENDERECO_ARMAZEM" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.pendencia.model.EntradaPendenciaMatriz" />
+	</bag>   
+</class>
+</hibernate-mapping>

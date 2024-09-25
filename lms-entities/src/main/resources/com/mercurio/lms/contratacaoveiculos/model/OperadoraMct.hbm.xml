@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contratacaoveiculos.model.OperadoraMct" 
+    table="OPERADORA_MCT"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id name="idOperadoraMct" column="ID_OPERADORA_MCT">
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>
+    
+    
+    <property
+		name="cdFabricante"
+		type="java.lang.Integer"
+		column="CD_FABRICANTE"
+		length="18"
+	/>
+    
+
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="dsHomepage"
+			        type="java.lang.String"
+            column="DS_HOMEPAGE"
+        length="120"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    <one-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        constrained="true"
+    />
+    <!-- bi-directional one-to-many association to EscoltaOperadoraMct -->
+    <bag
+        name="escoltaOperadoraMcts"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.EscoltaOperadoraMct</meta>
+ 	        <key>
+            <column name="ID_OPERADORA_MCT" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.EscoltaOperadoraMct"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MeioTransporteRodoviario -->
+    <bag
+        name="meioTransporteRodoviarios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario</meta>
+ 	        <key>
+            <column name="ID_OPERADORA_MCT" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to SolicitacaoSinal -->
+    <bag
+        name="solicitacaoSinais"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.SolicitacaoSinal</meta>
+ 	        <key>
+            <column name="ID_OPERADORA_MCT" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.SolicitacaoSinal"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

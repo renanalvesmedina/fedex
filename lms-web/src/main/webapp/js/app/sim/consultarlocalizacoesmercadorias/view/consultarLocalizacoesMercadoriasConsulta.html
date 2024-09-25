@@ -1,0 +1,609 @@
+<form class="form-horizontal content-padding" data-ng-submit="consultar()">
+
+	<div class="fixed-top content">
+		<button type="button" ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate}}
+		</button>
+		<button type="button" ng-click="exportarExcel()"  data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">
+			{{'exportarExcel' |  translate}}
+		</button>
+		<button type="submit" data-adsm-loading="consultando" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate}}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="3" data-label="documentoServico" data-labelSize="6" data-multiSize="4">
+			<input type="text" disabled class="form-control" value="{{ tmp.doctoServico.tpDoctoServico.description }}" id="doctoServico.tpDoctoServico">
+			<input
+				lms-docto-servico
+				type="text" 
+				ng-model="tmp.doctoServico"
+				id="doctoServico" 
+				class="form-control"
+				permission="doctoServico">
+		</div>
+		
+		<div adsm-add-field data-boxSize="2" data-label="cae" data-labelSize="2" data-multiSize="4">
+			<input type="text" disabled class="form-control" value="{{ tmp.cae.nmFilial }}" id="cae.nmFilial">
+			<input lms-cae type="text" ng-model="tmp.cae" id="doctoServico" class="form-control">
+		</div>
+		
+		<div adsm-add-field data-boxSize="3" data-label="notaFiscalCliente" data-labelSize="6" data-fieldSize="4">
+			<input type="text" class="form-control" id="nfCliente" ng-model="tmp.nfCliente" mask="integer">
+		</div>
+
+		<div adsm-add-field data-boxSize="4" data-label="periodoEmissao" data-labelSize="4" data-multiSize="6,6">
+			<input id="periodoInicial" adsm-date-picker ng-model="tmp.periodoInicial" mask="date" data-end="tmp.periodoFinal">
+			<input id="periodoFinal" adsm-date-picker ng-model="tmp.periodoFinal" mask="date" data-start="tmp.periodoInicial">
+		</div>
+	</div>
+	<accordion close-others="false">
+		<accordion-group is-open="isFiltroBasicoOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroBasicoOpen, 'glyphicon-chevron-right': !isFiltroBasicoOpen}"></span>
+				{{'filtrosBasicos' | translate}}
+			</accordion-heading>
+	
+			<div class="form-horizontal">
+	
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="modal" class="col-lg-6 control-label">{{'modal' | translate}}</label>
+							<div class="col-lg-6">
+								<select 
+									adsm-domain="DM_MODAL"
+									id="slmodal" 
+									ng-model="tmp.modal">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="abrangencia" class="col-lg-6 control-label">{{'abrangencia' | translate}}</label>
+							<div class="col-lg-6">
+								<select 
+									adsm-domain="DM_ABRANGENCIA"
+									id="abrangencia" 
+									ng-model="tmp.abrangencia">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="tipoServico" class="col-lg-6 control-label">{{'tipoServico' | translate}}</label>
+							<div class="col-lg-6">
+								<select 
+									lms-tipo-servico
+									id="tipoServico" 
+									ng-model="tmp.tipoServico">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="finalidade" class="col-lg-6 control-label">{{'finalidade' | translate}}</label>
+							<div class="col-lg-6">
+								<select 
+									adsm-domain="DM_TIPO_CONHECIMENTO"
+									id="finalidade" 
+									ng-model="tmp.finalidade">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="filialOrigem" class="col-lg-6 control-label">{{'filialOrigem' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-3">
+								    	<input
+											lms-filial
+											ng-model="tmp.filialOrigem"
+											id="filialOrigem" 
+											class="form-control">
+								    </div>
+								    <div class="col-xs-9">
+										<input type="text" disabled class="form-control" value="{{ tmp.filialOrigem.nmFilial }}" id="filialOrigem.nmFilial">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="filialDestino" class="col-lg-6 control-label">{{'filialDestino' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-3">
+								    	<input lms-filial="{ somenteEmpresaUsuario : false }"
+										type="text"
+										ng-model="tmp.filialDestino" 
+										id="filialDestino"
+										class="form-control">
+								    </div>
+								    <div class="col-xs-9">
+										<input type="text" disabled class="form-control" value="{{tmp.filialDestino.nmFilial }}" id="filialDestino.nmFilial">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="cotacao" class="col-lg-6 control-label">{{ 'filialNumeroCotacao' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-6">
+								    	<input 
+								    		lms-cotacao
+								    		type="text"
+											ng-model="tmp.cotacao" id="cotacao" class="form-control"
+											typeahead-min-length="4">
+								    </div>
+								    <div class="col-xs-6">
+										<input type="text" disabled class="form-control" value="{{ tmp.cotacao.nrCotacao  | lpad: 8 }}" id="nrCotacao">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="pedidoColeta" class="col-lg-6 control-label">{{'pedidoColeta' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-6">
+								    	<input
+								    		lms-pedido-coleta
+											type="text"
+											ng-model="tmp.pedidoColeta" 
+											id="pedidoColeta" 
+											class="form-control">
+								    </div>
+								    <div class="col-xs-6">
+										<input type="text" disabled class="form-control" value="{{ tmp.pedidoColeta.nrColeta | lpad: 6 }}" id="nrColeta">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+		</accordion-group>
+		<accordion-group is-open="isFiltroRemetenteOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroRemetenteOpen, 'glyphicon-chevron-right': !isFiltroRemetenteOpen}"></span>
+				{{'remetente' | translate}}
+			</accordion-heading>
+	
+			<div class="form-horizontal">
+	
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="remetente" class="col-lg-6 control-label">{{'remetente' | translate}}</label>
+							<div class="col-lg-6">
+								<input 
+									lms-cliente="{ modal : tmp.modal.value, abrangencia : tmp.abrangencia.value }"
+									type="text"
+									ng-model="tmp.remetente" 
+									id="remetente" 
+									class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="remetenteNmPessoa" class="col-lg-6 control-label">{{ 'razaoSocial' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control" id="remetenteNmPessoa"
+									ng-model="tmp.remetente.nmPessoa" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="remetenteNmFantasia" class="col-lg-6 control-label">{{'nomeFantasia' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control" id="remetenteNmFantasia"
+									ng-model="tmp.remetente.nmFantasia" disabled>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="remetenteNrConta" class="col-lg-6 control-label">{{'numeroContaRemetente' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control" id="remetenteNrConta"
+									ng-model="tmp.remetente.nrConta" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="documentoCliente" class="col-lg-6 control-label">{{'documentoCliente' | translate}}</label>
+							<div class="col-lg-6">
+								<select 
+									adsm-chosen
+									id="documentoCliente"
+									ng-model="tmp.informacaoDoctoCliente"
+									ng-options="data as data.dsCampo for data in tmp.remetente.informacoesDoctoCliente track by data.dsCampo"
+									ng-disabled="! (tmp.remetente.informacoesDoctoCliente.length > 1)">
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="numeroDocumento" class="col-lg-6 control-label">{{'numeroDocumento' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" mask="{{maskNumeroDocumento}}" class="form-control" id="numeroDocumento" ng-model="tmp.nrDocumentoCliente" ng-disabled="!tmp.informacaoDoctoCliente" ng-show="!tmp.informacaoDoctoCliente || (tmp.informacaoDoctoCliente && tmp.informacaoDoctoCliente.tpCampo != 'D' && tmp.informacaoDoctoCliente.tpCampo != 'H' && tmp.informacaoDoctoCliente.tpCampo != 'Z')">
+								<span g-class="{'date-combo': tmp.informacaoDoctoCliente.tpCampo == 'Z'}" ng-show="tmp.informacaoDoctoCliente.tpCampo == 'D' || tmp.informacaoDoctoCliente.tpCampo == 'Z'">
+									<input id="numeroDocumentoDate" adsm-date-picker ng-model="tmp.nrDocumentoCliente" mask="date" class="form-control">
+								</span>
+								
+								<div class="date-combo-h" ng-class="{'date-combo-h-only': tmp.informacaoDoctoCliente.tpCampo == 'H'}" ng-model="tmp.nrDocumentoClienteTime" style="display:inline-block;">
+		        					<timepicker show-meridian="false" ng-show="tmp.informacaoDoctoCliente.tpCampo == 'H' || tmp.informacaoDoctoCliente.tpCampo == 'Z'"></timepicker>
+		  						</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="tpCliente" class="col-lg-6 control-label">{{'tipoCliente' | translate}}</label>
+							<div class="col-lg-6">
+								
+								<select 
+									adsm-domain="DM_TIPO_CLIENTE"
+									id="tpCliente"
+									ng-model="tmp.remetente.tpCliente"
+									ng-disabled="true"
+									>
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+		</accordion-group>
+		<accordion-group is-open="isFiltroDestinatarioOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroDestinatarioOpen, 'glyphicon-chevron-right': !isFiltroDestinatarioOpen}"></span>
+				{{'destinatario' | translate}}
+			</accordion-heading>
+	
+			<div class="form-horizontal">
+	
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="destinatario" class="col-lg-6 control-label">{{'destinatario' | translate}}</label>
+							<div class="col-lg-6">
+								<input
+									lms-cliente
+									type="text"
+									ng-model="tmp.destinatario" 
+									id="destinatario" 
+									class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for"destinatarioNmPessoa" class="col-lg-6 control-label">{{'razaoSocial' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control"
+									id="destinatarioNmPessoa" ng-model="tmp.destinatario.nmPessoa"
+									disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="destinatarioNmFantasia"
+								class="col-lg-6 control-label">{{'nomeFantasia' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control"
+									id="destinatarioNmFantasia" ng-model="tmp.destinatario.nmFantasia"
+									disabled>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="destinatarioNrConta" class="col-lg-6 control-label">{{'numeroContaDestinatario' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control" id="destinatarioNrConta"
+									ng-model="tmp.destinatario.nrConta" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="destinatarioTpCliente" class="col-lg-6 control-label">{{'tipoCliente' | translate}}</label>
+							<div class="col-lg-6">
+								<select 
+									adsm-domain="DM_TIPO_CLIENTE"
+									id="destinatarioTpCliente"
+									ng-model="tmp.destinatario.tpCliente"
+									ng-disabled="true"
+									>
+									<option value=""></option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+			</div>
+	
+		</accordion-group>
+		<accordion-group is-open="isFiltroCriteriosComplementaresOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroCriteriosComplementaresOpen, 'glyphicon-chevron-right': !isFiltroCriteriosComplementaresOpen}"></span>
+				{{'criteriosComplementares' | translate}}
+			</accordion-heading>
+	
+			<div class="form-horizontal">
+	
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="consignatario" class="col-lg-6 control-label">{{'recebedor' | translate}}</label>
+							<div class="col-lg-6">
+								<input
+									lms-cliente
+									type="text"
+									ng-model="tmp.consignatario" 
+									id="consignatario" 
+									class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for"consignatarioNmPessoa" class="col-lg-6 control-label">{{'razaoSocial' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control"
+									id="consignatarioNmPessoa" ng-model="tmp.consignatario.nmPessoa"
+									disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="redespacho" class="col-lg-6 control-label">{{'expedidor' | translate}}</label>
+							<div class="col-lg-6">
+								<input lms-cliente
+									type="text"
+									ng-model="tmp.redespacho" 
+									id="redespacho" 
+									class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for"redespachoNmPessoa" class="col-lg-6 control-label">{{'razaoSocial' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control" id="redespachoNmPessoa"
+									ng-model="tmp.redespacho.nmPessoa" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="responsavelFrete" class="col-lg-6 control-label">{{'responsavelFrete' | translate}}</label>
+							<div class="col-lg-6">
+								<input 
+									lms-cliente
+									type="text"
+									ng-model="tmp.responsavelFrete" 
+									id="responsavelFrete"
+									class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="responsavelFreteNmPessoa" class="col-lg-6 control-label">{{'razaoSocial' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control"
+									id="responsavelFreteNmPessoa"
+									ng-model="tmp.responsavelFrete.nmPessoa" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="controleCarga" class="col-lg-6 control-label">{{'controleCarga' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-6">
+								    	<input
+								    		lms-controle-carga
+								    		type="text"
+								    		ng-model="tmp.controleCarga" 
+								    		id="controleCarga"
+								    		class="form-control">
+								    </div>
+								    <div class="col-xs-6">
+										<input type="text" disabled class="form-control" value="{{ tmp.controleCarga.nrControleCarga  | lpad: 6  }}" id="nrControleCarga">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="manifestoColeta" class="col-lg-6 control-label">{{'manifestoColeta' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-6">
+								    	<input
+								    		lms-manifesto-coleta
+											type="text"
+											ng-model="tmp.manifestoColeta" 
+											id="manifestoColeta"
+											class="form-control">
+								    </div>
+								    <div class="col-xs-6">
+										<input type="text" disabled class="form-control" value="{{ tmp.manifestoColeta.nrManifesto | lpad: 6 }}" id="nrManifesto">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="manifestoViagemNacional"
+								class="col-lg-6 control-label">{{'manifestoViagem' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-6">
+								    	<input
+								    	lms-manifesto-viagem-nacional
+										type="text"
+										ng-model="tmp.manifestoViagemNacional"
+										id="manifestoViagemNacional" 
+										class="form-control">
+								    </div>
+								    <div class="col-xs-6">
+										<input type="text" disabled class="form-control" value="{{tmp.manifestoViagemNacional.nrManifestoOrigem }}" id="nrManifestoOrigem">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="numeroFormulario" class="col-lg-6 control-label">{{'numeroFormulario' | translate}}</label>
+							<div class="col-lg-6">
+								<input type="text" class="form-control" id="nrFormulario" ng-model="tmp.nrFormulario">
+							</div>
+						</div>
+					</div>
+				</div>
+		
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="manifestoEntrega" class="col-lg-6 control-label">{{'manifestoEntrega' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+								    <div class="col-xs-6">
+								    	<input
+										lms-manifesto-entrega
+										type="text"
+										ng-model="tmp.manifestoEntrega" 
+										id="manifestoEntrega"
+										class=form-control>
+								    </div>
+								    <div class="col-xs-6">
+										<input type="text" disabled class="form-control" value="{{ tmp.manifestoEntrega.nrManifestoEntrega  | lpad: 6  }}" id="nrManifestoEntrega">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="awb" class="col-lg-6 control-label">{{'AWB' | translate}}</label>
+							<div class="col-lg-6">
+								<div class="multi-input">
+									<div class="col-xs-6">
+										<select 
+											adsm-domain="DM_LOOKUP_AWB"
+											id="tpStatusAwb"
+											ng-model="tmp.tpStatusAwb">
+										</select>
+									</div>
+									<div class="col-xs-6">
+										<input 
+											lms-awb='{ tpStatusAwb:tmp.tpStatusAwb.value }'
+											type="text" 
+											ng-model="tmp.awb"
+											id="awb" 
+											class=form-control>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group">
+							<label for="awb" class="col-lg-6 control-label">{{'volumeColeta' | translate}}</label>
+							<div class="col-lg-6">
+								<input
+									type="text"
+									ng-model="tmp.volumeColeta"
+									id="awb"
+									class=form-control>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</accordion-group>
+	</accordion>
+
+</form>
+	

@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.ItemFaturaLog" 
+    table="LOG$_ITEM_FATURA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idItemFaturaLog"
+        type="java.lang.Long"
+        column="ID_ITEM_FATURA_LOG"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LOG$_ITEM_FATURA_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Fatura -->
+    <many-to-one
+        name="itemFatura"
+        class="com.mercurio.lms.contasreceber.model.ItemFatura"
+        not-null="true"
+    >
+        <column name="ID_ITEM_FATURA" />
+    </many-to-one>
+    
+    <many-to-one
+        name="faturaLog"
+        class="com.mercurio.lms.contasreceber.model.FaturaLog"
+        not-null="true"
+    >
+        <column name="ID_FATURA_LOG" />
+    </many-to-one>
+    
+    <many-to-one
+        name="fatura"
+        class="com.mercurio.lms.contasreceber.model.Fatura"
+        not-null="true"
+    >
+        <column name="ID_FATURA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DevedorDocServFat -->
+    <many-to-one
+        name="devedorDocServFat"
+        class="com.mercurio.lms.contasreceber.model.DevedorDocServFat"
+        not-null="true"
+    >
+        <column name="ID_DEVEDOR_DOC_SERV_FAT" />
+    </many-to-one>
+    
+   <!-- one-to-one class="com.mercurio.lms.contasreceber.model.DescontoLog" name="descontoLog"  outer-join="auto"/ -->
+    
+    <bag
+        name="descontoLogs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.DescontoLog</meta>
+ 	    <key>
+            <column name="ID_ITEM_FATURA_LOG" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.DescontoLog"
+        />
+    </bag>
+    
+    <property
+        name="dhLog"
+		type="jtdatetimetzr"
+        length="7"
+        not-null="true"
+    ><column name="DH_LOG"/><column name="DH_LOG_TZR"/></property>
+    <property
+        name="loginLog"
+        type="java.lang.String"
+        column="LOGIN_LOG"
+        length="60"
+    />
+    <property
+        name="opLog"
+        column="OP_LOG"
+		not-null="false"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_OP_LOG</param>
+		</type>
+	</property> 
+</class>
+</hibernate-mapping>

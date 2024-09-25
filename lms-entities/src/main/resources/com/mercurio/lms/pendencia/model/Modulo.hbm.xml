@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.Modulo" 
+    table="MODULO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idModulo"
+        type="java.lang.Long"
+        column="ID_MODULO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MODULO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrModulo"
+			        type="java.lang.Short"
+            column="NR_MODULO"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to EnderecoEstoque -->
+    <bag
+        name="enderecoEstoques"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.EnderecoEstoque</meta>
+ 	        <key>
+            <column name="ID_MODULO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.EnderecoEstoque"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to EnderecoArmazem -->
+    <bag
+        name="enderecoArmazems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.EnderecoArmazem</meta>
+ 	        <key>
+            <column name="ID_ENDERECO_ARMAZEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.EnderecoArmazem"
+        />
+    </bag>    
+    <!-- bi-directional one-to-many association to Box -->
+    <bag
+        name="boxs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.Box</meta>
+ 	        <key>
+            <column name="ID_MODULO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.Box"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Terminal -->
+    <many-to-one
+        name="terminal"
+        class="com.mercurio.lms.portaria.model.Terminal"
+        not-null="true"
+    >
+        <column name="ID_TERMINAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

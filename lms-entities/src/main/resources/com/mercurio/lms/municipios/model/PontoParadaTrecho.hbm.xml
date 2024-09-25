@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class  
+    name="com.mercurio.lms.municipios.model.PontoParadaTrecho" 
+    table="PONTO_PARADA_TRECHO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPontoParadaTrecho"
+        type="java.lang.Long"
+        column="ID_PONTO_PARADA_TRECHO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PONTO_PARADA_TRECHO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrTempoParada"
+		type="java.lang.Integer"
+        column="NR_TEMPO_PARADA"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrOrdem"
+		type="java.lang.Short"
+        column="NR_ORDEM"
+        length="3"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TrechoRotaIdaVolta -->
+    <many-to-one
+        name="trechoRotaIdaVolta"
+        class="com.mercurio.lms.municipios.model.TrechoRotaIdaVolta"
+        not-null="true"
+    >
+        <column name="ID_TRECHO_ROTA_IDA_VOLTA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to PontoParada -->
+    <many-to-one
+        name="pontoParada"
+        class="com.mercurio.lms.municipios.model.PontoParada"
+        not-null="true"
+    >
+        <column name="ID_PONTO_PARADA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to MotivoParadaPontoTrecho -->
+    <bag
+        name="motivoParadaPontoTrechos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MotivoParadaPontoTrecho</meta>
+ 	        <key>
+            <column name="ID_PONTO_PARADA_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MotivoParadaPontoTrecho"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to EventoMeioTransporte -->
+    <bag
+        name="eventoMeioTransportes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.EventoMeioTransporte</meta>
+ 	        <key>
+            <column name="ID_PONTO_PARADA_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.EventoMeioTransporte"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

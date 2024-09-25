@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.Recibo" 
+    table="RECIBO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRecibo"
+        type="java.lang.Long"
+        column="ID_RECIBO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">RECIBO_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrRecibo"
+			        type="java.lang.Long"
+            column="NR_RECIBO"
+        not-null="true"
+        length="10"
+    />
+   
+    <property
+        name="vlTotalRecibo"
+			        type="java.math.BigDecimal"
+            column="VL_TOTAL_RECIBO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="vlTotalDocumentos"
+			        type="java.math.BigDecimal"
+            column="VL_TOTAL_DOCUMENTOS"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="vlTotalJuros"
+			        type="java.math.BigDecimal"
+            column="VL_TOTAL_JUROS"
+        not-null="true"
+        length="18"
+    />
+    
+    <property
+        name="vlTotalDesconto"
+			        type="java.math.BigDecimal"
+            column="VL_TOTAL_DESCONTO"
+        not-null="true"
+        length="18"
+    /> 
+    
+    
+    
+    <property
+        name="vlDiferencaCambial"
+			        type="java.math.BigDecimal"
+            column="VL_DIFERENCA_CAMBIAL"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dtEmissao"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpSituacaoRecibo"
+		    column="TP_SITUACAO_RECIBO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_RECIBO_FRETE</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacaoAprovacao"
+		    column="TP_SITUACAO_APROVACAO"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="obRecibo"
+			        type="java.lang.String"
+            column="OB_RECIBO"
+        length="500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to CotacaoMoeda -->
+    <many-to-one
+        name="cotacaoMoeda"
+        class="com.mercurio.lms.configuracoes.model.CotacaoMoeda"
+        not-null="true"
+    >
+        <column name="ID_COTACAO_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to RecebimentoRecibo -->
+    <bag
+        name="recebimentoRecibos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.RecebimentoRecibo</meta>
+ 	        <key>
+            <column name="ID_RECIBO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.RecebimentoRecibo"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ItemRedeco -->
+    <bag
+        name="itemRedecos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ItemRedeco</meta>
+ 	        <key>
+            <column name="ID_RECIBO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ItemRedeco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to FaturaRecibo -->
+    <bag
+        name="faturaRecibos"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.FaturaRecibo</meta>
+ 	        <key>
+            <column name="ID_RECIBO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.FaturaRecibo"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialEmissora"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_EMISSORA" />
+    </many-to-one>
+        <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="true"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one> 
+</class>
+</hibernate-mapping>

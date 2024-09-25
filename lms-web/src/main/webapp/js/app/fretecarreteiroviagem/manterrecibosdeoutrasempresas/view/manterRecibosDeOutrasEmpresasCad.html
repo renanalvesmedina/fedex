@@ -1,0 +1,214 @@
+<div class="content" style="background-color: white; padding: 20px;">
+
+	<form novalidate ng-class="{submitted: submitted}"
+	class="form-horizontal" ng-submit="store($event)">
+
+		<div class="fixed-top">
+			<div class="content">
+				<button type="submit" data-adsm-loading="salvando"
+				class="btn btn-default btn-lg pull-right" id="store"
+				permission="salvar" ng-disabled="dados.btSalvar">
+					{{'salvar'
+					| translate }}
+				</button>
+				<button type="button" data-ng-click="clearData()"
+				class="btn btn-default btn-lg pull-right" id="limpar"
+				ng-disabled="dados.btLimpar">
+					{{'limpar' | translate }}
+				</button>
+				<button type="button" data-ng-click="removeById()"
+				ng-disabled="!data.id"
+				class="btn btn-default btn-lg pull-right"
+				id="removeById" permission="excluir">
+					{{'excluir'
+					| translate }}
+				</button>
+			</div>
+		</div>
+
+		<div class="row">
+			<!-- Data Emissão do Recibo  -->
+			<div class="col-sm-8">
+				<div class="form-group">
+					<label for="periodoInicial" class="col-lg-3 control-label"> {{'dataEmissaoRecibo' | translate}} </label>
+					<div class="col-lg-8">
+						<div class="multi-input">
+							<div class="col-xs-5">
+								<input id="periodoInicial" adsm-date-picker
+								ng-model="data.dtEmissaoRecibo" mask="date"
+								class="form-control" required>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Data Emissão do Recibo  -->
+		</div>
+
+		<div class="row">
+			<!-- Sugest de Proprietário  -->
+			<div class="col-sm-8">
+				<div class="form-group">
+					<label for="proprietario" class="col-lg-3 control-label">{{'proprietario' | translate}}</label>
+					<div class="col-lg-9">
+						<div class="multi-input">
+							<div class="col-xs-3">
+								<input type="text" disabled class="form-control"
+								ng-model="data.proprietario.nrIdentificacao"
+								id="proprietario.nrIdentificacao" required>
+							</div>
+							<div class="col-xs-9">
+								<input lms-proprietario-cpf ng-model="data.proprietario" id="proprietario" class="form-control" required>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Sugest de Proprietário  -->
+		</div>
+
+		<div class="row">
+			<!-- Sugest de Filial  -->
+			<div class="col-sm-8">
+				<div class="form-group">
+					<label for="filial" class="col-lg-3 control-label">{{'filial'
+						| translate}}</label>
+					<div class="col-lg-9">
+						<div class="multi-input">
+							<div class="col-xs-3">
+								<input lms-filial ng-model="data.filial" id="filial"
+								class="form-control" disabled>
+							</div>
+							<div class="col-xs-9">
+								<input type="text" class="form-control"
+								ng-model="data.filial.nmFilial" id="filial.nmFilial" disabled>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Sugest de Filial  -->
+		</div>
+
+		<div class="row">
+			<!-- Input de Empregador -->
+			<div class="col-sm-8">
+				<div class="form-group">
+					<label class="col-lg-3 control-label">{{'nomeEmpregador' |
+						translate }}</label>
+					<div class="col-lg-9">
+						<input type="text" class="form-control" id="dsEmpregador"
+						ng-model="data.dsEmpregador" maxlength="100" required>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Input de Empregador -->
+		</div>
+
+		<div class="row">
+			<!-- Identificador Empregador -->
+			<div class="col-sm-8">
+				<div class="form-group">
+					<label class="col-lg-3 control-label">{{'identificadorEmpregador' | translate }}</label> 
+					<div class="col-lg-9">
+						<div class="multi-input">
+							<div class="col-xs-3">
+								<select data-lms-tipo-identificacao-cnpj-cpf
+								id="tpIdentificacaoEmpregador"
+								ng-model="data.tpIdentificacaoEmpregador" required>
+									<option value=""></option>
+								</select>
+							</div>
+
+							<div class="col-xs-9">
+								<input
+								type="text"
+								id="nrIdentificacao"
+								class="form-control"
+								ng-model="data.nrIdentificacaoEmpregador"
+								maxlength="20"
+								ng-blur="validaCpfCnpj();"
+								data-pessoa-mask="data.tpIdentificacaoEmpregador.dsIdentificador" 
+								ng-disabled="!data.tpIdentificacaoEmpregador || !data.proprietario"								
+								required>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Fim Identificador Empregador -->
+		</div>
+
+		<div class="row">
+			<!-- Input de Recibo -->
+			<div class="col-sm-8">
+				<div class="form-group" id="nrRecibo">
+					<label class="col-lg-3 control-label">{{'numeroRecibo' |
+						translate }}</label>
+					<div class="col-lg-9">
+						<input type="text" class="form-control"
+						ng-model="data.nrRecibo" maxlength="20" required>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Input de Recibo -->
+
+			<!-- Input Valor INSS -->
+			<div class="col-sm-4">
+				<div class="form-group" id="vlInss">
+					<label class="col-lg-6 control-label">{{'valorINSS' |
+						translate }}</label>
+					<div class="col-lg-6">
+						<input type="text" class="form-control"
+						ng-model="data.vlInss" maxlength="18" data-numeric data-moeda required>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Input Valor INSS -->
+
+		</div>
+
+		<div class="row">
+			<!-- Data/Hora inclusão -->
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label class="col-lg-6 control-label">{{'dataHoraInclusao'
+						| translate }}</label>
+					<div class="col-lg-6">
+						<input type="text" disabled class="form-control" id="dhInclusao"
+						ng-model="data.dhInclusao" mask="date">
+					</div>
+				</div>
+			</div>
+			<!-- Fim Data/Hora inclusão -->
+
+			<!-- Usuário logado -->
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label class="col-lg-3 control-label">{{'usuario'
+						| translate }}</label>
+					<div class="col-lg-9">
+						<input type="text" class="form-control" id="usuario"
+						ng-model="data.usuario.nmUsuario" disabled>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Usuário logado -->
+
+			<!-- Input Valor remuneração -->
+			<div class="col-sm-4">
+				<div class="form-group" id="vlRemuneracao">
+					<label class="col-lg-6 control-label">{{'vlRemuneracao' |
+						translate }}</label>
+					<div class="col-lg-6">
+						<input type="text" class="form-control"
+						ng-model="data.vlRemuneracao" maxlength="18" data-numeric data-moeda required>
+					</div>
+				</div>
+			</div>
+			<!-- Fim Input Valor remuneração -->
+		</div>
+
+	</form>
+</div>

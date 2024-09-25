@@ -1,0 +1,272 @@
+<form class="form-horizontal content-padding" ng-submit="consultarExportar()">
+	<div class="alert-container" ng-show="popupAlerts.length">
+		<alert close="closeAlert($index)" ng-repeat="alert in popupAlerts" type="{{ alert.type }}">
+			<span ng-bind="alert.msg" />
+		</alert>
+	</div>
+	<div class="fixed-top">
+		<button type="button" data-ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate }}
+		</button>
+		<button type="submit" data-ng-click="filter.acao = 'E'" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">
+			{{'exportarExcel' | translate }}
+		</button>
+		<button type="submit" data-ng-click="filter.acao = 'C'" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate }}
+		</button>
+	</div>
+
+	<accordion close-others="false" id="accordionContato"> <accordion-group
+		is-open="isFiltrosClienteOpen"> <accordion-heading>
+	<span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down': isFiltrosClienteOpen , 'glyphicon-chevron-right': !isFiltrosClienteOpen}"></span>
+	{{'filtrosCliente' | translate}} </accordion-heading>
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="filial"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-3">
+					<input lms-filial ng-model="filter.filial" id="filial"
+						class="form-control" >
+				</div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control"
+						value="{{ filter.filial.nmFilial }}" id="filial.nmFilial">
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="classificacaoCliente"
+			data-label-Size="3">
+			<select adsm-domain="DM_TP_CLIENTE_FINANCEIRO"
+				id="classificacaoCliente" ng-model="filter.classificacaoCliente">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="cobrancaCentralizada"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="blCobrancaCentralizada"
+				ng-model="filter.blCobrancaCentralizada">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-lg-3  control-label">{{'tipoCliente' |
+					translate}}</label>
+				<div class="col-lg-9">
+					<select adsm-domain="DM_TIPO_CLIENTE" id="tpCliente"
+						ng-model="filter.tpCliente">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoCobranca"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_COBRANCA" id="tpCobranca"
+				ng-model="filter.tpCobranca">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="clienteComPreFatura"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="blPreFatura"
+				ng-model="filter.blPreFatura">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-2  control-label">{{'devedoresListar' |
+					translate}}</label>
+				<div class="col-lg-9">
+					<input type="text" class="form-control"
+						ng-model="filter.devedoresListar" id="devedoresListar"
+						style="height: 50px">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-2  control-label">{{'devedoresExcluir'
+					| translate}}</label>
+				<div class="col-lg-9">
+					<input type="text" class="form-control"
+						ng-model="filter.devedoresExcluir" id="devedoresExcluir"
+						style="height: 50px">
+				</div>
+			</div>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="isFiltrsoDocumentoOpen"> <accordion-heading>
+	<span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down': isFiltrsoDocumentoOpen , 'glyphicon-chevron-right': !isFiltrsoDocumentoOpen}"></span>
+	{{'filtrosDocumento' | translate}} </accordion-heading>
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-lg-3  control-label">{{'regionalCobranca'
+					| translate}}</label>
+				<div class="col-lg-9">
+					<select adsm-chosen id="idRegional" ng-model="filter.idRegional"
+						ng-options="data.idRegional as data.siglaDescricao for data in filter.regionais"
+						ng-change="limparFilal()" required>
+						<option value="{{idRegional}}"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoDocumento"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_DOCUMENTO_SERVICO" id="tpDocumento"
+				ng-model="filter.tpDocumento">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="bloqueado"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="blBloqueado"
+				ng-model="filter.blBloqueado">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="filialCobranca"
+			data-labelSize="3">
+			<div class="multi-input">
+			
+				<div class="col-xs-3">
+					<input lms-filial ng-model="filter.idFilialCobranca" id="idFilialCobranca"
+						class="form-control" >
+				</div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control"
+						value="{{ filter.idFilialCobranca.nmFilial }}" id="idFilialCobranca.nmFilial">
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoFrete"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_FRETE" id="tpFrete"
+				ng-model="filter.tpFrete">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="agendaTransferencia"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="blAgendaTransferencia"
+				ng-model="filter.blAgendaTransferencia">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="dataEmissao"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtVigenciaInicial" adsm-date-picker
+						ng-model="filter.dtVigenciaInicial" mask="date"
+						class="form-control" />
+				</div>
+
+				<div class="col-xs-6">
+					<input id="dtVigenciaFinal" adsm-date-picker
+						ng-model="filter.dtVigenciaFinal" mask="date" class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoConhecimento"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_CONHECIMENTO" id="tpConhecimento"
+				ng-model="filter.tpConhecimento">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4"
+			data-label="transferenciasPendentes" data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="blTransferenciaPendentes"
+				ng-model="filter.blTransferenciaPendentes">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-lg-3  control-label">{{'servico' |
+					translate}}</label>
+				<div class="col-lg-9">
+
+					<select adsm-chosen id="servico" ng-model="filter.idServico"
+						ng-options="data.idServico as data.dsServico.value for data in filter.servicos">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoCalculo"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_CALCULO_FRETE" id="tpCalculo"
+				ng-model="filter.tpCalculo">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4"
+			data-label="filialCobDiferenteResp" data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="filialCobDifResp"
+				ng-model="filter.filialCobDifResp">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		
+		<div adsm-add-field data-boxSize="4" data-label="estadoCobranca" data-labelSize="3" data-fieldSize="9" >
+			<select adsm-domain="DM_ESTADO_COBRANCA" id="estadoCobranca" ng-model="filter.estadoCobranca" required>
+					<option value=""></option>
+			</select>
+		</div>		
+		
+		<div adsm-add-field data-boxSize="4" data-label="exportarColunaDtNatura" data-labelSize="6">
+			<input type="checkbox" id="dtNatura" ng-model="filter.blExportaDtNatura">
+		</div>
+	</div>
+	
+	</accordion-group> </accordion>
+	
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					style="width: 100%" show-checkboxes="true">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+
+							<td column-title="documentoDeServico">{{row.doctoServico}}</td>
+							<td column-title="emissao"
+								style="min-width: 80px; max-width: 100px;">{{row.dtEmissao}}</td>
+							<td column-title="tipoFrete"
+								style="min-width: 50px; max-width: 50px;">{{row.tpFrete}}</td>
+							<td column-title="tipoCto"
+								style="min-width: 60px; max-width: 100px;">{{row.tpConhecimento}}</td>
+							<td column-title="entrega"
+								style="min-width: 80px; max-width: 100px;">{{row.dtEntrega}}</td>
+							<td column-title="clienteDevedor"
+								style="min-width: 350px; max-width: 400px;">{{row.devedor}}</td>
+							<td column-title="filialCob" style="min-width: 60px;  max-width: 60px;">{{row.filialCobranca}}</td>
+							<td column-title="filialResp" style="min-width: 60px;  max-width: 60px;">{{row.filialResp}}</td>
+							<td column-title="valorDevido" style="min-width: 55px;  max-width: 55px;">{{row.vlDevido}}</td>	  
+							<td column-title="chaveCTE" style="min-width: 250px;  max-width: 250px; font-size:9px;">{{row.chaveCTE}}</td>	
+							
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</form>

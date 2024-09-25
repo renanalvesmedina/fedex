@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+	<!-- 
+		Created by the Middlegen Hibernate plugin 2.1 for ADSM
+		
+		http://boss.bekk.no/boss/middlegen/
+		http://www.hibernate.org/
+	-->
+
+	<class
+		name="com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico"
+		table="OCORRENCIA_DOCTO_SERVICO">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+
+
+		<id name="idOcorrenciaDoctoServico" type="java.lang.Long"
+			column="ID_OCORRENCIA_DOCTO_SERVICO">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">
+					OCORRENCIA_DOCTO_SERVICO_SQ
+				</param>
+			</generator>
+		</id>
+
+		<property name="dhBloqueio" type="jtdatetimetzr" not-null="true" length="7" ><column name="DH_BLOQUEIO"/><column name="DH_BLOQUEIO_TZR"/></property>
+		<property name="dhLiberacao" type="jtdatetimetzr" length="7" ><column name="DH_LIBERACAO"/><column name="DH_LIBERACAO_TZR"/></property>
+
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one name="usuarioLiberacao"
+			entity-name="usuario"
+			not-null="false">
+			<column name="ID_USUARIO_LIBERACAO" />
+		</many-to-one>
+		
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one name="usuarioBloqueio"
+			entity-name="usuario"
+			not-null="true">
+			<column name="ID_USUARIO_BLOQUEIO" />
+		</many-to-one>
+				
+		<!-- bi-directional many-to-one association to OcorrenciaPendencia -->
+		<many-to-one name="ocorrenciaPendenciaByIdOcorBloqueio"
+			class="com.mercurio.lms.pendencia.model.OcorrenciaPendencia"
+			not-null="true">
+			<column name="ID_OCOR_BLOQUEIO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to OcorrenciaPendencia -->
+		<many-to-one name="ocorrenciaPendenciaByIdOcorLiberacao"
+			class="com.mercurio.lms.pendencia.model.OcorrenciaPendencia"
+			not-null="true">
+			<column name="ID_OCOR_LIBERACAO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to DoctoServico -->
+		<many-to-one name="doctoServico"
+			class="com.mercurio.lms.expedicao.model.DoctoServico"
+			not-null="true">
+			<column name="ID_DOCTO_SERVICO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to ComunicadoApreensao -->
+		<many-to-one name="comunicadoApreensao"
+			class="com.mercurio.lms.pendencia.model.ComunicadoApreensao"
+			not-null="false">
+			<column name="ID_COMUNICADO_APREENSAO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Filial -->
+		<many-to-one name="filialByIdFilialLiberacao"
+			class="com.mercurio.lms.municipios.model.Filial" not-null="false">
+			<column name="ID_FILIAL_LIBERACAO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Filial -->
+		<many-to-one name="filialByIdFilialBloqueio"
+			class="com.mercurio.lms.municipios.model.Filial" not-null="true">
+			<column name="ID_FILIAL_BLOQUEIO" />
+		</many-to-one>
+		<many-to-one
+			name="faseProcesso"
+			class="com.mercurio.lms.sim.model.FaseProcesso">
+			<column name="ID_FASE_PROCESSO" />
+		</many-to-one>	
+	</class>
+</hibernate-mapping>

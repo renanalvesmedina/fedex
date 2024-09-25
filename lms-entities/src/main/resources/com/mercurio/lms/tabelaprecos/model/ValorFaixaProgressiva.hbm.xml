@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tabelaprecos.model.ValorFaixaProgressiva" 
+    table="VALOR_FAIXA_PROGRESSIVA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idValorFaixaProgressiva"
+        type="java.lang.Long"
+        column="ID_VALOR_FAIXA_PROGRESSIVA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">VALOR_FAIXA_PROGRESSIVA_SQ</param>
+        </generator>
+    </id>
+	<version name="versao" column="NR_VERSAO"/>
+    <property
+        name="blPromocional"
+			        type="sim_nao"
+            column="BL_PROMOCIONAL"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="nrFatorMultiplicacao"
+			        type="java.math.BigDecimal"
+            column="NR_FATOR_MULTIPLICACAO"
+        length="9"
+    />
+    <property
+        name="vlFixo"
+			        type="java.math.BigDecimal"
+            column="VL_FIXO"
+        length="18"
+    />
+    <property
+        name="pcTaxa"
+			        type="java.math.BigDecimal"
+            column="PC_TAXA"
+        length="5"
+    />
+    <property
+        name="pcDesconto"
+			        type="java.math.BigDecimal"
+            column="PC_DESCONTO"
+        length="5"
+    />
+    <property
+        name="vlAcrescimo"
+			        type="java.math.BigDecimal"
+            column="VL_ACRESCIMO"
+        length="18"
+    />
+    <property
+        name="psMinimo"
+			        type="java.math.BigDecimal"
+            column="PS_MINIMO"
+        length="18"
+    />
+    <property
+        name="dtVigenciaPromocaoInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_PROMOCAO_INICIAL"
+        length="7"
+    />
+    <property
+        name="dtVigenciaPromocaoFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_PROMOCAO_FINAL"
+        length="7"
+    />
+	<property
+			name="vlTaxaFixa"
+			type="java.math.BigDecimal"
+			column="VL_TAXA_FIXA"
+			length="18"
+	/>
+	<property
+			name="vlKmExtra"
+			type="java.math.BigDecimal"
+			column="VL_KM_EXTRA"
+			length="18"
+	/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TarifaPreco -->
+    <many-to-one
+        name="tarifaPreco"
+        class="com.mercurio.lms.tabelaprecos.model.TarifaPreco"
+    >
+        <column name="ID_TARIFA_PRECO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to RotaPreco -->
+    <many-to-one
+        name="rotaPreco"
+        class="com.mercurio.lms.tabelaprecos.model.RotaPreco"
+    >
+        <column name="ID_ROTA_PRECO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to FaixaProgressiva -->
+    <many-to-one
+        name="faixaProgressiva"
+        class="com.mercurio.lms.tabelaprecos.model.FaixaProgressiva"
+        not-null="true"
+    >
+        <column name="ID_FAIXA_PROGRESSIVA" />
+    </many-to-one>
+</class>
+<query name="valorFaixaProgressiva.findValorFaixaProgressivaByFaixaProgressiva">
+	select new Map(vfp.idValorFaixaProgressiva as idValorFaixaProgressiva,
+				vfp.dtVigenciaPromocaoInicial as dtVigenciaPromocaoInicial, 
+				vfp.dtVigenciaPromocaoFinal as dtVigenciaPromocaoFinal, 
+				vfp.blPromocional as blPromocional, 
+				vfp.vlAcrescimo as vlAcrescimo, 
+				vfp.pcDesconto as pcDesconto, 
+				vfp.pcTaxa as pcTaxa, 
+				vfp.vlFixo as vlFixo, 
+				vfp.versao as versao, 
+				vfp.nrFatorMultiplicacao as nrFatorMultiplicacao, 
+				fp.idFaixaProgressiva as faixaProgressiva_idFaixaProgressiva, 
+				fp.versao as faixaProgressiva_versao, 
+				t.idTarifaPreco as tarifaPreco_idTarifaPreco, 
+				t.cdTarifaPreco as tarifaPreco_cdTarifaPreco, 
+				r.idRotaPreco as rotaPreco_idRotaPreco, 
+				zd.dsZona as rotaPreco_zonaByIdZonaDestino_dsZona, 
+				zo.dsZona as rotaPreco_zonaByIdZonaOrigem_dsZona, 
+				paisd.nmPais as rotaPreco_paisByIdPaisDestino_nmPais, 
+				paiso.nmPais as rotaPreco_paisByIdPaisOrigem_nmPais, 
+				ufo.sgUnidadeFederativa as rotaPreco_unidadeFederativaByIdUfOrigem_sgUnidadeFederativa, 
+				ufd.sgUnidadeFederativa as rotaPreco_unidadeFederativaByIdUfDestino_sgUnidadeFederativa, 
+				fo.sgFilial as rotaPreco_filialByIdFilialOrigem_sgFilial, 
+				fd.sgFilial as rotaPreco_filialByIdFilialDestino_sgFilial, 
+				mo.nmMunicipio as rotaPreco_municipioByIdMunicipioOrigem_nmMunicipio, 
+				md.nmMunicipio as rotaPreco_municipioByIdMunicipioDestino_nmMunicipio, 
+				ao.sgAeroporto as rotaPreco_aeroportoByIdAeroportoOrigem_sgAeroporto, 
+				ad.sgAeroporto as rotaPreco_aeroportoByIdAeroportoDestino_sgAeroporto, 
+				tlo.dsTipoLocalizacaoMunicipio as rotaPreco_tipoLocalizacaoMunicipioByIdTipoLocalizacaoOrigem_dsTipoLocalizacaoMunicipio, 
+				tld.dsTipoLocalizacaoMunicipio as rotaPreco_tipoLocalizacaoMunicipioByIdTipoLocalizacaoDestino_dsTipoLocalizacaoMunicipio)
+    	from com.mercurio.lms.tabelaprecos.model.ValorFaixaProgressiva   as vfp left join 
+    	    		vfp.tarifaPreco as t left join vfp.rotaPreco as r left join vfp.faixaProgressiva as fp 
+    	    		left join r.unidadeFederativaByIdUfOrigem as ufo 
+    	    		left join r.filialByIdFilialOrigem as fo 
+    	    		left join r.municipioByIdMunicipioOrigem as mo 
+    	    		left join r.aeroportoByIdAeroportoOrigem as ao 
+    	    		left join r.tipoLocalizacaoMunicipioByIdTipoLocalizacaoOrigem as  tlo 
+    	    		left join r.unidadeFederativaByIdUfDestino as ufd 
+    	    		left join r.filialByIdFilialDestino as fd 
+    	    		left join r.municipioByIdMunicipioDestino as md 
+    	    		left join r.aeroportoByIdAeroportoDestino as ad 
+    	    		left join r.tipoLocalizacaoMunicipioByIdTipoLocalizacaoDestino as tld 
+    	    		left join r.zonaByIdZonaDestino as zd 
+    	    		left join r.zonaByIdZonaOrigem as zo 
+    	    		left join r.paisByIdPaisDestino as paisd 
+    	    		left join r.paisByIdPaisOrigem as paiso 
+    	    where fp.id = :idFaixaProgressiva
+</query>
+</hibernate-mapping>

@@ -1,0 +1,113 @@
+<form class="form-horizontal content-padding" data-ng-submit="storeTaxaCliente()"  id="taxaClienteForm">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearFilterTaxaCliente()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="btnSalvarTaxaCliente" ng-disabled="disableBotoesCrud">
+			{{'salvar' |  translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="cliente" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-cliente
+				ng-model="data.cliente"
+				id="cliente"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.cliente.nmPessoa">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="divisaoCliente" data-labelSize="4" data-fieldSize="8">
+			<input type="text" disabled ng-model="data.divisaoCliente.nmDivisaoCliente">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="tabelaPrecos" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-tabela-preco
+				ng-model="data.tabelaPreco"
+				id="tabelaPreco"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.tabelaPreco.descricao">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="servico" data-labelSize="4" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.servico.nomeServico">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="origem" data-labelSize="3" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.dsRotaOrigem">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="destino" data-labelSize="3" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.dsRotaDestino">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="taxa" data-labelSize="3" data-fieldSize="8">
+			<select
+				adsm-chosen
+				required
+				id="idParcelaPreco"
+				ng-model="taxaCliente.idParcelaPreco"
+				ng-options="taxa.idParcelaPreco as taxa.nmParcelaPreco.value for taxa in taxas">
+				<option value=""></option>
+			</select>
+		</div>
+
+		<div adsm-add-field data-boxSize="4" data-label="moeda" data-labelSize="4" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.tabelaPreco.moeda.siglaSimbolo" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="indicador" data-labelSize="3" data-fieldSize="4">
+			<select adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+				id="tpIndicador"
+				required
+				ng-model="taxaCliente.tpIndicador"
+				ng-change="tpIndicadorChange()">
+				<option value=""></option>
+			</select>
+		</div>
+
+		<div adsm-add-field data-boxSize="4" data-label="valor" data-labelSize="4" data-fieldSize="8">
+  			<input type="text" id="valor" required ng-model="taxaCliente.vlValor" class="form-control" data-numeric data-moeda ng-disabled="vlValorDisabled" adsm-custom-validation="vlValorValidate">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="minimoKgKm" data-labelSize="3" data-fieldSize="4">
+			<input type="text" id="pesoMinimo" ng-model="taxaCliente.psMinimo" class="form-control" data-numeric ng-disabled="psMinimoDisabled" adsm-custom-validation="psMinimoValidate" >
+		</div>
+
+		<div adsm-add-field data-boxSize="4" data-label="valorExcedente" data-labelSize="4" data-fieldSize="8">
+			<input type="text" id="valorExcedente" ng-model="taxaCliente.vlExcedente" class="form-control" data-numeric data-moeda ng-disabled="vlExcedenteDisabled" adsm-custom-validation="vlExcedenteValidate">
+		</div>
+	</div>
+
+	<table adsm-table="taxaClienteTable"
+		data-adsm-table-internal-loading="true"
+		class="table adsm-table-hover table-condensed table-clickable adsm-table"
+		style="width: 100%"
+		show-checkboxes="true"
+		data-disabled-remove-button = "disableBotoesCrud"
+		data-remove-service="removeTaxaClienteTableByIds()">
+		<tbody>
+			<tr ng-repeat="row in page" ng-click="detailTaxaCliente(row)">
+				<td column-title="taxa" style="min-width: 140px; max-width: 400px;">{{ row.nmParcelaPreco }}</td>
+				<td column-title="indicador" style="min-width: 140px; max-width: 400px;">{{ row.tpTaxaIndicador }}</td>
+				<td column-title="valorIndicador" align="right" style="min-width: 140px; max-width: 400px;">{{ row.vlTaxa}}</td>
+				<td column-title="pesoMinimoKg" align="right" style="min-width: 140px; max-width: 400px;">{{ row.psMinimo | number: 3}}</td>
+				<td column-title="valorExcedenteReal" align="right" style="min-width: 140px; max-width: 400px;">{{ row.vlExcedente | currency: ''}}</td>
+		</tbody>
+	</table>
+</form>

@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz" 
+    table="MERCADORIA_PENDENCIA_MZ"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idMercadoriaPendenciaMz"
+        type="java.lang.Long"
+        column="ID_MERCADORIA_PENDENCIA_MZ"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MERCADORIA_PENDENCIA_MZ_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsProduto"
+			        type="java.lang.String"
+            column="DS_PRODUTO"
+        not-null="true"
+        length="200"
+    />
+    <!-- 
+    <property
+        name="qtVolumes"
+			        type="java.lang.Integer"
+            column="QT_VOLUMES"
+        not-null="true"
+        length="6"
+    />
+     -->
+    <property
+        name="qtUnidadesPorVolume"
+			        type="java.lang.Integer"
+            column="QT_UNIDADES_POR_VOLUME"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="vlProduto"
+			        type="java.math.BigDecimal"
+            column="VL_PRODUTO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="tpMotivoArmazenagem"
+		    column="TP_MOTIVO_ARMAZENAGEM"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">TP_MOTIVO_ARMAZENAGEM</param>
+	    </type>
+    </property>
+    <property
+        name="tpDisposicaoPendencia"
+		    column="TP_DISPOSICAO_PENDENCIA"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">TP_DISPOSICAO_PENDENCIA</param>
+	    </type>
+    </property>
+    <property
+        name="cdProduto"
+			        type="java.lang.String"
+            column="CD_PRODUTO"
+        length="10"
+    />
+    <property
+        name="dtVencimentoProduto"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO_PRODUTO"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to EnderecoEstoque 
+    <many-to-one
+        name="enderecoEstoque"
+        class="com.mercurio.lms.pendencia.model.EnderecoEstoque"
+        not-null="true"
+    >
+        <column name="ID_ENDERECO_ESTOQUE" />
+    </many-to-one>
+    -->
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to UnidadeProduto 
+    <many-to-one
+        name="unidadeProdutoByIdUnidadesPorVolume"
+        class="com.mercurio.lms.pendencia.model.UnidadeProduto"
+        not-null="true"
+    >
+        <column name="ID_UNIDADES_POR_VOLUME" />
+    </many-to-one>-->
+    
+    <!-- bi-directional many-to-one association to UnidadeProduto -->
+    <many-to-one
+        name="unidadeProdutoByIdUnidadeProduto"
+        class="com.mercurio.lms.pendencia.model.UnidadeProduto"
+        not-null="true"
+    >
+        <column name="ID_UNIDADE_PRODUTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to NaturezaProduto -->
+    <many-to-one
+        name="naturezaProduto"
+        class="com.mercurio.lms.expedicao.model.NaturezaProduto"
+        not-null="true"
+    >
+        <column name="ID_NATUREZA_PRODUTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="true"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to EntradaPendenciaMatriz -->
+    <many-to-one
+        name="entradaPendenciaMatriz"
+        class="com.mercurio.lms.pendencia.model.EntradaPendenciaMatriz"
+        not-null="true"
+    >
+        <column name="ID_ENTRADA_PENDENCIA_MATRIZ" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to MercadoriaLotePendencia -->
+    <bag
+        name="mercadoriaLotePendencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.MercadoriaLotePendencia</meta>
+ 	        <key>
+            <column name="ID_MERCADORIA_PENDENCIA_MZ" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.MercadoriaLotePendencia"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Foto -->
+    <many-to-one
+        name="foto"
+        class="com.mercurio.lms.configuracoes.model.Foto"
+        not-null="true"
+    >
+        <column name="ID_FOTO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="metricasRealizacoesMotivosColetas"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="535"
+		 columnSpacing="0"
+		 leftMargin="30"
+		 rightMargin="30"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.vol.report.metricasRealizacoes_pt_BR"
+		 whenResourceMissingType="Error">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.mercurio.lms.vol.report.MetricasRealizacoesService" />
+
+	<queryString><![CDATA[select  tipo 
+       ,count(*)
+FROM (
+SELECT id_transportado id_meio_transporte
+       ,1 TOTAL_ENT
+       ,0 NAO_REALIZADAS_ENT 
+       ,0 REENTREGA
+       ,'TE' tipo
+  FROM manifesto_entrega me 
+       inner join filial f ON f.id_filial = me.id_filial 
+       inner join manifesto m ON me.id_manifesto_entrega = m.id_manifesto 
+       inner join controle_carga cg ON cg.id_controle_carga = m.id_controle_carga 
+       inner join manifesto_entrega_documento med ON med.id_manifesto_entrega = me.id_manifesto_entrega 
+UNION ALL
+    SELECT id_transportado id_meio_transporte
+	   ,0 TOTAL_ENT
+	   ,1 NAO_REALIZADAS_ENT 
+	   ,0 REENTREGA
+	   ,'NR' tipo
+      FROM manifesto_entrega me 
+	   inner join filial f ON f.id_filial = me.id_filial 
+	   inner join manifesto m ON me.id_manifesto_entrega = m.id_manifesto
+	   inner join controle_carga cg ON cg.id_controle_carga = m.id_controle_carga 
+	   inner join manifesto_entrega_documento med ON med.id_manifesto_entrega = me.id_manifesto_entrega 
+	   inner join ocorrencia_entrega oe ON oe.id_ocorrencia_entrega = med.id_ocorrencia_entrega 
+	   and oe.tp_ocorrencia = 'N' 
+UNION ALL
+    SELECT id_transportado id_meio_transporte
+           ,0 TOTAL_ENT
+           ,0 NAO_REALIZADAS_ENT 
+           ,1 REENTREGA
+	   ,'RE' tipo
+      FROM (	
+	     SELECT cg.id_transportado, med.id_docto_servico, 
+	            count(id_manifesto_entrega_documento) 	
+               FROM manifesto_entrega me 
+		    inner join filial f ON f.id_filial = me.id_filial	
+  		    inner join manifesto m ON me.id_manifesto_entrega = m.id_manifesto	
+		    inner join controle_carga cg ON cg.id_controle_carga = m.id_controle_carga	
+		    inner join manifesto_entrega_documento med ON med.id_manifesto_entrega = me.id_manifesto_entrega	
+		    GROUP BY cg.id_transportado,med.id_docto_servico 
+                    having Count(id_manifesto_entrega_documento) > 1
+            )
+)
+group by tipo]]></queryString>
+
+	<field name="TIPO" class="java.lang.String"/>
+	<field name="COUNT(*)" class="java.math.BigDecimal"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="200"  isSplitAllowed="true" >
+				<pieChart>
+					<chart  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="21"
+						width="535"
+						height="179"
+						forecolor="#FFFFFF"
+						backcolor="#FFFFFF"
+						key="element-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					</chart>
+					<pieDataset>
+						<dataset >
+						</dataset>
+						<keyExpression><![CDATA[$F{TIPO}]]></keyExpression>
+						<valueExpression><![CDATA[$F{COUNT(*)}]]></valueExpression>
+					</pieDataset>
+					<piePlot>
+						<plot backcolor="#FFFFFF" />
+					</piePlot>
+				</pieChart>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Transparent"
+						x="1"
+						y="3"
+						width="475"
+						height="16"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="10" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{realizacoesMotivosColetas}]]></textFieldExpression>
+				</textField>
+			</band>
+		</summary>
+</jasperReport>

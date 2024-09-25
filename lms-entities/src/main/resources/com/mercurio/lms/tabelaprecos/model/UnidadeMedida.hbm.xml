@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tabelaprecos.model.UnidadeMedida" 
+    table="UNIDADE_MEDIDA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idUnidadeMedida"
+        type="java.lang.Long"
+        column="ID_UNIDADE_MEDIDA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">UNIDADE_MEDIDA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsUnidadeMedida"
+			        type="java.lang.String"
+            column="DS_UNIDADE_MEDIDA"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="sgUnidadeMedida"
+			        type="java.lang.String"
+            column="SG_UNIDADE_MEDIDA"
+        length="3"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to FaixaProgressiva -->
+    <bag
+        name="faixaProgressivas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.FaixaProgressiva</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_MEDIDA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.FaixaProgressiva"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ParcelaPreco -->
+    <bag
+        name="parcelaPrecos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.ParcelaPreco</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_MEDIDA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.ParcelaPreco"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

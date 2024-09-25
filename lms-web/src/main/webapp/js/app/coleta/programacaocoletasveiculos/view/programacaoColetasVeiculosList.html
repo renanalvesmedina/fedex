@@ -1,0 +1,141 @@
+	<form class="form-horizontal content-padding">
+	<hr style="width: 0px !important;height: 75%;color: gray;border: 1px solid gray;text-align:center;text-align: center;left: 50%;position: absolute; margin-top: 0px;">
+	<div class="fixed-top">
+		<button type="button" data-ng-click="transmitir()" class="btn btn-default btn-lg pull-right" id="btnTransmitir">{{'transmitir'| translate}}</button>
+		<button type="button" data-ng-click="consultar()" class="btn btn-default btn-lg pull-right" id="btnConsultar">{{'consultar'| translate }}</button>
+		<button type="button" data-ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="btnLimpar">{{'limpar'| translate }}</button>
+	</div>
+	<div class="row">
+		<div class="col-sm-6" style="text-align: left; padding-bottom: 10px">
+			<label class="control-label" style="color: #777; font-size: 16px;">{{ 'programacaoColetas' | translate }}</label>
+		</div>
+		<div class="col-sm-6" style="text-align: left; padding-bottom: 10px">
+			<label class="control-label" style="color: #777; font-size: 16px;">{{ 'programacaoColetasVeiculos' | translate }}</label>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'rotaColetaEntrega' | translate }}</label>
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="multi-input">
+							<div class="col-xs-9">
+								<input lms-rota-coleta-entrega="{ idFilial : filter.filial.idFilial }" type="text" ng-model="filter.rotaColetaEntregaFiltroColetas" id="rotaColetaEntregaFiltroColetas"
+									class="form-control">
+									
+							</div>
+							<div class="col-xs-3">
+								<input type="text" disabled class="form-control" ng-model="filter.rotaColetaEntregaFiltroColetas.nrRota"
+									id="rotaColetaEntregaFiltroColetas.nrRota">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'rotaColetaEntrega' | translate }}</label>
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="multi-input">
+							<div class="col-xs-9">
+								<input lms-rota-coleta-entrega="{ idFilial : filter.filial.idFilial }" type="text" ng-model="filter.rotaColetaEntrega" id="rotaColetaEntrega" class="form-control">
+							</div>
+							<div class="col-xs-3">
+								<input type="text" disabled class="form-control" ng-model="filter.rotaColetaEntrega.nrRota" id="rotaColetaEntrega.nrRota">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6"></div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'frotaPlaca' | translate }}</label>
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="multi-input">
+							<div class="col-xs-4">
+								<input type="text" disabled class="form-control" value="{{ filter.meioTransporte.nrFrota }}" id="meioTransporte.nrFrota">
+							</div>
+							<div class="col-xs-8">
+								<input lms-meio-transporte type="text" ng-model="filter.meioTransporte" id="meioTransporte" class="form-control">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<table adsm-table="listTableProgramacaoColetas" show-checkboxes="true" adsm-table-internal-loading="true">
+				<tbody>
+					<tr ng-repeat="row in page" ng-class="{'rowPriorizar': row.blPriorizar, 'rowPerigoso': row.blPerigoso}">
+						<td inline-property-filter="coleta" column-title="coleta" sortable="nrColeta" class="text-center">{{row.coleta}}</td>
+						<td inline-property-filter="dsRota" inline-property-filter="rota" column-title="rota" sortable="dsRota" class="text-center">{{row.dsRota}}</td>
+						<td inline-property-filter="nrIdentificacao" column-title="identificacao" sortable="nrIdentificacaoFormatado" class="text-center">{{row.nrIdentificacaoFormatado}}</td>
+						<td inline-property-filter="nmPessoa" column-title="cliente" sortable="nmPessoa" class="text-center">{{row.nmPessoa}}</td>
+						<td inline-property-filter="tpModoPedidoColeta" column-title="tipo" sortable="tpModoPedidoColeta" class="text-center">{{row.tpModoPedidoColeta}}</td>
+			
+						<td column-title="produtosPerigosos" class="text-center">{{row.blProdutoPerigoso}}</td>
+					
+						<td column-title="dadosColeta" ng-click="$event.stopPropagation()" class="text-center coluna-acoes">
+							<span ng-click="openModalDadosColeta(row.idPedidoColeta)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="col-sm-6">
+			<table adsm-table="listTableProgramacaoColetasVeiculos" show-checkboxes="false" adsm-table-internal-loading="true">
+				<tbody>
+					<tr ng-repeat="row in page" ng-click="detail(row)">
+						<td ng-click="$event.stopPropagation()" style="text-align: center; min-width: 40px; max-width: 40px; cursor: default; vertical-align: middle;">
+							<input ng-click="checkRadioClick(row)" type="radio" id="radio" name="groupRadio">
+						</td>
+						<td inline-property-filter="frotaPlaca" column-title="frotaPlaca" sortable="nrFrota" class="text-center">{{row.frotaPlaca}}</td>
+						<td inline-property-filter="dsRota" inline-property-filter="rota" column-title="rota" sortable="dsRota" class="text-center">{{row.dsRota}}</td>
+						<td inline-property-filter="sgFilialControleCarga" column-title="controleCarga" sortable="nrControleCarga" class="text-center">{{row.sgFilialControleCarga}}</td>
+						<td column-title="veiculo" ng-click="$event.stopPropagation()" class="text-center coluna-acoes">
+							<span ng-click="openModalVeiculo(row.id)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+						</td>
+						<td column-title="capacidade" inline-property-filter="nrCapacidadeKg" sortable="nrCapacidadeKg">{{row.nrCapacidadeKg}}</td>
+						<td column-title="valorVeiculo" inline-property-filter="vlTotalFrota" sortable="vlTotalFrota">{{row.vlTotalFrota | currency: ''}}</td>
+						<td column-title="valorColetar" inline-property-filter="vlAColetar" sortable="vlAColetar">{{row.vlAColetar | currency: ''}}</td>
+						<td column-title="pesoVeiculo" inline-property-filter="psTotalFrota" sortable="psTotalFrota">{{row.psTotalFrota}}</td>
+						<td column-title="pesoColetar" inline-property-filter="psAColetar" sortable="psAColetar">{{row.psAColetar}}</td>
+						<td column-title="capacidadeOciosa" inline-property-filter="pcOcupacaoInformado" sortable="pcOcupacaoInformado">{{row.pcOcupacaoInformado}}</td>
+						<td column-title="tipoVeiculo" inline-property-filter="dsTipoMeioTransporte" sortable="dsTipoMeioTransporte">{{row.dsTipoMeioTransporte}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</form>
+<style>
+.rowPriorizar {
+	background-color: #8FBFD6;
+}
+
+.rowPerigoso {
+	background-color: #D6BF8F;
+}
+
+.scroll-table {
+	height: 600px !important;
+	border: 1px solid #efefef !important;
+}
+
+.col-sm-6 .ng-hide{
+	display: block !important;
+}
+
+</style>

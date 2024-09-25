@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.portaria.model.ArquivoGeracao" 
+    table="ARQUIVO_GERACAO" >
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+   <id name="idArquivoGeracao"
+       type="java.lang.Long"
+       column="ID_ARQUIVO_GERACAO" >
+			<meta attribute="use-in-equals">true</meta>
+	        <generator class="sequence">
+	            <param name="sequence">ARQUIVO_GERACAO_SQ</param>
+	        </generator>
+    </id>
+    
+    <property
+		name="nmPI"
+		type="java.lang.String"
+		column="NM_PI"
+		not-null="true"
+		length="50" />
+	
+	<property
+		name="tpDocumento"
+		column="TP_DOCUMENTO"
+        not-null="false"
+        length="3" >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_DOCUMENTO</param>
+	    </type>
+    </property>
+		
+    <many-to-one
+		name="filial"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true">
+		<column name="ID_FILIAL" />
+	</many-to-one>
+    
+    <property
+		name="nrDocumento"
+		type="java.lang.String"
+		column="NR_DOCUMENTO"
+		not-null="false"
+		length="10" />
+	
+	<property
+        name="arquivo"
+		type="binaryblob"
+        column="ARQUIVO"
+        not-null="false" />
+        
+    <property
+		name="dtGeracao"
+		type="jtyearmonthday"
+		column="DT_GERACAO"
+		not-null="true"
+		length="7"/>
+	
+	<many-to-one
+        name="acaoIntegracao"
+        class="com.mercurio.lms.portaria.model.AcaoIntegracao" not-null="true" >
+        <column name="ID_ACAO_INTEGRACAO" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

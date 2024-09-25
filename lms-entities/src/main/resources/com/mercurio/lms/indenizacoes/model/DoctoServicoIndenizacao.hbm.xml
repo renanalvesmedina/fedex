@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.indenizacoes.model.DoctoServicoIndenizacao" 
+    table="DOCTO_SERVICO_INDENIZACAO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idDoctoServicoIndenizacao"
+        type="java.lang.Long"
+        column="ID_DOCTO_SERVICO_INDENIZACAO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">DOCTO_SERVICO_INDENIZACAO_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+    
+    <property
+        name="vlIndenizado"
+			        type="java.math.BigDecimal"
+            column="VL_INDENIZADO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="qtVolumes"
+			        type="java.lang.Integer"
+            column="QT_VOLUMES"
+        not-null="false"
+        length="6"
+    />
+    <property
+        name="tpPrejuizo"
+		    column="TP_PREJUIZO"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_PREJUIZO</param>
+	    </type>
+    </property>
+    
+    <!-- Associations -->
+  
+  <many-to-one
+		name="ocorrenciaNaoConformidade"
+		class="com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade"
+		not-null="false"
+	>
+		<column name="ID_OCORRENCIA_NAO_CONFORMIDADE" />
+	</many-to-one>
+	
+	<many-to-one
+		name="filialSinistro"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="false"
+	>
+		<column name="ID_FILIAL_SINISTRO" />
+	</many-to-one>
+	
+	<many-to-one
+		name="rotaSinistro"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="false"
+	>
+		<column name="ID_ROTA_SINISTRO" />
+	</many-to-one>
+	
+	<!-- bi-directional many-to-one association to Produto -->
+	<many-to-one
+		name="produto"
+		class="com.mercurio.lms.expedicao.model.Produto"
+		not-null="false"
+	>
+		<column name="ID_PRODUTO" />
+	</many-to-one>  
+
+    <!-- bi-directional one-to-many association to ReciboIndenizacaoNf -->
+    <bag
+        name="reciboIndenizacaoNfs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.ReciboIndenizacaoNf</meta>
+ 	        <key>
+            <column name="ID_DOCTO_SERVICO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.ReciboIndenizacaoNf"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to FilialDebitada -->
+    <bag
+        name="filialDebitadas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.FilialDebitada</meta>
+ 	        <key>
+            <column name="ID_DOCTO_SERVICO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.FilialDebitada"
+        />
+    </bag>    
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="true"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ReciboIndenizacao -->
+    <many-to-one
+        name="reciboIndenizacao"
+        class="com.mercurio.lms.indenizacoes.model.ReciboIndenizacao"
+        not-null="true"
+    >
+        <column name="ID_RECIBO_INDENIZACAO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

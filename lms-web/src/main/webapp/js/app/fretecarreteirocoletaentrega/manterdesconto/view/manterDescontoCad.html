@@ -1,0 +1,500 @@
+<style>
+	.glyphicon-open {
+		color: #D3D3DA !important;
+		font-size: 16px;
+	}
+	
+	.text-bold {
+		font-weight: bold;
+	}
+	
+	.scroll-vertical-table {
+		clear: both;
+		display: block;	
+		position: relative;
+		overflow: auto;
+		overflow-x: visible;
+		height: 290px;
+	}
+</style>
+
+<form class="form-horizontal content-padding" data-ng-submit="store($event)">
+	<div class="fixed-top">
+		<button type="button" 
+			data-ng-click="limparDados()" 
+			class="btn btn-default btn-lg pull-right"
+			ng-disabled="data.workflow"
+			id="limparDados">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="button" 
+			data-ng-click="cancelarDesconto()" 
+			class="btn btn-default btn-lg pull-right" 
+			ng-disabled="data.cancelar" 
+			id="cancelarDesconto">
+			{{'cancelar' |  translate }}
+		</button>
+		<button type="submit" 
+			class="btn btn-default btn-lg pull-right" 
+			id="store" 
+			ng-disabled="data.disabled">
+			{{'salvar' |  translate }}
+		</button>
+	</div>
+
+	<div class="clearfix">
+		<div adsm-sub-tab orientation="horizontal">
+			<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+				<div class="form-horizontal">										
+					<div class="row">
+						<div adsm-add-field data-boxSize="4" data-label="filial" data-labelSize="3" data-multiSize="3,9">
+							<input
+								lms-filial
+								ng-model="data.filial" 
+								id="filial" 
+								class="form-control"
+								ng-disabled="!desconto.isMatriz"
+								required>
+				
+							<input
+								type="text"
+								class="form-control"
+								id="filial.nmFilial"
+								value="{{ data.filial.nmFilial }}"
+								readonly="readonly">
+						</div>	
+						
+						<div adsm-add-field data-boxSize="4" data-label="numeroDesconto" data-labelSize="5">
+							<input
+								type="text"
+								class="form-control text-right"
+								id="nrDesconto"
+								value="{{ data.nrDescontoRfc | lpad: 10 }}"
+								readonly="readonly">
+						</div>						
+						
+						<div adsm-add-field data-label="motivo" data-labelSize="4" data-fieldSize="8">
+							<select 
+								adsm-chosen
+								id="idTipoDescontoRfc"
+								ng-model="data.tipoDescontoRfc"
+								ng-options="data as data.dsTipoDescontoRfc for data in desconto.listTipoDescontoRfc track by data.idTipoDescontoRfc"
+								required>
+								<option value=""></option>
+							</select>
+						</div>		
+					</div>
+					
+					<accordion close-others="false" id="accordionInformacoes">
+						<accordion-group is-open="isInformacoesProprietario">
+							<accordion-heading>
+								<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesProprietario, 'glyphicon-chevron-right': !isInformacoesProprietario}"></span>
+								{{'informacoesProprietario' | translate}}
+							</accordion-heading>
+						
+							<div class="row">							
+								<div adsm-add-field data-boxSize="6" data-label="proprietario" data-labelSize="2" data-multiSize="4,8">
+									<input 
+										type="text" 
+										disabled 
+										class="form-control" 
+										value="{{ data.proprietario.nrIdentificacao }}" 
+										id="proprietario.nrIdentificacao">
+									
+									<input
+										lms-proprietario
+										ng-model="data.proprietario" 
+										id="proprietario" 
+										class="form-control"
+										required>								
+								</div>
+								
+								<div adsm-add-field data-boxSize="6" data-label="frotaPlaca" data-labelSize="3" data-multiSize="5,7">
+									<input type="text" disabled class="form-control" value="{{ data.meioTransporte.nrFrota }}" id="meioTransporte.nrFrota">
+									
+									<input
+										lms-meio-transporte="{ idProprietario : data.proprietario.idProprietario }"
+										type="text" 
+										ng-model="data.meioTransporte" 
+										ng-disabled="!data.proprietario"
+										id="meioTransporte" 
+										class="form-control">							
+								</div>
+							</div>
+							<div class="row">
+								<div adsm-add-field data-boxSize="6" data-label="vigencia" data-labelSize="2" data-multiSize="6,6">
+									<input
+										adsm-date-picker
+										type="text"
+										class="form-control"
+										id="proprietario.dtInicioVigencia"
+										ng-model="data.proprietario.dtVigenciaInicial"										
+										mask="date"
+										ng-disabled="true">
+									
+									<input
+										adsm-date-picker
+										type="text"
+										class="form-control"
+										id="proprietario.dtFinalVigencia"
+										ng-model="data.proprietario.dtVigenciaFinal"										
+										mask="date"
+										ng-disabled="true">							
+								</div>
+									
+								<div adsm-add-field data-boxSize="6" data-label="semiReboque" data-labelSize="3">
+									<input
+										type="text"
+										class="form-control"
+										maxlength="25"
+										id="nrIdentificacaoSemiReboque"
+										ng-model="data.nrIdentificacaoSemiReboque">
+								</div>									
+							</div>												
+						</accordion-group>
+					
+						<accordion-group is-open="isInformacoesDesconto">
+							<accordion-heading>
+								<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesDesconto, 'glyphicon-chevron-right': !isInformacoesDesconto}"></span>
+								{{'informacoesDesconto' | translate}}
+							</accordion-heading>
+							
+							<div class="row">
+								<div adsm-add-field data-boxSize="4" data-label="situacao" data-labelSize="4">
+									<select 
+										adsm-domain="DM_STATUS_DESCONTO_RFC"
+										id="tpSituacao" 
+										ng-model="data.tpSituacao"
+										required
+										ng-disabled="!desconto.isMatriz">
+										<option value=""></option>
+									</select>
+								</div>		
+								<div adsm-add-field data-boxSize="4" data-label="tipoOperacao" data-labelSize="4">
+									<select 
+										adsm-domain="DM_TIPO_OPERACAO_PROPRIETARIO"
+										id="tpOperacao" 
+										ng-model="data.tpOperacao"
+										required>
+										<option value=""></option>
+									</select>
+								</div>
+								<div adsm-add-field data-boxSize="4" data-label="dataInicio" data-labelSize="4">
+									<input
+										adsm-date-picker
+										type="text"
+										class="form-control"
+										id="dtInicioDesconto"
+										ng-model="data.dtInicioDesconto"										
+										mask="date"
+										ng-disabled="true">
+								</div>		
+							</div>
+							<div class="row">
+								<div adsm-add-field data-boxSize="4" data-label="situacaoPendencia" data-labelSize="4">
+									<input
+										type="text"
+										class="form-control"
+										id="situacaoPendencia"
+										ng-model="data.pendencia.tpSituacaoPendencia.description.value"
+										readonly="readonly">
+								</div>								
+								<div adsm-add-field data-boxSize="4" data-label="valorDesconto" data-labelSize="4">
+									<input
+										type="text"
+										class="form-control text-right"
+										id="vlTotalDesconto"
+										data-numeric data-moeda
+										ng-model="data.vlTotalDesconto"
+										ng-disabled="true">
+								</div>			
+								<div adsm-add-field data-boxSize="4" data-label="valorSaldoDevedor" data-labelSize="4">
+									<input
+										type="text"
+										class="form-control text-right"
+										id="vlSaldoDevedor"
+										data-numeric data-moeda
+										ng-model="data.vlSaldoDevedor"
+										ng-disabled="true">
+								</div>
+							</div>			
+							<div class="row">
+								<div adsm-add-field data-boxSize="4" data-label="observacao" data-labelSize="4">
+									<textarea rows="2" 
+										maxlength="300" 
+										ng-model="data.obDesconto" 
+										id="observacao" 
+										class="form-control" 
+										style="resize: none;"
+										required></textarea>
+								</div>	
+							</div>				
+						</accordion-group>
+									
+						<accordion-group is-open="isInformacoesRecibo">
+							<accordion-heading>
+								<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesRecibo, 'glyphicon-chevron-right': !isInformacoesRecibo}"></span>
+								{{'informacoesRecibo' | translate}}
+							</accordion-heading>
+													
+							<div class="row">
+								<div adsm-add-field data-boxSize="6" data-label="controleCarga" data-labelSize="3" data-multiSize="6,6">
+									<input
+										lms-controle-carga
+										type="text"
+										ng-model="data.controleCarga" 
+										id="controleCarga" 
+										ng-disabled="!data.tpOperacao || data.tpOperacao.value == 'CE'"
+										class="form-control">
+									
+									<input type="text" disabled class="form-control" value="{{ data.controleCarga.nrControleCarga | lpad: 6 }}" id="controleCarga.nrControleCarga">								
+								</div>
+												
+								<div adsm-add-field data-boxSize="6" data-label="rim" data-labelSize="3">
+									<input
+										type="text"
+										class="form-control"
+										maxlength="6"
+										data-numeric
+										id="nrReciboIndenizacao"
+										ng-disabled="!data.tpOperacao || data.tpOperacao.value != 'CE'"										
+										ng-model="data.nrReciboIndenizacao">
+								</div>									
+							</div>
+						</accordion-group>
+					</accordion>	
+				</div>
+			</div>
+	
+			<div adsm-tab-panel="parcelas" heading="{{'parcelas' | translate}}">
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="row">	
+							<div adsm-add-field data-boxSize="12" data-label="valorDesconto" data-labelSize="5">
+									<input
+										type="text"
+										class="form-control"
+										id="vlTotalDesconto"
+										data-numeric data-moeda
+										ng-model="data.vlTotalDesconto"
+										ng-disabled="data.bloquearParcelas"
+										required>
+								</div>
+						</div>
+						<div class="row">								
+							<div adsm-add-field data-boxSize="12" data-label="dataInicio" data-labelSize="5">
+									<input id="dtInicioDescontoFinal" 
+										adsm-date-picker 
+										ng-model="data.dtInicioDesconto" 
+										mask="date" 
+										class="form-control" 										
+										data-start="desconto.dtAtual"
+										min="desconto.dtAtual"
+										ng-disabled="data.bloquearParcelas"
+										required>
+									
+							</div>	
+						</div>
+						
+						<div class="row">					
+							<div adsm-add-field data-boxSize="12" data-label="periodo" data-labelSize="5">
+								<input
+									type="text"
+									class="form-control"
+									id="qtDias"
+									data-numeric
+									maxlength="4"
+									ng-model="data.qtDias"
+									ng-disabled="data.bloquearParcelas">
+							</div>	
+						</div>
+						
+						
+						<div class="row" ng-hide="data.disabled || data.bloquearParcelas">								
+							<div adsm-add-field data-boxSize="12" data-label="tipoParcelamento" data-labelSize="5">
+								<select
+									data-adsm-chosen
+									id="tipoDescontoSelecao"
+									data-ng-options="data.label for data in desconto.tiposParcelamento"
+									data-ng-model="desconto.tipoParcelamentoSelecionado"
+									data-ng-change="zerarParametros()">
+									<option value=""></option>									
+								</select>				
+							</div>
+						</div>
+						
+						
+						
+						
+						<div class="row" ng-show="desconto.tipoParcelamentoSelecionado == tipoParcelamentoNumeroParcela || data.qtParcelas">
+							<div adsm-add-field data-boxSize="12" data-label="parcelas" data-labelSize="5">
+								<input
+									type="text"
+									class="form-control"
+									id="qtParcelas"
+									data-numeric
+									maxlength="2"
+									ng-model="data.qtParcelas"
+									ng-disabled="data.bloquearParcelas"
+									>
+							</div>			
+						</div>
+						
+						<div class="row" ng-show="desconto.tipoParcelamentoSelecionado == tipoParcelamentoPercentual || data.pcDesconto">
+							<div adsm-add-field data-boxSize="12" data-label="%" data-labelSize="5">
+								<input
+									type="text"
+									class="form-control"
+									id="pcDesconto"
+									data-numeric 
+									data-percentual
+									ng-model="data.pcDesconto"
+									ng-disabled="data.bloquearParcelas"
+									>
+							</div>
+						</div>
+						<div class="row" ng-show="desconto.tipoParcelamentoSelecionado == tipoParcelamentoValorFixo || data.vlFixoParcela">
+							<div adsm-add-field data-boxSize="12" data-label="valorFixo" data-labelSize="5">
+								<input
+									type="text"
+									class="form-control"
+									id="vlFixoParcela"
+									data-numeric 
+									data-moeda
+									ng-model="data.vlFixoParcela"
+									ng-disabled="data.bloquearParcelas" 
+									>
+							</div>
+						</div>
+						<div class="row">
+							<button type="button" 
+								data-ng-click="generateParcelas()" 
+								ng-disabled="data.disabled || data.bloquearParcelas" 
+								class="btn btn-default btn-lg pull-right" 
+								id="generate">
+								{{'gerar' |  translate }}
+							</button>
+							<button type="button" 
+								data-ng-click="clearParcelas()" 
+								ng-disabled="data.disabled" 
+								class="btn btn-default btn-lg pull-right" 
+								id="clean">
+								{{'limpar' |  translate }}
+							</button>							
+						</div>
+					</div>
+					<div class="col-sm-8">
+						<div class="scroll-vertical-table">
+							<table class="table table-condensed adsm-table" style="width: 100%">
+								<thead>
+									<tr>
+										<th width="50" align="right">{{'parcela' | translate}}</th>
+										<th width="200" align="center">{{'data' | translate}}</th>
+										<th width="100" align="right">{{'valor' | translate}}</th>
+										<th width="80">{{'preFatura' | translate}}</th>
+										<th width="300">{{'observacao' | translate}}</th>
+										
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="row in data.parcelas" height="28">	
+										<td>{{ row.numeroParcela }}</td>
+										<td>{{ row.data | customDate }}</td>
+										<td>{{ row.valor | currency }}</td>
+										<td>{{ row.recibo.sgFilial }} {{ row.recibo.nrReciboFreteCarreteiro | lpad : 8 }}</td>
+										<td>{{ row.descricaoParcela }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>												
+				</div>
+			</div>
+	
+			<div adsm-tab-panel="anexos" heading="{{'anexos' | translate}}" event="loadAbaAnexos()">
+				<div class="row">
+					<div class="col-sm-12" ng-hide="data.disabled">
+						<div class="form-group">
+							<label class="col-lg-2 control-label">{{'descricao' | translate }}</label>
+							<div class="col-lg-9" style="height: 35px;">
+								<input class="form-control" ng-model="desconto.descricao" id="descAnexo" maxlength="250" ng-change="changeDescricao()">	
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row" ng-hide="data.disabled">
+					<div class="col-sm-12">
+						<div class="form-group">
+							<label class="col-lg-2 control-label">{{'arquivo' | translate }}</label>
+							<div class="col-lg-8">
+								<div data-adsm-file-upload="fileUploadParams"></div>
+							</div>
+							<div class="col-lg-1">
+								<button type="button" data-ng-click="addFile();" class="btn btn-default btn-lg pull-right" id="upload">
+									{{'adicionar' | translate }}
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+									
+				<div class="row" ng-hide="data.disabled">
+					<div class="col-sm-12">
+						<div class="grid-btn-container">
+							<button type="button" 
+								data-ng-click="removeAnexosByIds()" 
+								class="btn btn-default btn-lg" 
+								id="excluir" 
+								data-adsm-loading="excluindo" 
+								data-ng-disabled="data.disabled">
+								<span class="glyphicon glyphicon-trash"></span>
+							</button>
+						</div>
+					</div>
+				</div>
+			
+					<table adsm-table="anexosTableParams"
+						data-adsm-table-internal-loading="true" 
+						class="table table-condensed adsm-table"							
+						data-show-checkboxes="!!data.disabled"
+						style="width: 100%">
+						<tbody>
+							<tr ng-repeat="row in page" ng-class="{'text-bold' : !row.idAnexoDescontoRfc}">	
+								<td column-title="descricao"
+									ng-attr-title="{{row.dsAnexo}}" 
+									style="min-width: 100px; max-width: 250px;">
+									{{ row.dsAnexo }}
+								</td>
+								<td column-title="nomeArquivo"
+									ng-attr-title="{{row.nmArquivo}}" 
+									>
+									{{ row.nmArquivo }}
+								</td>
+								<td column-title="usuario"
+									style="min-width: 100px; max-width: 150px;">
+									{{ row.nmUsuario }}
+								</td>
+								<td column-title="dataCriacao"
+									style="min-width: 100px; max-width: 100px;"
+									align="center">
+									{{ row.dhCriacao | dateTimeZone }}
+								</td>					
+								<td column-title="download"
+									style="min-width: 30px; max-width: 30px;"
+									align="center">
+									<span ng-if="row.idAnexoDescontoRfc"
+										data-adsm-loading="downloading"
+										data-ng-click="downloadFile(row.idAnexoDescontoRfc)" 
+										class="glyphicon glyphicon-save"/>
+									<span ng-if="!row.idAnexoDescontoRfc"
+										class="glyphicon glyphicon-open"
+										title="{{'aguardandoEnvio' | translate}}"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+			</div>
+		</div>
+	</div>		
+</form>

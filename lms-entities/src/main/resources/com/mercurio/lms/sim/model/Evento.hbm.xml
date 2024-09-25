@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.sim.model.Evento" 
+    table="EVENTO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idEvento"
+        type="java.lang.Long"
+        column="ID_EVENTO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EVENTO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="cdEvento"
+			        type="java.lang.Short"
+            column="CD_EVENTO"
+        not-null="true"
+        unique="true"
+        length="3"
+    />
+    <property
+        name="tpEvento"
+		    column="TP_EVENTO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_EVENTO_DOCUMENTO_SERVICO</param>
+	    </type>
+    </property>
+    <property
+        name="blExibeCliente"
+			        type="sim_nao"
+            column="BL_EXIBE_CLIENTE"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blGeraParceiro"
+			        type="sim_nao"
+            column="BL_GERA_PARCEIRO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to LocalEvento -->
+    <many-to-one
+        name="localEvento"
+        class="com.mercurio.lms.sim.model.LocalEvento"
+        not-null="true"
+    >
+        <column name="ID_LOCAL_EVENTO" />
+    </many-to-one>
+    <many-to-one
+        name="cancelaEvento"
+        class="com.mercurio.lms.sim.model.Evento"
+        not-null="false"
+    >
+        <column name="ID_EVENTO_CANCELA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DescricaoEvento -->
+    <many-to-one
+        name="descricaoEvento"
+        class="com.mercurio.lms.sim.model.DescricaoEvento"
+        not-null="true"
+    >
+        <column name="ID_DESCRICAO_EVENTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to LocalizacaoMercadoria -->
+    <many-to-one
+        name="localizacaoMercadoria"
+        class="com.mercurio.lms.sim.model.LocalizacaoMercadoria"
+        not-null="true"
+    >
+        <column name="ID_LOCALIZACAO_MERCADORIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to OcorrenciaEntrega -->
+    <bag
+        name="ocorrenciaEntregas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.OcorrenciaEntrega</meta>
+ 	        <key>
+            <column name="ID_EVENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.OcorrenciaEntrega"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to OcorrenciaPendencia -->
+    <bag
+        name="ocorrenciaPendencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.OcorrenciaPendencia</meta>
+ 	        <key>
+            <column name="ID_EVENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.OcorrenciaPendencia"
+        />
+    </bag>    
+    <!-- bi-directional one-to-many association to EventoClienteRecebe -->
+    <bag
+        name="eventoClienteRecebes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.EventoClienteRecebe</meta>
+ 	        <key>
+            <column name="ID_EVENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sim.model.EventoClienteRecebe"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to EventoDocumentoServico -->
+    <bag
+        name="eventoDocumentoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.EventoDocumentoServico</meta>
+ 	        <key>
+            <column name="ID_EVENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sim.model.EventoDocumentoServico"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to EventoCliente -->
+    <bag
+        name="eventoClientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.EventoCliente</meta>
+ 	        <key>
+            <column name="ID_EVENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.EventoCliente"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.entrega.model.OcorrenciaEntrega" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="OCORRENCIA_ENTREGA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_OCORRENCIA_ENTREGA" name="idOcorrenciaEntrega" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">OCORRENCIA_ENTREGA_SQ</param>
+        </generator>
+    </id>
+
+    <property column="CD_OCORRENCIA_ENTREGA" length="3" name="cdOcorrenciaEntrega" not-null="true" type="java.lang.Short" unique="true"/>
+    <property column="DS_OCORRENCIA_ENTREGA_I" length="500" name="dsOcorrenciaEntrega" not-null="true" type="varcharI18n"/>
+    <property column="BL_DESCONTO_DPE" length="1" name="blDescontoDpe" not-null="true" type="sim_nao">
+    </property>
+    <property column="TP_OCORRENCIA" length="1" name="tpOcorrencia" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_OCORRENCIA_ENTREGA</param>
+	    </type>
+    </property>
+    
+    <property column="BL_CONTABILIZAR_ENTREGA" length="1" name="blContabilizarEntrega" not-null="true" type="sim_nao">
+    </property>
+    
+    <property column="BL_CONT_TENT_ENTREGA" length="1" name="blContabilizarTentativaEntrega" not-null="true" type="sim_nao">
+    </property>    
+    
+    <property column="BL_OCASIONADO_MERCURIO" length="1" name="blOcasionadoMercurio" not-null="true" type="sim_nao">
+    </property>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+    
+    <!-- bi-directional one-to-many association to VolRecusas -->
+    <bag cascade="none" inverse="true" lazy="true" name="volRecusas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolRecusas</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_ENTREGA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vol.model.VolRecusas"/>
+    </bag>
+  
+    <!-- bi-directional one-to-many association to ManifestoEntregaDocumento -->
+    <bag cascade="none" inverse="true" lazy="true" name="manifestoEntregaDocumentos">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ManifestoEntregaDocumento</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_ENTREGA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.ManifestoEntregaDocumento"/>
+    </bag>
+
+    <!-- bi-directional one-to-many association to EventoVolume -->
+    <bag cascade="none" inverse="true" lazy="true" name="eventoVolumes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.EventoVolume</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_ENTREGA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.sim.model.EventoVolume"/>
+    </bag>
+
+    <!-- bi-directional many-to-one association to DescricaoEvento -->
+    <many-to-one class="com.mercurio.lms.sim.model.Evento" name="evento" not-null="false">
+        <column name="ID_EVENTO"/>
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to OcorrenciaPendencia -->
+    <many-to-one class="com.mercurio.lms.pendencia.model.OcorrenciaPendencia" name="ocorrenciaPendencia" not-null="false">
+        <column name="ID_OCORRENCIA_PENDENCIA"/>
+    </many-to-one>
+	
+	
+	
+</class>
+</hibernate-mapping>

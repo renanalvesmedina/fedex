@@ -1,0 +1,670 @@
+<style type="text/css">
+	.modal-precos .modal-dialog {
+		min-width: 875px;
+	}
+
+	#addFaixa {
+		vertical-align: middle;
+	}
+
+	.scroll-vertical-table {
+		clear: both;
+		display: block;
+		position: relative;
+		overflow: auto;
+		overflow-x: visible;
+		height: auto;
+		min-height: 316px;
+		max-height: 290px;
+	}
+	
+	.panel {
+		margin-bottom: 10px;	
+	}
+	
+	.panel-heading {
+		padding: 5px 10px;	
+	}
+	
+	#tableFaixaPreco .remove {
+		vertical-align: middle;
+	}	
+	
+	.empty {
+		font-size: 14px;
+	}
+</style>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form name="modalForm" novalidate ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="salvarPrecos()">	
+		<div class="alert-container" data-ng-show="popupAlerts.length">
+			<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+				<span data-ng-bind="alert.msg"></span>
+			</alert>
+		</div>
+
+		<div class="clearfix">
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="filial" data-labelSize="2" data-multiSize="4,8" ng-if="currentDataType.visible > 4">
+			     	<input
+						lms-filial
+						type="text"
+						ng-model="data.filialRotaColetaEntrega"
+						id="filial"
+						class="form-control"
+						ng-disabled="true"
+						autocomplete="off"
+						ng-required="currentDataType.visible == 5">
+
+			     	<input
+						type="text"
+						disabled
+						class="form-control"
+						ng-model="data.filialRotaColetaEntrega.nmFilial"
+						id="filial.nmFilial">
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="rota" data-labelSize="2" data-multiSize="4,8" ng-if="currentDataType.visible > 4">
+			     	<input
+						type="text"
+						disabled
+						class="form-control"
+						ng-model="data.rotaColetaEntrega.nrRota"
+						id="rotaColetaEntrega.nrRota">
+
+			     	<input
+						lms-rota-coleta-entrega="{ idFilial : data.filialRotaColetaEntrega.idFilial }"
+						type="text"
+						ng-model="data.rotaColetaEntrega"
+						id="rotaColetaEntrega"
+						class="form-control"
+						autocomplete="off"
+						ng-disabled="data.idTabelaFcValores"
+						ng-required="currentDataType.visible == 5">
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="proprietario" data-labelSize="2" data-multiSize="4,8" ng-if="currentDataType.visible > 3">
+			     	<input
+						type="text"
+						disabled
+						class="form-control"
+						ng-model="data.proprietario.nrIdentificacao"
+						id="proprietario.nrIdentificacao">
+
+			     	<input
+						lms-proprietario
+						type="text"
+						ng-model="data.proprietario"
+						id="rota"
+						class="form-control"
+						autocomplete="off"
+						ng-disabled="data.idTabelaFcValores"
+						ng-required="currentDataType.visible == 4">
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="cliente" data-labelSize="2" data-multiSize="5,7" ng-if="currentDataType.visible > 2">
+			     	<input
+						lms-cliente
+						type="text"
+						ng-model="data.cliente"
+						id="remetente"
+						autocomplete="off"
+						ng-disabled="data.idTabelaFcValores"
+						ng-required="currentDataType.visible == 3"
+						class="form-control">
+						
+					<input
+						type="text"
+						ng-model="data.cliente.nmPessoa"
+						id="remetente"
+						class="form-control"
+						readonly="readonly">
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="destinatario" data-labelSize="2" data-multiSize="5,7" ng-if="currentDataType.visible > 2">			     							
+					<input type='checkbox' ng-model="data.destinatario" ng-disabled="data.idTabelaFcValores || !data.cliente">
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="pais" data-labelSize="2" data-multiSize="3,9" ng-if="currentDataType.visible > 1">
+					<input ng-disabled="true"
+						class="form-control"
+						ng-model="data.pais.sgPais"
+						id="pais.sgPais">
+
+			     	<input
+						lms-pais
+						type="text"
+						ng-model="data.pais"
+						id="pais"
+						class="form-control"
+						ng-change="changePais()"
+						autocomplete="off"
+						ng-disabled="data.idTabelaFcValores"
+						ng-required="currentDataType.visible == 2">
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="uf" data-labelSize="2" data-multiSize="3,9" ng-if="currentDataType.visible > 1">
+					<input ng-disabled="true"
+						class="form-control"
+						ng-model="data.unidadeFederativa.sgUnidadeFederativa"
+						id="uf.sgUnidadeFederativa">
+
+					<input lms-unidade-federativa="{ idPais : data.pais.idPais }"
+						type="text"
+						ng-model="data.unidadeFederativa"
+						id="uf"
+						class="form-control"
+						autocomplete="off"
+						ng-change="changeUnidadeFederativa()"
+						ng-disabled="data.idTabelaFcValores || !data.pais"
+						ng-required="currentDataType.visible == 2">
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="municipio" data-labelSize="2" ng-if="currentDataType.visible > 1">
+			     	<input
+						lms-municipio="{ idPais : data.pais.idPais, idUnidadeFederativa : data.unidadeFederativa.idUnidadeFederativa }"
+						type="text"
+						ng-model="data.municipio"
+						id="municipio"
+						class="form-control"
+						autocomplete="off"
+						ng-disabled="data.idTabelaFcValores  || !data.pais || !data.unidadeFederativa"
+						ng-required="currentDataType.visible == 2">
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="tipoTransporte" data-labelSize="2" ng-if="currentDataType.visible > 0">
+					<select
+						adsm-chosen
+						id="idTipoMeioTransporte"
+						ng-model="data.tipoMeioTransporte"
+						ng-options="data as data.dsTipoMeioTransporte for data in listTipoMeioTransporte track by data.idTipoMeioTransporte"
+						ng-disabled="data.idTabelaFcValores"
+						ng-required="currentDataType.visible == 1">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="meioTransporte" data-labelSize="2" data-multiSize="4,8" ng-if="currentDataType.visible == -1">
+			     	<input type="text"
+						disabled
+						class="form-control"
+						ng-model="data.meioTransporte.nrFrota"
+						id="meioTransporte.nrFrota">
+
+			     	<input
+						lms-meio-transporte
+						type="text"
+						ng-model="data.meioTransporte"
+						id="rota"
+						class="form-control"
+						autocomplete="off"
+						ng-disabled="data.idTabelaFcValores"
+						ng-required="currentDataType.visible == -1">
+				</div>
+			</div>
+
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="precos" heading="{{'precos' | translate}}">
+					<div class="row">
+			        	<div class="col-sm-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'principais' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+							            <div adsm-add-field data-boxSize="3" data-label="conhecimento" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlConhecimento"
+							                       id="vlConhecimento_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="3" data-label="evento" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlEvento"
+							                       id="vlEvento_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="3" data-label="volume" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlVolume"
+							                       id="vlVolume_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="3" data-label="diaria" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlDiaria"
+							                       id="vlDiaria_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							       	</div>
+							       	<div class="row">
+							            <div adsm-add-field data-boxSize="3" data-label="kmExcedente" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlKmExcedente"
+							                       id="vlKmExcedente_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							        </div>
+							   </div>
+							</div>
+						</div>
+
+						<div class="col-sm-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'gerais' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+							        <div class="row">							          
+							            <div adsm-add-field data-boxSize="3" data-label="hora" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlHora"
+							                       id="vlHora_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="3" data-label="porSaida" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlPreDiaria"
+							                       id="vlPreDiaria_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="3" data-label="dedicado" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlDedicado"
+							                       id="vlDedicado_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="3" data-label="pernoite" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlPernoite"
+							                       id="vlPernoite_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							        </div>
+
+							        <div class="row">
+							            <div adsm-add-field data-boxSize="3" data-label="capataziaCliente" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlCapataziaCliente"
+							                       id="vlCapataziaCliente_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>								          
+							            <div adsm-add-field data-boxSize="3" data-label="transferencia" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlTransferencia"
+							                       id="vlTransferencia_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							        </div>
+								</div>
+							 </div>
+					 	</div>
+					</div>
+
+			        <div class="row">
+			        	<div class="col-sm-6">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'valorAjudante' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+									 <div adsm-add-field data-boxSize="6" data-label="valor" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.vlAjudante"
+							                       id="vlAjudante_"
+							                       data-numeric
+							                       data-moeda
+							                       ng-required="true">
+							            </div>
+							            <div adsm-add-field data-boxSize="6" data-label="quantidade" data-labelSize="6">
+							                <input type="text"
+							                       class="form-control text-right"
+							                       ng-model="data.qtAjudante"
+							                       id="qtAjudante_"
+							                       data-numeric="{maxLength: '2'}"
+							                       ng-required="true">
+							            </div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'valorMercadoria' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+									<div adsm-add-field data-boxSize="6" data-label="valorMinimo" data-labelSize="6">
+						                <input type="text"
+						                       class="form-control text-right"
+						                       ng-model="data.vlMercadoriaMinimo"
+						                       id="vlMercadoriaMinimo_"
+						                       data-numeric
+						                       data-moeda
+						                       ng-required="true">
+						            </div>
+						            <div adsm-add-field data-boxSize="6" data-label="percentual" data-labelSize="6">
+						                <input type="text"
+						                       class="form-control text-right"
+						                       ng-model="data.pcMercadoria"
+						                       id="pcMercadoria_"
+						                       data-numeric="{maxLength: '5'}"
+						                       data-moeda
+						                       ng-required="true">
+					            	</div>
+								</div>
+							</div>
+						</div>
+			        </div>
+
+			        <div class="row">
+			        	<div class="col-sm-6">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'valorFreteBruto' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+									<div adsm-add-field data-boxSize="6" data-label="valorMinimo" data-labelSize="6">
+						                <input type="text"
+						                       class="form-control text-right"
+						                       ng-model="data.vlFreteMinimo"
+						                       id="vlFreteMinimo_"
+						                       data-numeric
+						                       data-moeda
+						                       ng-required="true">
+						            </div>
+						            <div adsm-add-field data-boxSize="6" data-label="percentual" data-labelSize="6">
+						                <input type="text"
+						                       class="form-control text-right"
+						                       ng-model="data.pcFrete"
+						                       id="pcFrete_"
+						                       data-numeric="{maxLength: '5'}"
+						                       data-moeda
+						                       ng-required="true">
+						            </div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'valorFreteLiquido' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+									<div adsm-add-field data-boxSize="6" data-label="valorMinimo" data-labelSize="6">
+						                <input type="text"
+						                       class="form-control text-right"
+						                       ng-model="data.vlFreteMinimoLiq"
+						                       id="vlFreteMinimoLiq"
+						                       data-numeric
+						                       data-moeda
+						                       ng-required="true">
+						            </div>
+						            <div adsm-add-field data-boxSize="6" data-label="percentual" data-labelSize="6">
+						                <input type="text"
+						                       class="form-control text-right"
+						                       ng-model="data.pcFreteLiq"
+						                       id="pcFreteLiq"
+						                       data-numeric="{maxLength: '5'}"
+						                       data-moeda
+						                       ng-required="true">
+					            	</div>
+								</div>
+							</div>
+						</div>
+			        </div>
+			        
+			        <div class="row" ng-if="!isGeral">
+			        	<div class="col-sm-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<span class="glyphicon glyphicon-usd"></span>
+									<strong>{{'informacoes' | translate}}</strong>
+								</div>
+								<div class="panel-body">
+									<div adsm-add-field data-boxSize="6" data-label="usuarioCriacao" data-labelSize="3" data-multiSize="4,8">
+										<input
+											type="text"
+											ng-model="data.usuarioCriacao"
+											lms-usuario-lms
+											disabled="true"
+											class="form-control">
+							
+										<input
+											type="text"
+											ng-model="data.usuarioCriacao.nmUsuario"
+											class="form-control"
+											disabled="true">							
+									</div>
+									
+									<div adsm-add-field data-boxSize="6" data-label="dataCriacao" data-labelSize="4" data-fieldSize="7">
+										<input id="dtCriacao" 
+											adsm-date-picker 
+											ng-model="data.dtCriacao" 
+											mask="date" 
+											class="form-control"
+											readonly="readonly">
+									</div>			
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+		  		<div adsm-tab-panel="faixasPeso" heading="{{'faixasPeso' | translate}}">
+
+					<div class="row" ng-if="!disabled">
+						<div class="col-sm-12">
+							<div adsm-add-field data-boxSize="3" data-label="C&aacute;lculo faixa &uacute;nica" data-labelSize="4">
+								<input type="checkbox"
+								   id="blCalculoFaixaUnica"
+								   ng-model="faixa.blCalculoFaixaUnica"
+								   ng-click="clearSecondComponent()"
+								   data-ng-disabled="isReadOnly"
+								/>
+							</div>
+							<div class="col-sm-3"/>
+							<div class="col-sm-3"/>
+							<div class="col-sm-2"/>
+							<div class="col-sm-1">
+
+								<div class="form-group">
+									<span class="col-lg-8" />
+									<span data-ng-click="addFaixa()"
+										  class="glyphicon glyphicon-plus col-lg-4"
+										  id="addFaixa"
+										  title="{{ 'adicionar' | translate }}" />
+								</div>
+							</div>
+
+						</div>
+						<div class="col-sm-12">
+							<div adsm-add-field data-boxSize="3" data-label="faixaInicial" data-labelSize="4">
+							   <input type="text"
+									  class="form-control text-right"
+									  ng-model="faixa.psInicial"
+									  id="psInicial_"
+									  data-numeric="{vMin: '0', mDec: 3}"
+									  ng-disabled="true">
+							</div>
+
+							<div adsm-add-field data-boxSize="3" data-label="faixaFinal" data-labelSize="4">
+							   <input type="text"
+									  class="form-control text-right"
+									  ng-model="faixa.psFinal"
+									  id="psFinal_"
+									  data-numeric="{vMin: '0',mDec: 3}">
+							</div>
+
+							<div adsm-add-field data-boxSize="3" data-label="Primeiro Valor" data-labelSize="4">
+							   <input type="text"
+									  class="form-control text-right"
+									  ng-model="faixa.vlValor"
+									  id="vlValor_"
+									  data-numeric
+									  data-moeda
+									  data-numeric="{vMin: '0.01',mDec: 2}">
+							</div>
+
+							<div adsm-add-field data-boxSize="3" data-label="Primeiro Tipo Fator" data-labelSize="4">
+								<select adsm-domain="DM_FATOR_FAIXA_PESO"
+										id="tpFatorPrimeiro"
+										ng-model="faixa.tpFator"
+										ng-disabled="!faixa.blCalculoFaixaUnica">
+									<option value=""></option>
+								</select>
+							</div>
+
+						</div>
+
+						<div class="col-sm-12">
+							<div class="col-lg-3"/>
+							<div class="col-lg-3"/>
+							<div adsm-add-field data-boxSize="3" data-label="Segundo Valor" data-labelSize="4">
+								<input type="text"
+									   class="form-control text-right"
+									   ng-model="faixa.vlValorSegundo"
+									   id="vlValorSegundo"
+									   data-numeric
+									   data-moeda
+									   data-numeric="{vMin: '0.01',mDec: 2}"
+									   ng-disabled="!faixa.blCalculoFaixaUnica">
+							</div>
+
+							<div adsm-add-field data-boxSize="3" data-label="Segundo Tipo Fator" data-labelSize="4">
+								<select adsm-domain="DM_FATOR_FAIXA_PESO"
+										id="tpFatorSegundo"
+										ng-model="faixa.tpFatorSegundo"
+										ng-disabled="!faixa.blCalculoFaixaUnica">
+									<option value=""></option>
+								</select>
+							</div>
+
+						</div>
+					</div>
+					<div class="row" ng-if="disabled">
+						<div class="col-sm-12">
+							<div adsm-add-field data-boxSize="3" data-label="C&aacute;lculo faixa &uacute;nica" data-labelSize="4">
+								<input type="checkbox"
+									   id="blCalculoFaixaUnicaFixa"
+									   ng-model="faixa.blCalculoFaixaUnica"
+									   ng-disabled="true"
+								/>
+							</div>
+						</div>
+					</div>
+				    <div class="scroll-vertical-table">
+						<table id="tableFaixaPreco" class="table adsm-table-hover table-condensed adsm-table"
+							style="width: 100%">
+							<thead>
+								<tr>
+									<th width="70" ng-if="!disabled">{{'remover' | translate}}</th>
+									<th>{{'faixaInicial' | translate}}</th>
+									<th>{{'faixaFinal' | translate}}</th>
+									<th>Primeiro {{'valor' | translate}}</th>
+									<th>Primeiro {{'tpFator' | translate}}</th>
+									<th>Segundo {{'valor' | translate}}</th>
+									<th>Segundo {{'tpFator' | translate}}</th>
+								</tr>
+							</thead>
+
+							<tbody>
+								<tr align="center" class="empty" ng-if="data.listTabelaFcFaixaPeso.length == 0">
+									<td style="background: #f8f8f8;" colspan="7">
+										{{ 'nenhumItem' | translate }}
+									</td>
+								</tr>
+								<tr ng-repeat="row in data.listTabelaFcFaixaPeso" ng-if="data.listTabelaFcFaixaPeso.length > 0">
+									<td class="remove" align="center" ng-if="!disabled">
+										<span class="glyphicon glyphicon-remove" data-ng-click="removeFaixa(row)" ng-show="$last" />
+									</td>
+									<td align="right">
+										{{row.psInicial | number: 3 }}
+									</td>
+									<td align="right">
+										{{row.psFinal | number: 3 }}
+									</td>
+									<td align="right">
+										{{row.vlValor | number: 2 }}
+									</td>
+									<td style="overflow:hidden;">
+										<select adsm-domain="DM_FATOR_FAIXA_PESO" id="tpFator" ng-model="row.tpFator" ng-disabled="true" />
+									</td>
+									<td align="right">
+										{{row.vlValorSegundo | number: 2 }}
+									</td>
+									<td style="overflow:hidden;">
+										<select adsm-domain="DM_FATOR_FAIXA_PESO" id="tpFator_2" ng-model="row.tpFatorSegundo" ng-disabled="true" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				
+				<div class="modal-footer" ng-if="!disabled && !isGeral">
+					<div class="pull-right">
+						<button class="fix-btn" 
+							type="button" 
+							ng-click="removeTabelaValoresById()"
+							ng-disabled="!data.idTabelaFcValores" 
+							data-ng-bind="'excluir' | translate" />
+							
+						<button class="fix-btn" 
+							type="submit" 
+							data-ng-bind="'salvar' | translate" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

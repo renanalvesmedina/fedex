@@ -1,0 +1,385 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contratacaoveiculos.model.Proprietario" 
+    table="PROPRIETARIO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id name="idProprietario" column="ID_PROPRIETARIO">
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>		
+
+    <property
+        name="tpProprietario"
+		column="TP_PROPRIETARIO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_PROPRIETARIO</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacao"
+		column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_PESSOA</param>
+	    </type>
+    </property>
+    <property
+        name="nrPis"
+		type="java.lang.Long"
+        column="NR_PIS"
+        length="11"
+    />
+    <property
+        name="nrDependentes"
+		type="java.lang.Byte"
+        column="NR_DEPENDENTES"
+        length="2"
+    />
+    <property
+        name="nrAntt"
+		type="java.lang.Long"
+        column="NR_ANTT"
+        length="17"
+    />
+    <property
+        name="tpPeriodoPagto"
+		column="TP_PERIODO_PAGTO"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_PERIODO_PAGAMENTO_PROPRIETARIO</param>
+	    </type>
+    </property>
+    <property
+        name="dtAtualizacao"
+		type="jtyearmonthday"
+        column="DT_ATUALIZACAO"
+        not-null="false"
+        length="7"
+    />
+    <property
+        name="tpOperacao"
+		column="TP_OPERACAO"
+        length="1">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_OPERACAO_PROPRIETARIO</param>
+	    </type>
+    </property>
+    <property 
+     	name="blMei"
+		column="BL_MEI"       
+        length="1">
+		<type name="domain">
+        	<param name="domainName">DM_SIM_NAO</param>
+	    </type>
+    </property>
+    <property 
+     	name="nrIdentificacaoMei"
+		column="NR_IDENTIFICACAO_MEI"        
+        length="20"
+        type="java.lang.String">
+    </property>
+    <property 
+     	name="nmMei"
+		column="NM_MEI"        
+        length="60"
+        type="java.lang.String"
+        >
+    </property>
+    <property 
+     	name="dtNascimento"
+		column="DT_NASCIMENTO"        
+        length="7"
+        type="jtyearmonthday">
+    </property>
+    <property 
+     	name="blCooperado"
+		column="BL_COOPERADO" 
+        length="1">
+        <type name="domain">
+        	<param name="domainName">DM_SIM_NAO</param>
+	    </type>
+    </property>
+    <property 
+     	name="blNaoAtualizaDbi"
+		column="BL_NAO_ATUALIZA_DBI"
+        length="1">
+        <type name="domain">
+        	<param name="domainName">DM_SIM_NAO</param>
+	    </type>
+    </property>
+    <property 
+     	name="blRotaFixa"
+		column="BL_ROTA_FIXA"
+        length="1">
+        <type name="domain">
+        	<param name="domainName">DM_SIM_NAO</param>
+	    </type>
+    </property>
+    <property 
+     	name="dtVigenciaInicial"
+		column="DT_VIGENCIA_INICIAL"        
+        length="7"
+        type="jtyearmonthday">
+    </property>
+    <property 
+     	name="dtVigenciaFinal"
+		column="DT_VIGENCIA_FINAL"        
+        length="7"
+        type="jtyearmonthday">
+    </property>
+    
+    
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    
+    <one-to-one 
+		name="pessoa"
+		class="com.mercurio.lms.configuracoes.model.Pessoa"
+		constrained="true" lazy="proxy" />
+
+    <!-- dia semana substituido para domínio -->
+    <property
+        name="diaSemana"
+	    column="TP_DIA_SEMANA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_DIAS_SEMANA</param>
+	    </type>
+    </property>
+   
+    <!-- bi-directional one-to-many association to LiberacaoReguladora -->
+    <bag
+        name="liberacaoReguladoras"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.LiberacaoReguladora</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.LiberacaoReguladora"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to CriterioAplicSimulacao -->
+    <bag
+        name="criterioAplicSimulacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.CriterioAplicSimulacao</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.CriterioAplicSimulacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MeioTranspProprietario -->
+    <bag
+        name="meioTranspProprietarios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTranspProprietario</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.MeioTranspProprietario"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PagtoProprietarioCc -->
+    <bag
+        name="pagtoProprietarioCcs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PagtoProprietarioCc</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.PagtoProprietarioCc"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to BloqueioMotoristaProp -->
+    <bag
+        name="bloqueioMotoristaProps"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.BloqueioMotoristaProp</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.BloqueioMotoristaProp"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to SolicitacaoSinal -->
+    <bag
+        name="solicitacaoSinais"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.SolicitacaoSinal</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.SolicitacaoSinal"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DescontoInssCarreteiro -->
+    <bag
+        name="descontoInssCarreteiros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.DescontoInssCarreteiro</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.DescontoInssCarreteiro"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ControleCarga -->
+    <bag
+        name="controleCargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.ControleCarga</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.ControleCarga"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to BeneficiarioProprietario -->
+    <bag
+        name="beneficiarioProprietarios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.BeneficiarioProprietario</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.BeneficiarioProprietario"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ReciboFreteCarreteiro -->
+    <bag
+        name="reciboFreteCarreteiros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro</meta>
+ 	        <key>
+            <column name="ID_PROPRIETARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+    <many-to-one name="telefoneEndereco" 
+        	column="ID_TELEFONE_ENDERECO" 
+        	unique="true"
+        	not-null="true"
+        	cascade="save-update"
+   	        class="com.mercurio.lms.configuracoes.model.TelefoneEndereco"
+	/>
+	
+    <!-- many-to-one
+        name="telefoneEndereco"
+        class="com.mercurio.lms.configuracoes.model.TelefoneEndereco"
+        not-null="true"
+        cascade="save-update" 
+    >
+        <column name="ID_TELEFONE_ENDERECO" />
+    </many-to-one-->
+    
+      <property
+        name="tpSituacaoWorkflow"
+		    column="TP_SITUACAO_PENDENCIA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"       
+    >
+ 	   <column name="ID_PENDENCIA" />
+    </many-to-one> 
+    
+     <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    
+    <many-to-one
+        name="usuarioAprovador"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO_APROVADOR" />
+    </many-to-one>
+    
+    
+</class>
+</hibernate-mapping>

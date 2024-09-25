@@ -1,0 +1,56 @@
+<style type="text/css">
+	.no-data {
+		text-align:center;
+		display:block;
+	}
+</style>
+
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+			<div ng-include src="contextPath+'js/app/common/view/templates/form-buttons-list.html'"></div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="data" data-labelSize="3" data-fieldSize="4">
+			<input type="text" ng-model="filter.data" id="data" adsm-date-picker mask="date"/>
+		</div>
+
+		<div adsm-add-field data-boxSize="8" data-label="dataHora" data-labelSize="3" multisize="5,2,5">
+			<input adsm-date-time ng-model="filter.dataHoraRange.start" max="filter.dataHoraRange.end">
+			<span class="range-label">{{'ate' | translate}}</span>
+			<input adsm-date-time ng-model="filter.dataHoraRange.end" min="filter.dataHoraRange.start">
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams"
+					show-checkboxes="true"
+					data-remove-service="removeByIds()"	>
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+
+							<td column-title="data" sortable="data"
+								inline-property-filter="data" filter-model-transform="customDate"
+								class="text-center">{{row.data | customDate}}</td>
+
+							<td column-title="dataHora" sortable="dataHora"
+								inline-property-filter="dataHora" filter-model-transform="dateTime"
+								class="text-center">{{row.dataHora | dateTime}}</td>
+
+							<td column-title="empresa" sortable="empresa"
+								inline-property-filter="empresa.nmPessoa"
+								>{{row.empresa.nmFantasia}}</td>
+
+							<td column-title="('pais' | translate) + ' / ' + ('uf' | translate)" sortable="pais">
+								<span ng-if="row.pais">{{row.pais.nmPais + ' / ' + row.unidadeFederativa.sgUnidadeFederativa}}</span>
+								<span ng-if="!row.pais" class="no-data">-</span>
+							</td>
+
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</form>

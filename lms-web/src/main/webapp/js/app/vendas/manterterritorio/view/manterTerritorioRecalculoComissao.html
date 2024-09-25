@@ -1,0 +1,113 @@
+<form class="form-horizontal content-padding" ng-if="data.id" name="form">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="salvarRecalculo()"
+				class="btn btn-default btn-lg pull-right" id="salvar-recalculo"
+				ng-disabled="form.$invalid">
+			{{'salvarRecalculo' |  translate }}
+		</button>
+	</div>
+
+	<table adsm-table="listRecalculoComissao"
+		class="table table-condensed adsm-table no-pagination"
+		show-checkboxes="false"
+		>
+		
+		<thead>
+			<tr>
+				<th colspan="2">{{'funcionario' | translate}}</th>
+				<th colspan="3">{{'comissaoGarantida' | translate}}</th>
+				<th colspan="4">{{'diferencaComissao' | translate}}</th>
+			</tr>
+			<tr>
+				<th style="min-width: 180px">{{'cargo' | translate}}</th>
+				<th style="min-width: 380px">{{'nome' | translate}}</th>
+				<th style="min-width: 105px">{{'valor' | translate}}</th>
+				<th style="min-width: 135px">{{'vigenciaInicial' | translate}}</th>
+				<th style="min-width: 135px">{{'vigenciaFinal' | translate}}</th>
+				<th style="min-width: 105px">{{'valor' | translate}}</th>
+				<th style="min-width: 135px">{{'competencia' | translate}}</th>
+				<th style="min-width: 20px">{{'teto' | translate}}</th>
+				<th style="min-width: 300px">{{'observacao' | translate}}</th>
+			</tr>
+	    </thead>
+		
+		<tbody>
+			<tr ng-repeat="row in page" ng-form="formRecalculoComissao" class="row-form">
+				<td class="tipo-executivo">
+					<span>{{row.executivoTerritorio.tpExecutivo.descriptionAsString}}</span>
+				</td>
+				<td class="tipo-executivo">
+					<div class="multi-input">
+						<div class="col-xs-4">
+							<input
+								type="text"
+								ng-model="row.executivoTerritorio.usuario"
+								lms-comissionado
+								ng-disabled="true"
+								class="form-control suggest-comissionado suggest-comissionado-{{$index}}" />
+					    </div>
+						<div class="col-xs-8">
+							<input
+								type="text"
+								ng-model="row.executivoTerritorio.usuario.nmUsuario"
+								ng-disabled="true" 
+								class="form-control" />
+						</div>
+					</div>
+				</td>
+				<td style="text-align: center">
+					<input type="text" class="form-control" id="vlComissaoGarantida" data-numeric="{maxLength: '12'}" data-decimal ng-model="row.vlComissaoGarantida"
+						ng-required="row.dtInicio || row.dtFim"
+						ng-disabled="!row.executivoTerritorio.usuario" />
+				</td>
+				<td style="text-align: center">
+					<input type="text" class="form-control" adsm-date-picker data-mask="date" ng-model="row.dtInicio" 
+						data-end="row.dtFim"
+						ng-required="row.vlComissaoGarantida || row.dtFim" data-maxInterval="{{ getIntervaloMax() }}" 
+						ng-disabled="!row.executivoTerritorio.usuario" />
+				</td>
+				<td style="text-align: center">
+					<input type="text" class="form-control" adsm-date-picker data-mask="date" ng-model="row.dtFim" 
+						data-start="row.dtInicio"
+						ng-required="row.vlComissaoGarantida || row.dtInicio" data-maxInterval="{{ getIntervaloMax() }}" 
+						ng-disabled="!row.executivoTerritorio.usuario" />
+				</td>
+				<td style="text-align: center">
+					<input type="text" class="form-control" id="vlDiferencaComissao" data-numeric="{maxLength: '12'}" data-decimal ng-model="row.vlDiferencaComissao" 
+						ng-required="row.dtCompetencia || row.tpTeto || row.dsObservacao"
+						ng-disabled="!row.executivoTerritorio.usuario" />
+				</td>
+				<td style="text-align: center">
+					<input adsm-date-picker data-mask="date" ng-model="row.dtCompetencia" 
+						ng-required="row.vlDiferencaComissao || row.tpTeto || row.dsObservacao"
+						ng-disabled="!row.executivoTerritorio.usuario" />
+				</td>
+				<td style="text-align: center">
+					<select 
+						data-adsm-domain="DM_SIM_NAO"
+						id="tpTeto" 
+						ng-model="row.tpTeto"
+						ng-required="row.vlDiferencaComissao || row.dtCompetencia || row.dsObservacao"
+						ng-disabled="!row.executivoTerritorio.usuario">
+						<option value=""></option>
+					</select>
+				</td>
+				<td style="text-align: center">
+					<input type="text" class="form-control" id="dsObservacao" ng-model="row.dsObservacao" 
+					 ng-required="row.vlDiferencaComissao || row.dtCompetencia || row.tpTeto" ng-disabled="!row.executivoTerritorio.usuario" maxlength="500" />
+				</td>
+			</tr>							
+		</tbody>						
+	</table>
+
+</form>
+
+<style>
+	.adsm-table-pagination {
+		display: none;
+	}
+	.scroll-table td {
+		overflow: visible;
+	}
+</style>

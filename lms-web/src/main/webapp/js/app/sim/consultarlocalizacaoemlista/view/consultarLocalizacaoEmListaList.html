@@ -1,0 +1,149 @@
+<form class="form-horizontal content-padding" data-ng-submit="findComValidacao()">
+
+    <div class="fixed-top">
+        <button type="button" data-ng-click="resetFilter()" class="btn btn-default btn-lg pull-right" id="limpar">
+            {{'limpar' | translate }}
+        </button>
+
+        <button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+            {{'consultar' | translate }}
+        </button>
+    </div>
+
+    <accordion close-others="false">
+        <accordion-group is-open="true">
+            <accordion-heading>
+                {{'filtrosBasicos' | translate}}
+            </accordion-heading>
+
+            <div class="row">
+                <div adsm-add-field data-label="notaFiscal2" data-boxSize="6" data-labelSize="4" data-fieldSize="3">
+                    <input type="text" ng-model="filter.nrNotaFiscal" id="nrNotaFiscal" data-numeric="{vMin: '0', maxLength: '9'}"/>
+                </div>
+                <div adsm-add-field data-boxSize="6" data-label="filialOrigem" data-labelSize="3" data-multiSize="3">
+                    <input
+                            class="form-control"
+                            id="filialOrigem"
+                            lms-filial
+                            maxlength="3"
+                            ng-model="filter.filialOrigem">
+                    <input
+                            class="form-control"
+                            disabled
+                            id="filialOrigem.nmFilial"
+                            type="text"
+                            value="{{ filter.filialOrigem.nmFilial }}">
+                </div>
+            </div>
+            <div class="row">
+                <div adsm-add-field data-label="documentoDeServico2" data-boxSize="6" data-labelSize="4" data-fieldSize="3">
+                    <input type="text" ng-model="filter.nrDoctoServico" id="nrDoctoServico" data-numeric="{vMin: '0', maxLength: '10'}"/>
+                </div>
+                <div adsm-add-field data-boxSize="6" data-label="filialDestino" data-labelSize="3" data-multiSize="3">
+                    <input
+                            class="form-control"
+                            id="filialDestino"
+                            lms-filial
+                            maxlength="3"
+                            ng-model="filter.filialDestino">
+                    <input
+                            class="form-control"
+                            disabled
+                            id="filialDestino.nmFilial"
+                            type="text"
+                            value="{{ filter.filialDestino.nmFilial }}">
+                </div>
+            </div>
+            <div class="row">
+                <div adsm-add-field data-label="pedidoCliente" data-boxSize="6" data-labelSize="4" data-fieldSize="3">
+                    <input type="text" ng-model="filter.nrPedidoCliente" maxlength="60" id="nrPedidoCliente" class="form-control"/>
+                </div>
+
+                <div adsm-add-field data-label="periodoEmissao" data-boxSize="6" data-labelSize="3" data-multiSize="6">
+                    <input type="text" ng-model="filter.dtEmissaoInicial" id="dtEmissaoInicial" adsm-date-picker mask="date"/>
+                    <input type="text" ng-model="filter.dtEmissaoFinal" id="dtEmissaoFinal" adsm-date-picker mask="date"/>
+                </div>
+            </div>
+            <div class="row">
+                <div adsm-add-field data-label="pedidoColeta" data-boxSize="6" data-labelSize="4" data-fieldSize="3">
+                    <input type="text" ng-model="filter.nrColeta" id="nrColeta" data-numeric="{vMin: '0', maxLength: '10'}"/>
+                </div>
+            </div>
+        </accordion-group>
+
+        <accordion-group is-open="true">
+            <accordion-heading>
+                {{'remetente' | translate}}
+            </accordion-heading>
+
+            <div class="row">
+                <div adsm-add-field data-label="remetente" data-boxSize="6" data-labelSize="4" data-fieldSize="3">
+                    <input
+                            lms-cliente
+                            type="text"
+                            ng-model="filter.remetente"
+                            maxlength="50"
+                            id="remetente"
+                            class="form-control">
+                </div>
+                <div adsm-add-field data-label="razaoSocial2" data-boxSize="6" data-labelSize="3" data-fieldSize="9">
+                    <input type="text" ng-model="filter.remetente.nmPessoa" id="nmPessoaRemetente" class="form-control" disabled/>
+                </div>
+            </div>
+            <div class="row">
+                <div adsm-add-field data-label="nomeFantasia" data-boxSize="6" data-labelSize="4" data-fieldSize="8">
+                    <input type="text" ng-model="filter.remetente.nmFantasia" id="nmFantasiaRemetente" class="form-control" disabled/>
+                </div>
+            </div>
+        </accordion-group>
+
+        <accordion-group is-open="true">
+            <accordion-heading>
+                {{'destinatario' | translate}}
+            </accordion-heading>
+
+            <div class="row">
+                <div adsm-add-field data-label="destinatario" data-boxSize="6" data-labelSize="4" data-fieldSize="3">
+                    <input
+                            lms-cliente
+                            type="text"
+                            ng-model="filter.destinatario"
+                            maxlength="50"
+                            id="destinatario"
+                            class="form-control">
+                </div>
+                <div adsm-add-field data-label="razaoSocial2" data-boxSize="6" data-labelSize="3" data-fieldSize="9">
+                    <input type="text" ng-model="filter.destinatario.nmPessoa" id="nmPessoaDestinatario" class="form-control" disabled/>
+                </div>
+            </div>
+            <div class="row">
+                <div adsm-add-field data-label="nomeFantasia" data-boxSize="6" data-labelSize="4" data-fieldSize="8">
+                    <input type="text" ng-model="filter.destinatario.nmFantasia" id="nmFantasiaDestinatario" class="form-control" disabled/>
+                </div>
+            </div>
+        </accordion-group>
+    </accordion>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table adsm-table="listTableParams">
+                <tbody>
+                <tr ng-repeat="row in page" ng-click="abreDetalhe(row)">
+                    <td column-title="notaFiscal2" style="min-width: 100px; max-width: 400px;" align="left">{{row.nrNotaFiscal}}</td>
+                    <td column-title="documento" style="min-width: 100px; max-width: 400px;" align="center">{{row.tpDoctoServico}} - {{row.sgFilialOrigem}} - {{row.nrDoctoServico}}</td>
+                    <td column-title="dtEmissao" style="min-width: 100px; max-width: 400px;" align="center">{{row.dhEmissao | customDate}}</td>
+                    <td column-title="filialDestino" style="min-width: 100px; max-width: 400px;" align="center">{{row.sgFilialDestino}}</td>
+                    <td column-title="pedidoCliente" style="min-width: 100px; max-width: 400px;" align="center">{{row.nrPedidoCliente}}</td>
+                    <td column-title="pedidoColeta" style="min-width: 100px; max-width: 400px;" align="center">{{row.nrColeta}}</td>
+                    <td column-title="cpfCnpjRemetente" style="min-width: 100px; max-width: 400px;" align="center">{{row.nrIdentificacaoRemetente}}</td>
+                    <td column-title="Razaosocialremetente" style="min-width: 100px; max-width: 400px;" align="center">{{row.nmPessoaRemetente}}</td>
+                    <td column-title="nomeFantasiaRemetente" style="min-width: 100px; max-width: 400px;" align="center">{{row.nmFantasiaRemetente}}</td>
+                    <td column-title="cpfCnpjDestinatario" style="min-width: 100px; max-width: 400px;" align="center">{{row.nrIdentificacaoDestinatario}}</td>
+                    <td column-title="razaoSocialDestinatario2" style="min-width: 100px; max-width: 400px;" align="center">{{row.nmPessoaDestinatario}}</td>
+                    <td column-title="nomeFantasiaDestinatario" style="min-width: 100px; max-width: 400px;" align="center">{{row.nmFantasiaDestinatario}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>

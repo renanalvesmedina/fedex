@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="emitirDocumentosServicoPendentesClienteSubreport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="311"
+		 pageHeight="425"
+		 columnWidth="311"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.contasreceber.report.emitirDocumentosServicoPendentesCliente">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="ID_FILIAL" isForPrompting="false" class="java.lang.Long"/>
+	<parameter name="ID_MOEDA" isForPrompting="false" class="java.lang.Long"/>
+	<parameter name="SERVICE" isForPrompting="false" class="java.lang.Object"/>
+	<queryString><![CDATA[SELECT TO_NUMBER(TEMP30.VALORFRETE) AS VALOR30, TO_NUMBER(TEMP30.NUMCONHECIMENTOS) AS NUMCONHECIMENTOS30,
+	   TO_NUMBER(TEMP60.VALORFRETE) AS VALOR60, TO_NUMBER(TEMP60.NUMCONHECIMENTOS) AS NUMCONHECIMENTOS60,
+	   TO_NUMBER(TEMP90.VALORFRETE) AS VALOR90, TO_NUMBER(TEMP90.NUMCONHECIMENTOS) AS NUMCONHECIMENTOS90
+FROM  
+(SELECT FILIAL, 30 AS PENDENCIA, COUNT(*) AS NUMCONHECIMENTOS, SUM(VALORFRETE) AS VALORFRETE  
+FROM LMSWEB.EMITIRDOCUMENTOSSERVICOPENDCLI
+WHERE  ATRASO <= 30
+GROUP BY FILIAL) TEMP30,
+(SELECT FILIAL, 60 AS PENDENCIA, COUNT(*) AS NUMCONHECIMENTOS, SUM(VALORFRETE) AS VALORFRETE
+FROM LMSWEB.EMITIRDOCUMENTOSSERVICOPENDCLI
+WHERE  ATRASO BETWEEN 31 AND 60
+GROUP BY FILIAL) TEMP60,	
+(SELECT FILIAL, 90 AS PENDENCIA, COUNT(*) AS NUMCONHECIMENTOS, SUM(VALORFRETE) AS VALORFRETE
+FROM LMSWEB.EMITIRDOCUMENTOSSERVICOPENDCLI
+WHERE  ATRASO > 60
+GROUP BY FILIAL) TEMP90	   
+WHERE TEMP30.FILIAL = TEMP60.FILIAL
+AND TEMP30.FILIAL = TEMP90.FILIAL]]></queryString>
+
+	<field name="VALOR30" class="java.math.BigDecimal"/>
+	<field name="NUMCONHECIMENTOS30" class="java.lang.Integer"/>
+	<field name="VALOR60" class="java.math.BigDecimal"/>
+	<field name="NUMCONHECIMENTOS60" class="java.lang.Integer"/>
+	<field name="VALOR90" class="java.math.BigDecimal"/>
+	<field name="NUMCONHECIMENTOS90" class="java.lang.Integer"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="false" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="false" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="2"
+						width="310"
+						height="8"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-1"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirDocumentosServicoPendentesClienteService) $P{SERVICE}).executeSubRelatorioTotaisFilial(new Object[]{$P{ID_FILIAL}, $P{ID_MOEDA}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirDocumentosServicoPendentesClienteSubreport.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

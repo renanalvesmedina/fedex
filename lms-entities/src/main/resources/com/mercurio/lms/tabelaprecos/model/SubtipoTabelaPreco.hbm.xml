@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tabelaprecos.model.SubtipoTabelaPreco" 
+    table="SUBTIPO_TABELA_PRECO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idSubtipoTabelaPreco"
+        type="java.lang.Long"
+        column="ID_SUBTIPO_TABELA_PRECO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SUBTIPO_TABELA_PRECO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpSubtipoTabelaPreco"
+			        type="java.lang.String"
+            column="TP_SUBTIPO_TABELA_PRECO"
+        not-null="true"
+        length="1"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="tpTipoTabelaPreco"
+		    column="TP_TIPO_TABELA_PRECO"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_TABELA_PRECO</param>
+	    </type>
+    </property>
+    <property
+        name="dsSubtipoTabelaPreco"
+			        type="java.lang.String"
+            column="DS_SUBTIPO_TABELA_PRECO"
+        length="60"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to TabelaPreco -->
+    <bag
+        name="tabelaPrecos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.TabelaPreco</meta>
+ 	        <key>
+            <column name="ID_SUBTIPO_TABELA_PRECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to LimiteDesconto -->
+    <bag
+        name="limiteDescontos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.LimiteDesconto</meta>
+ 	        <key>
+            <column name="ID_SUBTIPO_TABELA_PRECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.LimiteDesconto"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one
+        name="empresa"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

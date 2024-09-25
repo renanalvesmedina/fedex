@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+--> 
+
+<class name="com.mercurio.lms.municipios.model.PontoParada" table="PONTO_PARADA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <id column="ID_PONTO_PARADA" name="idPontoParada" type="java.lang.Long">
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>
+
+    <property column="BL_ADUANA" length="1" name="blAduana" not-null="true" type="sim_nao">
+    </property>
+    <property column="NR_KM" length="6" name="nrKm" type="java.lang.Integer"/>
+    <property column="SG_ADUANA" length="10" name="sgAduana" type="java.lang.String"/>
+    <property column="CD_ADUANA" length="7" name="cdAduana" type="java.lang.Integer"/>
+	<property column="NM_PONTO_PARADA" length="60" name="nmPontoParada" not-null="true" type="string"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    <one-to-one class="com.mercurio.lms.configuracoes.model.Pessoa" constrained="true" name="pessoa"/>
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one class="com.mercurio.lms.municipios.model.Municipio" name="municipio" not-null="true">
+        <column name="ID_MUNICIPIO"/>
+    </many-to-one>
+    <!-- bi-directional one-to-many association to AduanaCtoInt -->
+    <bag cascade="none" inverse="true" lazy="true" name="aduanaCtoInts">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.AduanaCtoInt</meta>
+ 	        <key>
+            <column name="ID_PONTO_PARADA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.AduanaCtoInt"/>
+    </bag>
+    <!-- bi-directional one-to-many association to PontoParadaTrecho -->
+    <bag cascade="none" inverse="true" lazy="true" name="pontoParadaTrechos">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PontoParadaTrecho</meta>
+ 	        <key>
+            <column name="ID_PONTO_PARADA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.municipios.model.PontoParadaTrecho"/>
+    </bag>
+    <!-- bi-directional one-to-many association to LocalTroca -->
+    <bag cascade="none" inverse="true" lazy="true" name="localTrocas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.LocalTroca</meta>
+ 	        <key>
+            <column name="ID_PONTO_PARADA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.LocalTroca"/>
+    </bag> 
+    <!-- bi-directional one-to-many association to CtoInternacional -->
+    <bag cascade="none" inverse="true" lazy="true" name="ctoInternacionaisByIdAduanaOrigem">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.CtoInternacional</meta>
+ 	        <key>
+            <column name="ID_ADUANA_ORIGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.CtoInternacional"/>
+    </bag>
+    <!-- bi-directional one-to-many association to CtoInternacional -->
+    <bag cascade="none" inverse="true" lazy="true" name="ctoInternacionaisByIdAduanaDestino">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.CtoInternacional</meta>
+ 	        <key>
+            <column name="ID_ADUANA_DESTINO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.CtoInternacional"/>
+    </bag>
+    <!-- bi-directional many-to-one association to Rodovia -->
+    <many-to-one class="com.mercurio.lms.municipios.model.Rodovia" name="rodovia" not-null="true">
+        <column name="ID_RODOVIA"/>
+    </many-to-one>
+
+	
+	
+</class>
+</hibernate-mapping>

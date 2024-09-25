@@ -1,0 +1,495 @@
+<style type="text/css">	
+	.ui-datepicker {
+		z-index: 1200 !important;
+	}
+</style>
+
+<div class="menu-top"></div>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form novalidate ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="store($event)">
+		<div class="fixed-top">
+			<div class="content">				
+				<button type="submit" data-adsm-loading="salvando" class="btn btn-default btn-lg pull-right" id="store" permission="salvar">
+					{{'salvar' | translate }}
+				</button>
+				<button type="button" data-ng-click="removeEnderecoPessoaById()" ng-disabled="!dados.idEnderecoPessoa" class="btn btn-default btn-lg pull-right" id="removeEnderecoPessoaById" ng-disabled="dados.disabled" permission="excluir">
+					{{'excluir' |  translate }}
+				</button>			
+				<button type="button" data-ng-click="limparDados()" class="btn btn-default btn-lg pull-right" id="limpar">
+					{{'limpar' | translate }}
+				</button>		
+			</div>
+		</div>
+			
+		<div class="alert-container" data-ng-show="popupAlerts.length">
+			<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+				<span data-ng-bind="alert.msg"></span>
+			</alert>
+		</div>
+
+		<div class="clearfix">		
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+					<div class="form-horizontal">
+					
+					<div class="row">
+						<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-3 control-label">{{'identificacao' | translate }}</label>
+									<div class="col-lg-8">
+										<div class="multi-input">
+											<div class="col-xs-4">
+												<input 
+													type="text" 
+													id="tpIdentificacao" 
+													class="form-control" 
+													ng-model="dados.tpIdentificacao" 
+													maxlength="20" 
+													readonly="readonly">			
+												</div>
+											<div class="col-xs-8">
+												<input 
+													type="text" 
+													id="nrIdentificacao" 
+													class="form-control" 
+													ng-model="dados.nrIdentificacao" 
+													maxlength="20" 
+													readonly="readonly">							
+											</div>					
+										</div>
+									</div>
+								</div>
+							</div>	
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">{{'nome' | translate }}</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="nmPessoa" ng-model="dados.nmPessoa" maxlength="50" readonly="readonly">
+									</div>
+								</div>
+							</div>
+						</div>
+																						
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-3 control-label">{{'tipoEndereco' | translate}}</label>
+									<div class="col-lg-5">								
+										<div adsm-list-options 
+											ng-disabled="dados.disabled"
+										 	ng-model="dados.listTipoEndereco"
+										 	equals="tpEndereco.description"
+										 	view="tpEndereco.description"
+										 	ng-required="true">
+											
+											<select 
+												adsm-chosen
+												id="tpEndereco"
+												ng-model="tpEndereco"
+												ng-options="data as data.description for data in enderecoPessoa.tpEndereco track by data.id">
+												<option value=""></option>
+											</select>															
+										</div>						
+									</div>
+								</div>
+							</div>
+						</div>						
+						
+						<accordion close-others="false" id="accordionEndereco">
+							<accordion-group is-open="isEnderecoOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isEnderecoOpen , 'glyphicon-chevron-right': !isEnderecoOpen}"></span>
+									{{'endereco' | translate}}
+								</accordion-heading>	
+						
+								<div class="row">	
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'cep' | translate }}</label>
+											<div class="col-lg-4">
+												<input type="text" id="cep" class="form-control" ng-model="dados.nrCep" ng-disabled="dados.disabled" maxlength="8" ng-blur="findCep()">							
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">								
+									<div class="col-sm-8">
+										<div class="form-group">								
+											<label class="col-lg-2 control-label">{{'endereco' | translate }}</label>
+											<div class="col-lg-10">
+												<div class="multi-input">
+													<div class="col-xs-3">													
+														<select 
+															adsm-chosen
+															id="tpLogradouro"
+															ng-model="dados.tpLogradouro"
+															ng-options="data as data.description for data in enderecoPessoa.tpLogradouro track by data.id"
+															ng-disabled="dados.disabled"
+															required>
+															<option value=""></option>
+														</select>					
+													</div>
+													<div class="col-xs-9">
+														<input type="text"  id="dsEndereco" class="form-control" ng-model="dados.dsEndereco" maxlength="100" ng-disabled="dados.disabled" required>							
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+												
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'numero' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" id="nrEndereco" class="form-control" ng-model="dados.nrEndereco" ng-disabled="dados.disabled" maxlength="5" required>							
+											</div>
+										</div>
+									</div>
+								</div>		
+								
+								<div class="row">							
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'complemento' | translate }}</label>
+											<div class="col-lg-8">
+												<input type="text" ng-model="dados.dsComplemento" id="complemento" class="form-control" ng-disabled="dados.disabled" maxlength="60">								
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'bairro' | translate }}</label>
+											<div class="col-lg-9">
+												<input type="text" id="bairro" class="form-control" ng-model="dados.dsBairro" ng-disabled="dados.disabled" maxlength="60">								
+											</div>
+										</div>
+									</div>
+								</div>		
+								
+								<div class="row">	
+									<div class="col-sm-4">									
+											<div class="form-group">								
+												<label class="col-lg-4 control-label">{{'pais' | translate }}</label>
+												<div class="col-lg-8">
+													<div class="multi-input">
+														<div class="col-xs-3">						
+															<input disabled class="form-control" ng-model="dados.pais.sgPais" id="pais.sgPais">
+														</div>
+														<div class="col-xs-9">
+															<input lms-pais
+																ng-model="dados.pais" 
+																id="pais"
+																class="form-control"
+																ng-disabled="dados.disabled"
+																ng-change="changePais();"
+																required>																					
+														</div>					
+													</div>
+												</div>
+											</div>
+									</div>	
+																			
+									<div class="col-sm-4">
+										<div class="form-group">								
+											<label class="col-lg-3 control-label">{{'uf' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">
+													<div class="col-xs-3">						
+														<input disabled class="form-control" ng-model="dados.uf.sgUnidadeFederativa" id="uf.sgUnidadeFederativa">
+													</div>
+													<div class="col-xs-9">
+														<input lms-unidade-federativa="{ idPais : dados.pais.idPais }"
+															type="text"
+															ng-model="dados.uf" 
+															id="uf"
+															class="form-control"
+															ng-disabled="dados.disabled || !dados.pais"
+															ng-change="changeUnidadeFederativa();"
+															required>																					
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">								
+											<label class="col-lg-4 control-label">{{'municipio' | translate }}</label>
+											<div class="col-lg-8">			
+												<input lms-municipio="{ idPais : dados.pais.idPais, idUnidadeFederativa : dados.uf.idUnidadeFederativa }"
+													ng-model="dados.municipio" 
+													id="municipio"
+													class="form-control"
+													ng-disabled="dados.disabled || !dados.uf" 
+													required>											
+											</div>
+										</div>
+									</div>
+								</div>											
+								
+								<div class="row">							
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'latitude' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" id="nrLatitude" class="form-control" ng-model="dados.nrLatitude" ng-disabled="dados.disabled" maxlength="20"
+													ng-blur="changeLatitude();">								
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'longitude' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" id="nrLongitude" class="form-control" ng-model="dados.nrLongitude" ng-disabled="dados.disabled" maxlength="20"
+												ng-blur="changeLongitude();">								
+											</div>
+										</div>
+									</div>									
+								</div>							
+								
+								<div class="row">							
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'latitudeTemp' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" id="nrLatitudeTmp" class="form-control" ng-model="dados.nrLatitudeTmp" ng-disabled="dados.disabled" maxlength="18"
+													ng-blur="changeLatitudeTmp();" ng-change="changePreencherQualidadePadrao();" ng-required="dados.requiredCoordenadas">
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'longitudeTemp' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" id="nrLongitudeTmp" class="form-control" ng-model="dados.nrLongitudeTmp" ng-disabled="dados.disabled" maxlength="18"
+													ng-blur="changeLongitudeTmp();" ng-change="changePreencherQualidadePadrao();" ng-required="dados.requiredCoordenadas">								
+											</div>
+										</div>
+									</div>									
+								</div>							
+								
+								<div class="row">							
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'qualidade' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" id="qualidade" class="form-control" ng-model="dados.qualidade" ng-disabled="dados.disabled" maxlength="2"
+													ng-required="dados.requiredCoordenadas">								
+											</div>
+										</div>
+									</div>								
+								</div>							
+														
+								<div class="row">			
+									<div class="col-sm-8">
+										<div class="form-group">
+											<label class="col-lg-2 control-label">{{'observacao' | translate }}</label>
+											<div class="col-lg-9">						
+												<textarea rows="2" maxlength="500" ng-model="dados.obEnderecoPessoa" id="obEnderecoPessoa" class="form-control" ng-disabled="dados.disabled" style="resize: none;"></textarea>															
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+						
+							<accordion-group is-open="isVigenciaOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isVigenciaOpen , 'glyphicon-chevron-right': !isVigenciaOpen}"></span>
+									{{'vigencia' | translate}}
+								</accordion-heading>	
+						
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtVigenciaInicial' | translate }}</label>
+											<div class="col-lg-5">
+												<input id="dtVigenciaInicial" 
+													adsm-date-picker 
+													ng-model="dados.dtVigenciaInicial"
+													mask="date" 
+													class="form-control" 
+													ng-disabled="dados.disabled"
+													min="enderecoPessoa.dtAtual" 
+													data-end="dados.dtVigenciaFinal"
+													ng-blur="findEnderecoPessoaVigente();" 
+													required>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtVigenciaFinal' | translate }}</label>
+											<div class="col-lg-5">
+												<input id="dtVigenciaFinal" 
+													adsm-date-picker 
+													ng-model="dados.dtVigenciaFinal"
+													mask="date" 
+													class="form-control"
+													data-start="dados.dtVigenciaInicial" 
+													ng-disabled="dados.disabledDtVigenciaFinal || dados.substituirEndereco">
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+					
+							<accordion-group is-open="isSubstituirOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isSubstituirOpen , 'glyphicon-chevron-right': !isSubstituirOpen}"></span>
+									{{'substituicaoEndereco' | translate}}
+								</accordion-heading>	
+														
+								<div class="row">	
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label"></label>
+											<div class="col-lg-8">
+												<input type="checkbox"
+													id="substituirEndereco" 
+													ng-model="dados.substituirEndereco" 
+													ng-disabled="dados.disabled || dados.enderecoPessoaVigente.disabled">
+													{{'substituirEnderecoVigente' | translate }}						
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">	
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'cep' | translate }}</label>
+											<div class="col-lg-4">
+												<input type="text" id="cep" class="form-control" ng-model="dados.enderecoPessoaVigente.nrCep" readonly="readonly">							
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">								
+									<div class="col-sm-8">
+										<div class="form-group">								
+											<label class="col-lg-2 control-label">{{'endereco' | translate }}</label>
+											<div class="col-lg-10">
+												<div class="multi-input">
+													<div class="col-xs-3">													
+														<input type="text" id="cep" class="form-control" ng-model="dados.enderecoPessoaVigente.tpLogradouro.description" readonly="readonly">						
+													</div>
+													<div class="col-xs-9">
+														<input type="text" id="dsEndereco" class="form-control" ng-model="dados.enderecoPessoaVigente.dsEndereco" readonly="readonly">							
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+												
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'numero' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" id="nrEndereco" class="form-control" ng-model="dados.enderecoPessoaVigente.nrEndereco" readonly="readonly">							
+											</div>
+										</div>
+									</div>
+								</div>		
+								
+								<div class="row">							
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'complemento' | translate }}</label>
+											<div class="col-lg-8">
+												<input type="text" ng-model="dados.enderecoPessoaVigente.dsComplemento" id="complemento" class="form-control" readonly="readonly">								
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'bairro' | translate }}</label>
+											<div class="col-lg-9">
+												<input type="text" id="bairro" class="form-control" ng-model="dados.enderecoPessoaVigente.dsBairro" readonly="readonly">								
+											</div>
+										</div>
+									</div>
+								</div>		
+								
+								<div class="row">	
+									<div class="col-sm-4">									
+											<div class="form-group">								
+												<label class="col-lg-4 control-label">{{'pais' | translate }}</label>
+												<div class="col-lg-8">
+													<div class="multi-input">
+														<div class="col-xs-3">						
+															<input readonly="readonly" class="form-control" ng-model="dados.enderecoPessoaVigente.pais.sgPais" id="pais.sgPais">
+														</div>
+														<div class="col-xs-9">
+															<input type="text" readonly="readonly" id="pais" ng-model="dados.enderecoPessoaVigente.pais.nmPais" class="form-control">																					
+														</div>					
+													</div>
+												</div>
+											</div>
+									</div>	
+																			
+									<div class="col-sm-4">
+										<div class="form-group">								
+											<label class="col-lg-3 control-label">{{'uf' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">
+													<div class="col-xs-3">						
+														<input readonly="readonly" class="form-control" ng-model="dados.enderecoPessoaVigente.uf.sgUnidadeFederativa" id="uf.sgUnidadeFederativa">
+													</div>
+													<div class="col-xs-9">
+														<input type="text" readonly="readonly" id="uf" class="form-control" ng-model="dados.enderecoPessoaVigente.uf.nmUnidadeFederativa">																					
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">								
+											<label class="col-lg-4 control-label">{{'municipio' | translate }}</label>
+											<div class="col-lg-8">			
+												<input type="text" ng-model="dados.enderecoPessoaVigente.municipio.nmMunicipio" id="municipio" readonly="readonly" class="form-control">											
+											</div>
+										</div>
+									</div>
+								</div>							
+							</accordion-group>
+						
+							<accordion-group is-open="isAlteracaoOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isAlteracaoOpen , 'glyphicon-chevron-right': !isAlteracaoOpen}"></span>
+									{{'alteracao' | translate}}
+								</accordion-heading>	
+								
+								<div class="row">							
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'usuarioInclusao' | translate }}</label>
+											<div class="col-lg-6">
+												<input type="text" id="usuarioInclusao" class="form-control" ng-model="dados.usuarioInclusao" readonly="readonly">								
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'usuarioAlteracao' | translate }}</label>
+											<div class="col-lg-6">
+												<input type="text" id="usuarioAlteracao" class="form-control" ng-model="dados.usuarioAlteracao" readonly="readonly">								
+											</div>
+										</div>
+									</div>	
+								</div>	
+							</accordion-group>
+						</accordion>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</form>
+</div>

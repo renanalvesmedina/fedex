@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="emitirExtratoClienteSubReport"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="816"
+		 pageHeight="842"
+		 columnWidth="816"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isFloatColumnFooter="true"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.contasreceber.report.emitirExtratoCliente">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.mercurio.lms.util.*" />
+	<reportFont name="Label" isDefault="false" fontName="Verdana" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica-Bold" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+	<reportFont name="Field" isDefault="false" fontName="Verdana" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+
+	<parameter name="LMS_URL" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["http://localhost:8080/lms"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuarioEmissor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["João da Silva"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="BaseDir" isForPrompting="false" class="java.io.File">
+		<defaultValueExpression ><![CDATA[new File("c:/java/relatorio/bin")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SERVICE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="idsClientes" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="dtInicial" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="dtFinal" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="idMoedaDestino" isForPrompting="false" class="java.lang.Long"/>
+	<parameter name="idPaisDestino" isForPrompting="false" class="java.lang.Long"/>
+	<parameter name="soTotais" isForPrompting="false" class="java.lang.Boolean"/>
+	<parameter name="totaisFilial" isForPrompting="false" class="java.lang.Boolean"/>
+	<parameter name="PAGE_NUMBER_REPORT" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="tpClienteFiltroComp" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[select * from lmsweb.emitirExtratoCliente order by nomecliente, documento]]></queryString>
+
+	<variable name="PAGE_NUMBER_SUBREPORT" class="java.lang.Integer" resetType="Report" incrementType="Page" calculation="Sum">
+		<variableExpression><![CDATA[new Integer($P{PAGE_NUMBER_REPORT}.intValue() + 1)]]></variableExpression>
+		<initialValueExpression><![CDATA[$P{PAGE_NUMBER_REPORT}]]></initialValueExpression>
+	</variable>
+	<variable name="PAGE_NUMBER_TOTALSUBREPORT" class="java.lang.Integer" resetType="Report" calculation="Nothing">
+		<initialValueExpression><![CDATA[$P{PAGE_NUMBER_REPORT}]]></initialValueExpression>
+	</variable>
+
+		<group  name="grupoDummy" isStartNewPage="true" >
+			<groupExpression><![CDATA[$V{REPORT_COUNT}]]></groupExpression>
+			<groupHeader>
+			<band height="1"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="71"  isSplitAllowed="true" >
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="7"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-1"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportCifFobFreteTotalExtrato(new Object[] {$P{idsClientes}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteTotaisA.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="16"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-2"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportEntFatPendCobExtrato(
+new Object[] {
+$P{idsClientes}, 
+$P{dtInicial}, 
+$P{dtFinal}, 
+$P{idMoedaDestino}, 
+$P{idPaisDestino}, 
+$P{tpClienteFiltroComp}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteTotaisB.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="25"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-3"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportHistoricoFatPeriodoExtrato(
+new Object[] {
+$P{idsClientes}, 
+$P{dtInicial}, 
+$P{dtFinal}, 
+$P{idMoedaDestino}, 
+$P{idPaisDestino}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteHistoricoFaturamentos.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="43"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-4"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false">
+							<printWhenExpression><![CDATA[new Boolean(($P{totaisFilial}.equals(Boolean.TRUE)))]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportFaturamentoFilialOrigemAndDestinoExtrato(new Object[] {new Integer(1), $P{idMoedaDestino}, $P{idPaisDestino}, $P{tpClienteFiltroComp}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteFatUnidadeOrigem.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="34"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-5"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportFaturamentoUfOrigemAndDestinoExtrato(new Object[] {new Integer(1), $P{idMoedaDestino}, $P{idPaisDestino}, $P{tpClienteFiltroComp}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteFatEstadoOrigem.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="52"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-6"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false"/>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportFaturamentoUfOrigemAndDestinoExtrato(new Object[] {new Integer(2), $P{idMoedaDestino}, $P{idPaisDestino}, $P{tpClienteFiltroComp}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteFatEstadoDest.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="false">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="61"
+						width="784"
+						height="3"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="subreport-7"
+						stretchType="NoStretch"
+						positionType="Float"
+						isPrintRepeatedValues="true"
+						isRemoveLineWhenBlank="false"
+						isPrintInFirstWholeBand="false"
+						isPrintWhenDetailOverflows="false">
+							<printWhenExpression><![CDATA[new Boolean(($P{totaisFilial}.equals(Boolean.TRUE)))]]></printWhenExpression>
+						</reportElement>
+					<dataSourceExpression><![CDATA[((com.mercurio.lms.contasreceber.report.EmitirExtratoClienteService) $P{SERVICE}).executeSubReportFaturamentoFilialOrigemAndDestinoExtrato(new Object[] {new Integer(2), $P{idMoedaDestino}, $P{idPaisDestino}, $P{tpClienteFiltroComp}})]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/contasreceber/report/emitirExtratoClienteFatUnidadeDest.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.equals(new Integer(1))) ]]></printWhenExpression>
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[new Boolean(($P{soTotais}.equals(Boolean.FALSE)))]]></printWhenExpression>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

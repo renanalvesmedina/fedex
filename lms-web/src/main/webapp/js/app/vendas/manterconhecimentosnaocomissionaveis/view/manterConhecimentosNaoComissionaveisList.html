@@ -1,0 +1,67 @@
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearFilter()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate }}
+		</button>
+		<button type="button" data-ng-click="salvarAlteracoes()" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="salvarAlteracoes" ng-disabled="naoComissionaveisList.length == 0 && comissionaveisList.length == 0">
+			{{'salvar' | translate }}
+		</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="executivo" data-labelSize="3" data-fieldSize="4" data-multiSize="4,7">
+			<input type="text" class="form-control" ng-model="filter.executivo" lms-comissionado id="executivo" ng-required="true" />
+			<input type="text" class="form-control" ng-model="filter.executivo.nmUsuario" disabled />
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="dataCompetencia" data-labelSize="3" data-fieldSize="3" data-multiSize="6,6">
+			<input type="text" class="form-control" ng-model="filter.dtInicio" mask="date" adsm-date-picker id="dtInicio"
+				data-end="filter.dtFim" data-maxInterval="{{ getIntervaloMax() }}" ng-required="true" />
+			<input type="text" class="form-control" ng-model="filter.dtFim" mask="date" adsm-date-picker id="dtFim"
+				data-start="filter.dtInicio" data-maxInterval="{{ getIntervaloMax() }}" ng-required="true" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="cliente" data-labelSize="3" data-fieldSize="9" data-multiSize="3,5">
+			<input type="text" class="form-control" ng-model="filter.cliente" lms-cliente id="cliente" />
+			<input type="text" class="form-control" ng-model="filter.cliente.nmPessoa" id="razaoSocial" disabled />
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<table adsm-table="listTableParams" before-changing-page="verifyChanges">
+				<tbody>
+					<tr ng-repeat="row in page">
+					
+						<td column-title="'naoComissionaveis' | translate" 
+							style="text-align:center"><input type="checkbox" name="naoComissionaveis" ng-model="row.checked" id="tableCheckbox_{{ $index }}" ng-change="checkUncheckLocalRow(row)" /></td>
+					
+						<td column-title="'nrConhecimento' | translate" sortable="'nrDoctoServico'" style="text-align:right">{{row.nrDoctoServico}}</td>
+						<td column-title="'tipoDocumento' | translate" sortable="'tpDocumento'" style="text-align:center">{{row.tpDocumento}}</td>
+						<td column-title="'valor' | translate" sortable="'vlValorFreteLiquido'" style="text-align:right">{{row.vlValorFreteLiquido | number:2}}</td>
+						<td column-title="'dataEmissao' | translate" sortable="'dhEmissao'" style="text-align:center">{{row.dhEmissao | date:'dd/MM/yyyy'}}</td>
+						<td column-title="'dataPagamento' | translate" sortable="'dtPagamento'" style="text-align:center">{{row.dtPagamento | date:'dd/MM/yyyy'}}</td>
+						<td column-title="'tipoFrete' | translate" sortable="'tpFrete'" style="text-align:center">{{row.tpFrete}}</td>
+						<td column-title="'modal' | translate" sortable="'tpModal'" style="text-align:center">{{row.tpModal}}</td>
+						<td column-title="'cnpjRemetente' | translate" sortable="'cnpjRemetente'" style="text-align:center">{{row.cnpjRemetente}}</td>
+						<td column-title="'remetente' | translate" sortable="'nmRemetente'">{{row.nmRemetente}}</td>
+						<td column-title="'cnpjDestinatario' | translate" sortable="'cnpjDestinatario'" style="text-align:center">{{row.cnpjDestinatario}}</td>
+						<td column-title="'destinatario' | translate" sortable="'nmDestinatario'">{{row.nmDestinatario}}</td>
+						<td column-title="'cnpjDevedorFrete' | translate" sortable="'cnpjResponsavel'" style="text-align:center">{{row.cnpjResponsavel}}</td>
+						<td column-title="'devedorFrete' | translate" sortable="'nmResponsavel'">{{row.nmResponsavel}}</td>
+						<td column-title="'territorio' | translate" sortable="'nmTerritorio'">{{row.nmTerritorio}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</form>

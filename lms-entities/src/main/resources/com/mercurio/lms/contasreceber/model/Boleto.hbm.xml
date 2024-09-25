@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.Boleto" 
+    table="BOLETO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idBoleto"
+        type="java.lang.Long"
+        column="ID_BOLETO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">BOLETO_SQ</param>
+        </generator>
+    </id>
+
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrSequenciaFilial"
+			        type="java.lang.Long"
+            column="NR_SEQUENCIA_FILIAL"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="vlTotal"
+			        type="java.math.BigDecimal"
+            column="VL_TOTAL"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="vlDesconto"
+			        type="java.math.BigDecimal"
+            column="VL_DESCONTO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="vlJurosDia"
+			        type="java.math.BigDecimal"
+            column="VL_JUROS_DIA"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dtEmissao"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVencimento"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrBoleto"
+			        type="java.lang.String"
+            column="NR_BOLETO"
+        not-null="true"
+        unique="true"
+        length="13"
+    />
+    <property
+        name="tpSituacaoBoleto"
+		    column="TP_SITUACAO_BOLETO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_BOLETO</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacaoAntBoleto"
+		    column="TP_SITUACAO_ANT_BOLETO"
+        not-null="false"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_BOLETO</param>
+	    </type>
+    </property>    
+    <property
+        name="blBoletoConhecimento"
+			        type="sim_nao"
+            column="BL_BOLETO_CONHECIMENTO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blBoletoReemitido"
+			        type="sim_nao"
+            column="BL_BOLETO_REEMITIDO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="dtLimitePagto"
+			        type="jtyearmonthday"
+            column="DT_LIMITE_PAGTO"
+        length="7"
+    />
+    <property
+        name="dhReemissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_REEMISSAO"/><column name="DH_REEMISSAO_TZR"/></property> 
+    <property
+        name="dtVencimentoNovo"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO_NOVO"
+        not-null="false"
+        length="7"
+    />
+    
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Fatura -->
+    <many-to-one
+        name="fatura"
+        class="com.mercurio.lms.contasreceber.model.Fatura"
+        not-null="true"
+    >
+        <column name="ID_FATURA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to OcorrenciaRetornoBanco -->
+    <bag
+        name="ocorrenciaRetornoBancos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.OcorrenciaRetornoBanco</meta>
+ 	        <key>
+            <column name="ID_BOLETO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.OcorrenciaRetornoBanco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to HistoricoBoleto -->
+    <bag
+        name="historicoBoletos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.HistoricoBoleto</meta>
+ 	        <key>
+            <column name="ID_BOLETO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.HistoricoBoleto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TarifaBoleto -->
+    <bag
+        name="tarifaBoletos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.TarifaBoleto</meta>
+ 	        <key>
+            <column name="ID_BOLETO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.TarifaBoleto"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Cedente -->
+    <many-to-one
+        name="cedente"
+        class="com.mercurio.lms.contasreceber.model.Cedente"
+        not-null="true"
+    >
+        <column name="ID_CEDENTE" />
+    </many-to-one>
+    <bag
+        name="anexos"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan" >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.BoletoAnexo</meta>
+ 	        <key>
+            <column name="ID_BOLETO" />
+        </key>
+        <one-to-many class="com.mercurio.lms.contasreceber.model.BoletoAnexo" />
+    </bag>
+</class>
+</hibernate-mapping>

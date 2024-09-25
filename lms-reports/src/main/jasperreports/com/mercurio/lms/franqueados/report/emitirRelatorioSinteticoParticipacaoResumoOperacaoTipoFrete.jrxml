@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFrete"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="784"
+		 columnSpacing="0"
+		 leftMargin="29"
+		 rightMargin="29"
+		 topMargin="20"
+		 bottomMargin="20"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.franqueados.report.emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFrete">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.mercurio.lms.franqueados.util.FranqueadoReportUtils" />
+
+	<parameter name="SUBREPORT_DIR" isForPrompting="true" class="java.lang.String">
+		<defaultValueExpression ><![CDATA[".\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="competencia" isForPrompting="false" class="org.joda.time.YearMonthDay"/>
+	<parameter name="idFranquia" isForPrompting="false" class="java.lang.Long"/>
+	<parameter name="parametrosPesquisa" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="usuarioEmissor" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="LMS_URL" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["http://localhost:8080/lms"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SERVICE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="dataSource1" isForPrompting="false" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="dataSource2" isForPrompting="false" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="dataSource3" isForPrompting="false" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="dataSource4" isForPrompting="false" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="dataSource5" isForPrompting="false" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="NomeEmpresa" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="Cte" isForPrompting="false" class="java.math.BigDecimal"/>
+	<queryString><![CDATA[SELECT DSF.ID_DOCTO_SERVICO_FRQ, DSF.ID_FRANQUIA, DSF.ID_DOCTO_SERVICO, 
+       DSF.TP_FRETE, DSF.DT_COMPETENCIA, DSF.VL_MERCADORIA, DSF.VL_DOCTO_SERVICO,
+       DSF.VL_ICMS, DSF.VL_PIS, DSF.VL_COFINS, DSF.VL_DESCONTO, DSF.VL_CUSTO_AEREO,
+       DSF.VL_CUSTO_CARRETEIRO, DSF.VL_GENERALIDADE, DSF.VL_GRIS,
+       DSF.VL_AJUSTE_BASE_NEGATIVA, DSF.VL_BASE_CALCULO, DSF.NR_KM_TRANSFERENCIA,
+       DSF.VL_KM_TRANSFERENCIA, DSF.NR_KM_COLETA_ENTREGA, DSF.VL_KM_COLETA_ENTREGA, 
+       DSF.VL_FIXO_COLETA_ENTREGA, DSF.VL_REPASSE_ICMS, DSF.VL_REPASSE_PIS, 
+       DSF.VL_REPASSE_COFINS, DSF.VL_DESCONTO_LIMITADOR, DSF.TP_OPERACAO, 
+       DSF.VL_REPASSE_GENERALIDADE, DSF.VL_PARTICIPACAO, DSF.ID_DOCTO_SERVICO_FRQ_ORIGINAL, 
+       DSF.VL_DIFERENCA_PARTICIPACAO, DSF.ID_MUNICIPIO_COLETA_ENTREGA, 
+       DS.TP_DOCUMENTO_SERVICO, DSF.DT_COMPETENCIA, DEV.DT_LIQUIDACAO,
+       DECODE(SIGN(TO_CHAR(DSF.DT_COMPETENCIA,'YYYYMM') -
+                   TO_CHAR(DEV.DT_LIQUIDACAO,'YYYYMM')),0,'S','N') AS BL_LIQ_NA_COMPETENCIA,
+       DECODE(SIGN(DSF.VL_CUSTO_AEREO),0,DSF.TP_FRETE,'AE') AS TP_FRETE_REL
+FROM   DOCTO_SERVICO_FRQ DSF, DOCTO_SERVICO DS, DEVEDOR_DOC_SERV_FAT DEV
+WHERE  DSF.ID_DOCTO_SERVICO = DS.ID_DOCTO_SERVICO
+AND    DSF.ID_DOCTO_SERVICO = DEV.ID_DOCTO_SERVICO
+AND    DSF.ID_DOCTO_SERVICO_FRQ_ORIGINAL IS NULL
+ORDER BY TP_FRETE_REL]]></queryString>
+
+	<field name="ID_DOCTO_SERVICO_FRQ" class="java.math.BigDecimal"/>
+	<field name="ID_FRANQUIA" class="java.math.BigDecimal"/>
+	<field name="ID_DOCTO_SERVICO" class="java.math.BigDecimal"/>
+	<field name="TP_FRETE" class="java.lang.String"/>
+	<field name="DT_COMPETENCIA" class="java.sql.Timestamp"/>
+	<field name="VL_MERCADORIA" class="java.math.BigDecimal"/>
+	<field name="VL_DOCTO_SERVICO" class="java.math.BigDecimal"/>
+	<field name="VL_ICMS" class="java.math.BigDecimal"/>
+	<field name="VL_PIS" class="java.math.BigDecimal"/>
+	<field name="VL_COFINS" class="java.math.BigDecimal"/>
+	<field name="VL_DESCONTO" class="java.math.BigDecimal"/>
+	<field name="VL_CUSTO_AEREO" class="java.math.BigDecimal"/>
+	<field name="VL_CUSTO_CARRETEIRO" class="java.math.BigDecimal"/>
+	<field name="VL_GENERALIDADE" class="java.math.BigDecimal"/>
+	<field name="VL_GRIS" class="java.math.BigDecimal"/>
+	<field name="VL_AJUSTE_BASE_NEGATIVA" class="java.math.BigDecimal"/>
+	<field name="VL_BASE_CALCULO" class="java.math.BigDecimal"/>
+	<field name="NR_KM_TRANSFERENCIA" class="java.math.BigDecimal"/>
+	<field name="VL_KM_TRANSFERENCIA" class="java.math.BigDecimal"/>
+	<field name="NR_KM_COLETA_ENTREGA" class="java.math.BigDecimal"/>
+	<field name="VL_KM_COLETA_ENTREGA" class="java.math.BigDecimal"/>
+	<field name="VL_FIXO_COLETA_ENTREGA" class="java.math.BigDecimal"/>
+	<field name="VL_REPASSE_ICMS" class="java.math.BigDecimal"/>
+	<field name="VL_REPASSE_PIS" class="java.math.BigDecimal"/>
+	<field name="VL_REPASSE_COFINS" class="java.math.BigDecimal"/>
+	<field name="VL_DESCONTO_LIMITADOR" class="java.math.BigDecimal"/>
+	<field name="TP_OPERACAO" class="java.lang.String"/>
+	<field name="VL_REPASSE_GENERALIDADE" class="java.math.BigDecimal"/>
+	<field name="VL_PARTICIPACAO" class="java.math.BigDecimal"/>
+	<field name="ID_DOCTO_SERVICO_FRQ_ORIGINAL" class="java.math.BigDecimal"/>
+	<field name="VL_DIFERENCA_PARTICIPACAO" class="java.math.BigDecimal"/>
+	<field name="ID_MUNICIPIO_COLETA_ENTREGA" class="java.math.BigDecimal"/>
+	<field name="TP_DOCUMENTO_SERVICO" class="java.lang.String"/>
+	<field name="DT_LIQUIDACAO" class="java.sql.Timestamp"/>
+	<field name="BL_LIQ_NA_COMPETENCIA" class="java.lang.String"/>
+	<field name="TP_FRETE_REL" class="java.lang.String"/>
+
+	<variable name="ReturnTotalFrete" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
+	</variable>
+	<variable name="ReturnTotalParticFinal" class="java.math.BigDecimal" resetType="Report" calculation="Nothing">
+	</variable>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="169"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="674"
+						y="0"
+						width="110"
+						height="10"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="592"
+						y="0"
+						width="80"
+						height="10"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{txtDataImpressao}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="49"
+						width="782"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-2"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="2"
+						y="55"
+						width="782"
+						height="114"
+						key="subreport-1"/>
+					<subreportParameter  name="Valores">
+						<subreportParameterExpression><![CDATA[$R{valores}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Impostos">
+						<subreportParameterExpression><![CDATA[$R{impostos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Diversos">
+						<subreportParameterExpression><![CDATA[$R{diversos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Creditos">
+						<subreportParameterExpression><![CDATA[$R{creditos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Tipo">
+						<subreportParameterExpression><![CDATA[$R{tipo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="NrDocumentos">
+						<subreportParameterExpression><![CDATA[$R{nrDocumentos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Frete">
+						<subreportParameterExpression><![CDATA[$R{frete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Icms">
+						<subreportParameterExpression><![CDATA[$R{icms}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Pis">
+						<subreportParameterExpression><![CDATA[$R{pis}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Cofins">
+						<subreportParameterExpression><![CDATA[$R{cofins}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="DescCobranca">
+						<subreportParameterExpression><![CDATA[$R{descCobranca}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FreteCarret">
+						<subreportParameterExpression><![CDATA[$R{freteCarreteiro}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CustoAereo">
+						<subreportParameterExpression><![CDATA[$R{custoAereo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Generalidade">
+						<subreportParameterExpression><![CDATA[$R{generalidade}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Gris">
+						<subreportParameterExpression><![CDATA[$R{gris}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="BaseNegativa">
+						<subreportParameterExpression><![CDATA[$R{baseNegativa}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="BaseCalc">
+						<subreportParameterExpression><![CDATA[$R{baseCalculo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticBase">
+						<subreportParameterExpression><![CDATA[$R{particBase}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Fixo">
+						<subreportParameterExpression><![CDATA[$R{fixo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticBasica">
+						<subreportParameterExpression><![CDATA[$R{particBasica}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RepasseImpostos">
+						<subreportParameterExpression><![CDATA[$R{repasseImpostos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Partic">
+						<subreportParameterExpression><![CDATA[$R{participacao}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Limitador">
+						<subreportParameterExpression><![CDATA[$R{limitador}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticFinal">
+						<subreportParameterExpression><![CDATA[$R{participacaoFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Total">
+						<subreportParameterExpression><![CDATA[$R{total}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CR">
+						<subreportParameterExpression><![CDATA[$R{cr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CE">
+						<subreportParameterExpression><![CDATA[$R{ce}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FR">
+						<subreportParameterExpression><![CDATA[$R{fr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FE">
+						<subreportParameterExpression><![CDATA[$R{fe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="AE">
+						<subreportParameterExpression><![CDATA[$R{ae}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SE">
+						<subreportParameterExpression><![CDATA[$R{se}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FL">
+						<subreportParameterExpression><![CDATA[$R{fl}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="percentBC">
+						<subreportParameterExpression><![CDATA[$R{percentBC}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Outros">
+						<subreportParameterExpression><![CDATA[$R{outros}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$P{dataSource1}]]></dataSourceExpression>
+					<returnValue subreportVariable="TotalFrete" toVariable="ReturnTotalFrete"/>
+					<returnValue subreportVariable="TotalParticipacaoFinal" toVariable="ReturnTotalParticFinal"/>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/franqueados/report/emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFreteGrid1.jasper"]]></subreportExpression>
+				</subreport>
+				<image  scaleImage="RetainShape" vAlign="Top" hAlign="Left" isUsingCache="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="2"
+						width="60"
+						height="28"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="image-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<graphicElement stretchType="NoStretch" pen="None" fill="Solid" />
+					<imageExpression class="java.net.URL"><![CDATA[new java.net.URL($P{LMS_URL} + "/images/mercurio_logo.jpg")]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="65"
+						y="2"
+						width="527"
+						height="33"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="14" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{titulo}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="592"
+						y="12"
+						width="80"
+						height="11"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{txtHoraImpressao}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="674"
+						y="12"
+						width="110"
+						height="10"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[new java.text.SimpleDateFormat("HH:mm").format(new Date())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="141"
+						y="37"
+						width="214"
+						height="10"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{parametrosPesquisa}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="37"
+						width="126"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica-Bold" size="8" isBold="true" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{tituloPesquisa}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="2"
+						y="33"
+						width="782"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-3"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="592"
+						y="22"
+						width="80"
+						height="10"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{txtUsuario}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="674"
+						y="22"
+						width="110"
+						height="10"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font fontName="Verdana" size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{usuarioEmissor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="358"
+						y="37"
+						width="47"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-11"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{valorCte}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="408"
+						y="37"
+						width="51"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-12"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$P{Cte}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="467"
+						y="37"
+						width="85"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-13"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{nomeEmpresa}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="555"
+						y="37"
+						width="229"
+						height="10"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-14"
+						isPrintWhenDetailOverflows="true"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="true" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{NomeEmpresa}]]></textFieldExpression>
+				</textField>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="274"  isSplitAllowed="true" >
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="251"
+						y="7"
+						width="533"
+						height="128"
+						key="subreport-4"
+						stretchType="RelativeToTallestObject"/>
+					<subreportParameter  name="Tipo">
+						<subreportParameterExpression><![CDATA[$R{tipo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="NrDocumentos">
+						<subreportParameterExpression><![CDATA[$R{nrDocumentos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Frete">
+						<subreportParameterExpression><![CDATA[$R{frete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="BaseCalc">
+						<subreportParameterExpression><![CDATA[$R{baseCalculo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Fixo">
+						<subreportParameterExpression><![CDATA[$R{fixo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticBasica">
+						<subreportParameterExpression><![CDATA[$R{particBasica}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RepasseImpostos">
+						<subreportParameterExpression><![CDATA[$R{repasseImpostos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticFinal">
+						<subreportParameterExpression><![CDATA[$R{participacaoFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Total">
+						<subreportParameterExpression><![CDATA[$R{total}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="AE">
+						<subreportParameterExpression><![CDATA[$R{ae}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SE">
+						<subreportParameterExpression><![CDATA[$R{se}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FL">
+						<subreportParameterExpression><![CDATA[$R{fl}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Percent">
+						<subreportParameterExpression><![CDATA[$R{percnt}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LMS_URL">
+						<subreportParameterExpression><![CDATA[$P{LMS_URL}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SERVICE">
+						<subreportParameterExpression><![CDATA[$P{SERVICE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalParticFinal">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalParticFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalFrete">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalFrete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PercntFrete">
+						<subreportParameterExpression><![CDATA[$R{percntFrete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PercntBase">
+						<subreportParameterExpression><![CDATA[$R{percntBase}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RepasseGeneralidade">
+						<subreportParameterExpression><![CDATA[$R{repasseGeneralidade}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RPK">
+						<subreportParameterExpression><![CDATA[$R{RPK}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RPC">
+						<subreportParameterExpression><![CDATA[$R{RPC}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PPC">
+						<subreportParameterExpression><![CDATA[$R{PPC}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="IndicadoresRenta">
+						<subreportParameterExpression><![CDATA[$R{indicadoresRenta}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PepasseGeneralidade">
+						<subreportParameterExpression><![CDATA[$R{repasseGeneralidade}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CE">
+						<subreportParameterExpression><![CDATA[$R{ce}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CR">
+						<subreportParameterExpression><![CDATA[$R{cr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FR">
+						<subreportParameterExpression><![CDATA[$R{fr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FE">
+						<subreportParameterExpression><![CDATA[$R{fe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$P{dataSource3}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/franqueados/report/emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFreteGrid2-2.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="0"
+						y="7"
+						width="245"
+						height="128"
+						key="subreport-5"/>
+					<subreportParameter  name="Tipo">
+						<subreportParameterExpression><![CDATA[$R{tipo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="NrDocumentos">
+						<subreportParameterExpression><![CDATA[$R{nrDocumentos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Frete">
+						<subreportParameterExpression><![CDATA[$R{frete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticFinal">
+						<subreportParameterExpression><![CDATA[$R{participacaoFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Total">
+						<subreportParameterExpression><![CDATA[$R{total}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CR">
+						<subreportParameterExpression><![CDATA[$R{cr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CE">
+						<subreportParameterExpression><![CDATA[$R{ce}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FR">
+						<subreportParameterExpression><![CDATA[$R{fr}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FE">
+						<subreportParameterExpression><![CDATA[$R{fe}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="AE">
+						<subreportParameterExpression><![CDATA[$R{ae}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SE">
+						<subreportParameterExpression><![CDATA[$R{se}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FL">
+						<subreportParameterExpression><![CDATA[$R{fl}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ResumoComposicao">
+						<subreportParameterExpression><![CDATA[$R{resumoComposicao}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Percnt">
+						<subreportParameterExpression><![CDATA[$R{percnt}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalParticFinal">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalParticFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalFrete">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalFrete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LMS_URL">
+						<subreportParameterExpression><![CDATA[$P{LMS_URL}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SERVICE">
+						<subreportParameterExpression><![CDATA[$P{SERVICE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CemPercnt">
+						<subreportParameterExpression><![CDATA[$R{cemPercnt}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$P{dataSource2}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/franqueados/report/emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFreteGrid2-1.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="146"
+						width="245"
+						height="128"
+						key="subreport-6"/>
+					<subreportParameter  name="Tipo">
+						<subreportParameterExpression><![CDATA[$R{tipo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="NrDocumentos">
+						<subreportParameterExpression><![CDATA[$R{nrDocumentos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Frete">
+						<subreportParameterExpression><![CDATA[$R{frete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticFinal">
+						<subreportParameterExpression><![CDATA[$R{participacaoFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Total">
+						<subreportParameterExpression><![CDATA[$R{total}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CO">
+						<subreportParameterExpression><![CDATA[$R{co}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="AE">
+						<subreportParameterExpression><![CDATA[$R{ae}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="EN">
+						<subreportParameterExpression><![CDATA[$R{en}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FL">
+						<subreportParameterExpression><![CDATA[$R{fl}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ResumoComposicao">
+						<subreportParameterExpression><![CDATA[$R{resumoComposicao}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Percnt">
+						<subreportParameterExpression><![CDATA[$R{percnt}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalParticFinal">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalParticFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalFrete">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalFrete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LMS_URL">
+						<subreportParameterExpression><![CDATA[$P{LMS_URL}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SERVICE">
+						<subreportParameterExpression><![CDATA[$P{SERVICE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CemPercnt">
+						<subreportParameterExpression><![CDATA[$R{cemPercnt}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SE">
+						<subreportParameterExpression><![CDATA[$R{se}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$P{dataSource4}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/franqueados/report/emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFreteGrid3-1.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport  isUsingCache="true">
+					<reportElement
+						x="251"
+						y="146"
+						width="533"
+						height="128"
+						key="subreport-7"
+						stretchType="RelativeToTallestObject"/>
+					<subreportParameter  name="Tipo">
+						<subreportParameterExpression><![CDATA[$R{tipo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="NrDocumentos">
+						<subreportParameterExpression><![CDATA[$R{nrDocumentos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Frete">
+						<subreportParameterExpression><![CDATA[$R{frete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="BaseCalc">
+						<subreportParameterExpression><![CDATA[$R{baseCalculo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Fixo">
+						<subreportParameterExpression><![CDATA[$R{fixo}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticBasica">
+						<subreportParameterExpression><![CDATA[$R{particBasica}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RepasseImpostos">
+						<subreportParameterExpression><![CDATA[$R{repasseImpostos}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="ParticFinal">
+						<subreportParameterExpression><![CDATA[$R{participacaoFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Total">
+						<subreportParameterExpression><![CDATA[$R{total}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="AE">
+						<subreportParameterExpression><![CDATA[$R{ae}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SE">
+						<subreportParameterExpression><![CDATA[$R{se}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="FL">
+						<subreportParameterExpression><![CDATA[$R{fl}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="Percent">
+						<subreportParameterExpression><![CDATA[$R{percnt}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="LMS_URL">
+						<subreportParameterExpression><![CDATA[$P{LMS_URL}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="SERVICE">
+						<subreportParameterExpression><![CDATA[$P{SERVICE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalParticFinal">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalParticFinal}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="TotalFrete">
+						<subreportParameterExpression><![CDATA[$V{ReturnTotalFrete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PercntFrete">
+						<subreportParameterExpression><![CDATA[$R{percntFrete}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PercntBase">
+						<subreportParameterExpression><![CDATA[$R{percntBase}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RepasseGeneralidade">
+						<subreportParameterExpression><![CDATA[$R{repasseGeneralidade}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RPK">
+						<subreportParameterExpression><![CDATA[$R{RPK}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="RPC">
+						<subreportParameterExpression><![CDATA[$R{RPC}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PPC">
+						<subreportParameterExpression><![CDATA[$R{PPC}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="IndicadoresRenta">
+						<subreportParameterExpression><![CDATA[$R{indicadoresRenta}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="PepasseGeneralidade">
+						<subreportParameterExpression><![CDATA[$R{repasseGeneralidade}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="CO">
+						<subreportParameterExpression><![CDATA[$R{co}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter  name="EN">
+						<subreportParameterExpression><![CDATA[$R{en}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[$P{dataSource5}]]></dataSourceExpression>
+					<subreportExpression  class="java.lang.String"><![CDATA["com/mercurio/lms/franqueados/report/emitirRelatorioSinteticoParticipacaoResumoOperacaoTipoFreteGrid3-2.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="13"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="1"
+						width="180"
+						height="11"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[LMS - Logistics Management System]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="746"
+						y="1"
+						width="13"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{de}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="721"
+						y="1"
+						width="24"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[5]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						mode="Opaque"
+						x="760"
+						y="1"
+						width="24"
+						height="12"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="staticText-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" lineSpacing="Single">
+						<font fontName="Verdana" pdfFontName="Helvetica" size="8" isBold="false" isItalic="false" isUnderline="false" isPdfEmbedded ="false" pdfEncoding ="Cp1252" isStrikeThrough="false" />
+					</textElement>
+				<text><![CDATA[7]]></text>
+				</staticText>
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

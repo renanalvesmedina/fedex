@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.CartaoPedagio" 
+    table="CARTAO_PEDAGIO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idCartaoPedagio"
+        type="java.lang.Long"
+        column="ID_CARTAO_PEDAGIO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CARTAO_PEDAGIO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrCartao"
+		type="java.lang.Long"
+        column="NR_CARTAO"
+        not-null="true"
+        length="16"
+    />
+    <property
+        name="dtValidade"
+		type="jtyearmonthday"
+        column="DT_VALIDADE"
+        not-null="true"
+        length="7"
+    />
+    
+    <property
+        name="blCartaoTerceiro"
+	    type="sim_nao"
+        column="BL_CARTAO_TERCEIRO"
+        not-null="true"
+        length="1"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to OperadoraCartaoPedagio -->
+    <many-to-one
+        name="operadoraCartaoPedagio"
+        class="com.mercurio.lms.carregamento.model.OperadoraCartaoPedagio"
+        not-null="true"
+    >
+        <column name="ID_OPERADORA_CARTAO_PEDAGIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to PagtoPedagioCc -->
+    <bag
+        name="pagtoPedagioCcs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PagtoPedagioCc</meta>
+ 	    <key>
+            <column name="ID_CARTAO_PEDAGIO" />
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.PagtoPedagioCc" />
+    </bag>
+</class>
+</hibernate-mapping>

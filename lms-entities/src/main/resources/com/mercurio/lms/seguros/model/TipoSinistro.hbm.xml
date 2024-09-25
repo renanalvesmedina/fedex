@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.seguros.model.TipoSinistro" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="TIPO_SINISTRO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+    <cache usage="read-write"/>
+
+	<id column="ID_TIPO_SINISTRO" name="idTipoSinistro" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_SINISTRO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property column="DS_TIPO_I" length="500" name="dsTipo" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="DS_TEXTO_CARTA_OCORRENCIA_I" length="2000" name="dsTextoCartaOcorrencia" not-null="true" type="varcharI18n"/>
+    <property column="DS_TEXTO_CARTA_RETIFICACAO_I" length="2000" name="dsTextoCartaRetificacao" not-null="false" type="varcharI18n"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ProcessoSinistro -->
+    <bag cascade="none" inverse="true" lazy="true" name="processoSinistros">
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.ProcessoSinistro</meta>
+ 	    <key>
+            <column name="TISN_ID_TIPO_SINISTRO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.seguros.model.ProcessoSinistro"/>
+    </bag>
+    <!-- bi-directional one-to-many association to SeguroTipoSinistro -->
+    <bag cascade="none" inverse="true" lazy="true" name="seguroTipoSinistros">
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.SeguroTipoSinistro</meta>
+ 	    <key>
+            <column name="ID_TIPO_SINISTRO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.seguros.model.SeguroTipoSinistro"/>
+    </bag>
+
+
+	
+	
+</class>
+</hibernate-mapping>

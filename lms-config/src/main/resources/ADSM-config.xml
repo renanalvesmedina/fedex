@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+
+<beans>
+   <bean id="adsm-config" class="org.springframework.beans.factory.config.ListFactoryBean" >
+   		<property name="sourceList">
+   			<list>
+		         <value>classpath:ADSM-spring-beans.xml</value>
+		         <value>classpath:ADSM-resource-beans.xml</value>
+		         <value>classpath:ADSM-report-beans.xml</value>
+		         <value>classpath:ADSM-security-beans.xml</value>
+		         <value>classpath:ADSM-session-beans.xml</value>
+		         <value>classpath:ADSM-service-beans.xml</value>
+		         <value>classpath:ADSM-datasource-beans.xml</value>
+		         <value>classpath:ADSM-remote-beans.xml</value>
+		         <value>classpath:ADSM-batch-beans.xml</value>
+		         <!-- 
+		         <value>classpath:ADSM-audit-beans.xml</value>
+		          -->
+
+		         <!-- Hibernate Mappings -->
+				 <value>classpath:adsm-domain-mappings.xml</value>
+				 <value>classpath:adsm-binder-mappings.xml</value>
+				 <value>classpath:lms-entities-mappings.xml</value>
+				 <value>classpath:adsm-batch-mappings.xml</value>
+				 <value>classpath:adsm-domain-annotatedClasses.xml</value>
+				 <value>classpath:adsm-binder-annotatedClasses.xml</value>
+				 <value>classpath:lms-entities-annotatedClasses.xml</value>
+		         <value>classpath:hibernate-mappings.xml</value>
+		         
+				 <!-- ADSM/LMS specific config beans -->
+		         <value>classpath:LMS-batch-beans.xml</value>
+		         <value>classpath:LMS-remote-beans.xml</value>
+		         <value>classpath:LMS-resource-beans.xml</value>
+		         <value>classpath:LMS-security-beans.xml</value>
+		         <value>classpath:LMS-session-beans.xml</value>
+		         
+   			</list>
+   		</property>
+   </bean>
+
+   <bean id="com.mercurio.adsm.beanfactory"
+         class="org.springframework.context.support.ClassPathXmlApplicationContext"
+         lazy-init="true">
+     <constructor-arg >
+	   <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+		  <property name="targetObject"><ref bean="config-merger"/></property>
+		  <property name="targetMethod"><value>getConfigEntries</value></property>
+	   </bean>
+     </constructor-arg>
+   </bean>
+   
+   <bean id="config-merger" class="com.mercurio.adsm.core.util.ConfigAggregator">
+   		<constructor-arg>
+   			<list>
+   				<ref bean="adsm-config"/>
+   				<ref bean="modules-config"/>
+   				<ref bean="reports-config"/>
+   				<ref bean="swt-config"/>
+   				<ref bean="web-config"/>
+   			</list>
+   		</constructor-arg>
+   </bean>
+
+</beans>

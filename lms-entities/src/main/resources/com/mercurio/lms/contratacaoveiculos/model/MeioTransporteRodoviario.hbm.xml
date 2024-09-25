@@ -1,0 +1,406 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario" 
+	table="MEIO_TRANSPORTE_RODOVIARIO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id name="idMeioTransporte" column="ID_MEIO_TRANSPORTE">
+		<generator class="foreign">
+			<param name="property">meioTransporte</param>
+		</generator>
+	</id>
+
+	<property
+		name="nrBilheteSeguro"
+		type="java.lang.String"
+		column="NR_BILHETE_SEGURO"
+		not-null="false"
+		length="11"
+	/>
+	<property
+		name="dtVencimentoSeguro"
+		type="jtyearmonthday"
+		column="DT_VENCIMENTO_SEGURO"
+		not-null="false"
+		length="7"
+	/>
+	<property
+		name="cdRenavam"
+		type="java.lang.Long"
+		column="CD_RENAVAM"
+		not-null="false"
+		length="10"
+	/>
+	<property
+		name="nrCertificado"
+		type="java.lang.Long"
+		column="NR_CERTIFICADO"
+		not-null="false"
+		length="11"
+	/>
+	<property
+		name="dtEmissao"
+		type="jtyearmonthday"
+		column="DT_EMISSAO"
+		not-null="false"
+		length="7"
+	/>
+	<property
+		name="nrChassi"
+		type="java.lang.String"
+		column="NR_CHASSI"
+		not-null="false"
+		length="18"
+	/>
+	<property
+		name="blPossuiPlataforma"
+		type="sim_nao"
+		column="BL_POSSUI_PLATAFORMA"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="blMonitorado"
+		type="sim_nao"
+		column="BL_MONITORADO"
+		not-null="false"
+		length="1"
+	/>
+	<property
+		name="nrRastreador"
+		type="java.lang.Long"
+		column="NR_RASTREADOR"
+		length="10"
+	/>
+	<property
+		name="nrCelular"
+		type="java.lang.Long"
+		column="NR_CELULAR"
+		length="10"
+	/>
+	<property
+		name="psTara"
+		type="java.math.BigDecimal"
+		column="PS_TARA"
+		length="18"
+	/>
+	<property
+		name="nrDddCelular"
+		type="java.lang.String"
+		column="NR_DDD_CELULAR"
+		length="5"
+	/>
+	<property
+		name="blControleTag"
+		type="sim_nao"
+		column="BL_CONTROLE_TAG"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="vlAlturaBau"
+		type="java.math.BigDecimal"
+		column="VL_ALTURA_BAU"
+		length="18"
+	/>
+	<property
+		name="vlLarguraBau"
+		type="java.math.BigDecimal"
+		column="VL_LARGURA_BAU"
+		length="18"
+	/>
+	<property
+		name="vlProfundidadeBau"
+		type="java.math.BigDecimal"
+		column="VL_PROFUNDIDADE_BAU"
+		length="18"
+	/>
+	<property
+		name="nrTag"
+		type="java.lang.Integer"
+		column="NR_TAG"
+		length="7"
+	/>
+
+	<!-- Associations -->
+
+	<!-- bi-directional one-to-one association to MeioTransporte -->
+	<one-to-one
+		name="meioTransporte"
+		class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+		constrained="true"
+	/>
+	<!-- bi-directional many-to-one association to Municipio -->
+	<many-to-one
+		name="municipio"
+		class="com.mercurio.lms.municipios.model.Municipio"
+		not-null="false"
+	>
+		<column name="ID_MUNICIPIO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to OperadoraMct -->
+	<many-to-one
+		name="operadoraMct"
+		class="com.mercurio.lms.contratacaoveiculos.model.OperadoraMct"
+		not-null="false"
+	>
+		<column name="ID_OPERADORA_MCT" />
+	</many-to-one>
+
+	<!-- bi-directional many-to-one association to EixosTipoMeioTransporte -->
+	<many-to-one
+		name="eixosTipoMeioTransporte"
+		class="com.mercurio.lms.contratacaoveiculos.model.EixosTipoMeioTransporte"
+		not-null="false"
+	>
+		<column name="ID_EIXOS_TIPO_MEIO_TRANSPORTE" />
+	</many-to-one>
+
+	<!-- bi-directional one-to-many association to RegistroAuditoria -->
+	<bag
+		name="registroAuditorias"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.RegistroAuditoria</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.portaria.model.RegistroAuditoria"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to MeioTranspRodoPermisso -->
+	<bag
+		name="meioTranspRodoPermissos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTranspRodoPermisso</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.contratacaoveiculos.model.MeioTranspRodoPermisso"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to RotaMeioTransporteRodov -->
+	<bag
+		name="rotaMeioTransporteRodovs"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.RotaMeioTransporteRodov</meta>
+		<key>
+			<column name="METR_ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.municipios.model.RotaMeioTransporteRodov"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to MeioTransporteRotaViagem -->
+	<bag
+		name="meioTransporteRotaViagems"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MeioTransporteRotaViagem</meta>
+		<key>
+			<column name="METR_ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.municipios.model.MeioTransporteRotaViagem"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to OrdemSaida -->
+	<bag
+		name="ordemSaidasByIdSemiReboque"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.OrdemSaida</meta>
+		<key>
+			<column name="ID_SEMI_REBOQUE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.portaria.model.OrdemSaida"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to OrdemSaida -->
+	<bag
+		name="ordemSaidasByIdMeioTransporte"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.OrdemSaida</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.portaria.model.OrdemSaida"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ConfiguracaoAuditoriaFil -->
+	<bag
+		name="configuracaoAuditoriaFis"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.ConfiguracaoAuditoriaFil</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.portaria.model.ConfiguracaoAuditoriaFil"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to TabelaColetaEntrega -->
+	<bag
+		name="tabelaColetaEntregas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.TabelaColetaEntrega</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.fretecarreteirocoletaentrega.model.TabelaColetaEntrega"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ControleQuilometragem -->
+	<bag
+		name="controleQuilometragems"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.ControleQuilometragem</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.portaria.model.ControleQuilometragem"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to MeioTransporteRodoBox -->
+	<bag
+		name="meioTransporteRodoBoxs"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.MeioTransporteRodoBox</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.portaria.model.MeioTransporteRodoBox"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to MeioTransporteRodoviario -->
+	<bag
+		name="meioTransporteRodoviarios"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE_TRACIONADOR" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+		/>
+	</bag>
+	<!-- bi-directional many-to-one association to MeioTransporteRodoviario -->
+	<many-to-one
+		name="meioTransporteRodoviario"
+		class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+		not-null="true"
+	>
+		<column name="ID_MEIO_TRANSPORTE_TRACIONADOR" />
+	</many-to-one>
+	<!-- bi-directional one-to-many association to ParamSimulacaoHistorica -->
+	<bag
+		name="paramSimulacaoHistoricas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.ParamSimulacaoHistorica</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.fretecarreteirocoletaentrega.model.ParamSimulacaoHistorica"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to MeioTranspRodoMotorista -->
+	<bag
+		name="meioTranspRodoMotoristas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTranspRodoMotorista</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.contratacaoveiculos.model.MeioTranspRodoMotorista"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to EficienciaVeiculoColeta -->
+	<bag
+		name="eficienciaVeiculoColetas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.EficienciaVeiculoColeta</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.coleta.model.EficienciaVeiculoColeta"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ReciboFreteCarreteiro -->
+	<bag
+		name="reciboFreteCarreteiros"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro</meta>
+		<key>
+			<column name="ID_MEIO_TRANSPORTE" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro"
+		/>
+	</bag>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.vendas.model.MotivoProibidoEmbarque" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="MOTIVO_PROIBIDO_EMBARQUE">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+    <cache usage="read-write"/>
+
+	<id column="ID_MOTIVO_PROIBIDO_EMBARQUE" name="idMotivoProibidoEmbarque" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MOTIVO_PROIBIDO_EMBARQUE_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_MOTIVO_PROIBIDO_EMBARQUE_I" length="500" name="dsMotivoProibidoEmbarque" not-null="true" type="varcharI18n"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property column="BL_FINANCEIRO" length="1" name="blFinanceiro" not-null="true" type="sim_nao">
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ProibidoEmbarque -->
+    <bag cascade="none" inverse="true" lazy="true" name="proibidoEmbarques">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ProibidoEmbarque</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_PROIBIDO_EMBARQUE"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.ProibidoEmbarque"/>
+    </bag>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one class="com.mercurio.lms.municipios.model.Empresa" name="empresa" not-null="true">
+        <column name="ID_EMPRESA"/>
+    </many-to-one>
+    <!-- Custom inserts/update para tratar i18n -->
+	
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,374 @@
+<style type="text/css">
+	.checkbox-inline {
+		line-height: 20px;
+		padding-top: 2px !important;
+	}
+	
+	.message-type {
+		line-height: 30px;
+    	text-indent: 6px;
+    	font-weight: bold;
+	}
+	
+	.menu-top a {
+		cursor: pointer;
+	}
+	
+	.bg-old {
+		background-color: #FFF3C4;
+	}
+	
+	.bg-draft {
+		background-color: #DEF2F4;
+	}
+	
+	.bg-clone {
+		background-color: #E6F7F5;
+	}
+	
+	.glyphicon-sheep {
+		background: url("../img/sheep.png");
+		background-repeat: no-repeat;	    
+	    vertical-align: text-bottom;
+	    height: 16px;
+	    width: 16px;
+	}
+</style>
+
+<div class="menu-top">	
+	<a ng-click="editVigencia($event)"> 
+		<span class="glyphicon glyphicon-calendar"></span>
+		{{'vigencia' | translate}}
+	</a>
+	<a ng-click="editGeral($event)">
+		<span class="glyphicon glyphicon-usd"></span>
+		{{'tabelaGeral' | translate}}
+	</a>	
+</div>
+
+<form class="form-horizontal content-padding" data-ng-submit="store($event)">
+	<div class="fixed-top">
+		<button type="button" 
+			data-ng-click="limparDados()" 
+			class="btn btn-default btn-lg pull-right"
+			ng-if="tabelafretecarreteiro.isMatriz"
+			id="limparDados">
+			{{'limpar' |  translate }}
+		</button>	
+		<button type="button" 
+			data-ng-click="clonarTabelaFreteCarreteiroCe()" 
+			class="btn btn-default btn-lg pull-right"
+			ng-if="data.idTabelaFreteCarreteiroCe"
+			id="clonar">
+			{{'clonar' |  translate }}
+		</button>
+		<button type="button" 
+			data-ng-click="editVigencia($event)" 
+			class="btn btn-default btn-lg pull-right"
+			ng-if="data.disabled && !data.ended && tabelafretecarreteiro.isMatriz"
+			id="inativar">
+			{{'inativar' |  translate }}
+		</button>
+		<button type="button" 
+			data-ng-click="remover()" 
+			class="btn btn-default btn-lg pull-right"
+			ng-if="!data.disabled && tabelafretecarreteiro.isMatriz"
+			id="excluir">
+			{{'excluir' |  translate }}
+		</button>	
+		<button type="submit" 
+			class="btn btn-default btn-lg pull-right" 
+			id="store" 
+			ng-if="!data.disabled && tabelafretecarreteiro.isMatriz">
+			{{'salvar' |  translate }}
+		</button>
+	</div>
+
+	<p class="message-type {{ data.messageType }}" ng-if="data.messageType">
+		<span class="glyphicon {{ data.messageTypeIcon }}"></span>
+		{{ data.messageText }}
+	</p>
+
+	<div class="clearfix">		
+		<div class="form-horizontal">										
+			<div class="row">
+				<div adsm-add-field data-boxSize="4" data-label="filial" data-labelSize="3" data-multiSize="3,9">
+					<input
+						lms-filial
+						ng-model="data.filial" 
+						id="filial" 
+						class="form-control"
+						ng-disabled="!tabelafretecarreteiro.isMatriz"
+						required>
+		
+					<input
+						type="text"
+						class="form-control"
+						id="filial.nmFilial"
+						value="{{ data.filial.nmFilial }}"
+						readonly="readonly">
+				</div>
+				
+				<div adsm-add-field data-boxSize="4" data-label="numeroTabelaFrete" data-labelSize="6" data-fieldSize="6">
+					<input
+						type="text"
+						class="form-control text-right"
+						id="nrTabelaFreteCarreteiroCe"
+						value="{{ data.nrTabelaFreteCarreteiroCe | lpad: 10}}"
+						readonly="readonly">
+				</div>		
+				
+				<div adsm-add-field data-boxSize="4" data-label="operacao" data-labelSize="6" data-fieldSize="6">
+					<select 
+						adsm-domain="DM_TIPO_OPERACAO_TAB_FRETE_CE"
+						id="tpOperacao" 
+						ng-model="data.tpOperacao"
+						required>
+						<option value=""></option>
+					</select>
+				</div>	
+			</div>
+			
+			<div class="row">				
+				<div adsm-add-field data-label="vinculo" data-labelSize="3" data-fieldSize="6">
+					<select 
+						adsm-domain="DM_TIPO_VINCULO_TAB_FRETE_CE"
+						id="tpVinculo" 
+						ng-model="data.tpVinculo">
+						<option value=""></option>
+					</select>
+				</div>	
+				
+				<div adsm-add-field data-boxSize="4" data-label="modalidade" data-labelSize="6" data-fieldSize="6">
+					<select 
+						adsm-domain="DM_TIPO_MODAL_TAB_FRETE_CE"
+						id="tpModal" 
+						ng-model="data.tpModal">
+						<option value=""></option>
+					</select>
+				</div>
+				
+				<div adsm-add-field data-boxSize="4" data-label="tipoPeso" data-labelSize="6" data-fieldSize="6">
+					<select 
+						adsm-domain="DM_TIPO_PESO_CALC_NOTA_CRED"
+						id="tpPeso" 
+						ng-model="data.tpPeso">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="observacao" data-labelSize="2" data-fieldSize="8">
+					<textarea rows="2" 
+						maxlength="500" 
+						ng-model="data.obTabelaFrete"
+						id="obTabelaFrete" 
+						class="form-control"
+						style="resize: none;"></textarea>									
+				</div>								
+			</div>
+			
+			<accordion close-others="false" id="accordionInformacoes">
+				<accordion-group is-open="isInformacoesDescontaFrete">
+					<accordion-heading>
+						<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesDescontaFrete, 'glyphicon-chevron-right': !isInformacoesDescontaFrete}"></span>
+						{{'descontoReferenteUsoCarretaMercurioPadrao' | translate}}
+					</accordion-heading>
+					
+					<div class="row">	
+						<div adsm-add-field data-boxSize="11" data-label="ativo" data-labelSize="1">
+							<input type="checkbox"
+								id="blDescontaFrete" 
+								ng-model="data.blDescontaFrete">
+						</div>
+					</div>
+				</accordion-group>
+			
+				<accordion-group is-open="isInformacoesFrequencia">
+					<accordion-heading>
+						<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesFrequencia, 'glyphicon-chevron-right': !isInformacoesFrequencia}"></span>
+						{{'frequenciaValidade' | translate}}
+					</accordion-heading>
+				
+					<div class="row">
+						<div adsm-add-field data-boxSize="11" data-label="Dias" data-labelSize="1">
+							<label class="checkbox-inline">
+							  	<input type="checkbox" 
+							  		ng-model="data.blSegunda">{{'Segunda' | translate}}
+							</label>									 
+							<label class="checkbox-inline">
+							    <input type="checkbox" 
+							    	ng-model="data.blTerca">{{'Terca' | translate}}
+							</label>									
+							<label class="checkbox-inline">
+							    <input type="checkbox" 
+							    	ng-model="data.blQuarta">{{'Quarta' | translate}}
+							</label>									
+							<label class="checkbox-inline">
+							    <input type="checkbox" 
+							    	ng-model="data.blQuinta">{{'Quinta' | translate}}
+							</label>
+							<label class="checkbox-inline">
+							    <input type="checkbox" 
+							    	ng-model="data.blSexta">{{'Sexta' | translate}}
+							</label>
+							<label class="checkbox-inline">
+							    <input type="checkbox" 
+							    	ng-model="data.blSabado">{{'Sabado' | translate}}
+							</label>
+							<label class="checkbox-inline">
+							    <input type="checkbox" 
+							    	ng-model="data.blDomingo">{{'Domingo' | translate}}
+							</label>
+						</div>
+					</div>
+				</accordion-group>
+				
+				<accordion-group is-open="isInformacoesPremio">
+					<accordion-heading>
+						<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesPremio, 'glyphicon-chevron-right': !isInformacoesPremio}"></span>
+						{{'premio' | translate}}
+					</accordion-heading>
+								
+					<div class="row">
+			           <div adsm-add-field data-boxSize="3" data-label="cte" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right" 
+			                       ng-model="data.pcPremioCte"
+			                       id="vlCTE_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual
+			                       ng-required="true">
+			            </div>
+			            <div adsm-add-field data-boxSize="3" data-label="evento" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioEvento"
+			                       id="vlEvento_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual
+			                       ng-required="true">
+			            </div>								            
+			            <div adsm-add-field data-boxSize="3" data-label="diaria" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioDiaria"
+			                       id="vlPreDiaria_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual
+			                       ng-required="true">
+			            </div>				            
+			            <div adsm-add-field data-boxSize="3" data-label="volume" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioVolume"
+			                       id="vlVolume_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual 
+			                       ng-required="true">
+			            </div>								        
+			        </div>
+			        
+			        <div class="row">
+			           <div adsm-add-field data-boxSize="3" data-label="saida" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioSaida"
+			                       id="vlSaida_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual
+			                       ng-required="true">
+			            </div>
+			            <div adsm-add-field data-boxSize="3" data-label="freteBruto" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioFreteBruto"
+			                       id="vlFreteBruto_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual 
+			                       ng-required="true">
+			            </div>								            
+			            <div adsm-add-field data-boxSize="3" data-label="freteLiquido" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioFreteLiq"
+			                       id="vlFreteLiquido_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual
+			                       ng-required="true">
+			            </div>				            
+			            <div adsm-add-field data-boxSize="3" data-label="mercadoria" data-labelSize="4">
+			                <input type="text"
+			                       class="form-control text-right"
+			                       ng-model="data.pcPremioMercadoria"
+			                       id="vlMercadoria_" 
+			                       data-numeric="{maxLength: '5'}"
+			                       data-percentual
+			                       ng-required="true">
+			            </div>								        
+			        </div>
+				</accordion-group>
+								
+				<accordion-group is-open="isInformacoesUsuario">
+					<accordion-heading>
+						<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesUsuario, 'glyphicon-chevron-right': !isInformacoesUsuario}"></span>
+						{{'informacoes' | translate}}
+					</accordion-heading>
+					
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="usuarioCriacao" data-labelSize="3" data-multiSize="4,8">
+							<input
+								type="text"
+								ng-model="data.usuarioCriacao"
+								lms-usuario-lms
+								disabled="true"
+								class="form-control">
+				
+							<input
+								type="text"
+								ng-model="data.usuarioCriacao.nmUsuario"
+								class="form-control"
+								disabled="true">							
+						</div>
+						
+						<div adsm-add-field data-boxSize="6" data-label="dataCriacao" data-labelSize="5" data-fieldSize="6">
+							<input id="dtCriacao" 
+								adsm-date-picker 
+								ng-model="data.dtCriacao" 
+								mask="date" 
+								class="form-control"
+								readonly="readonly">
+						</div>									
+					</div>
+					
+					<div class="row">
+						<div adsm-add-field data-boxSize="6" data-label="usuarioAlteracao" data-labelSize="3" data-multiSize="4,8">
+							<input
+								lms-usuario-lms
+								type="text"
+								ng-model="data.usuarioAlteracao"										
+								disabled="true"
+								class="form-control">
+				
+							<input
+								type="text"
+								ng-model="data.usuarioAlteracao.nmUsuario"
+								class="form-control"
+								disabled="true">							
+						</div>
+						
+						<div adsm-add-field data-boxSize="6" data-label="dataAlteracao" data-labelSize="5" data-fieldSize="6">
+							<input id="dtAtualizacao" 
+								adsm-date-picker 
+								ng-model="data.dtAtualizacao" 
+								mask="date" 
+								class="form-control"
+								readonly="readonly">
+						</div>									
+					</div>
+				</accordion-group>
+			</accordion>
+		</div>
+	</div>
+</form>

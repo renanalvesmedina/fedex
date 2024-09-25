@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.rnc.model.MotivoAberturaNc" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="MOTIVO_ABERTURA_NC">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_MOTIVO_ABERTURA_NC" name="idMotivoAberturaNc" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MOTIVO_ABERTURA_NC_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_MOTIVO_ABERTURA_I" length="500" name="dsMotivoAbertura" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property column="TP_MOTIVO" length="2" name="tpMotivo" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_MOTIVO_NC</param>
+	    </type>
+    </property>
+    <property column="BL_EXIGE_DOC_SERVICO" length="1" name="blExigeDocServico" not-null="true" type="sim_nao"/>
+    <property column="BL_PERMITE_INDENIZACAO" length="1" name="blPermiteIndenizacao" not-null="true" type="sim_nao"/>
+    <property column="BL_EXIGE_VALOR" length="1" name="blExigeValor" not-null="true" type="sim_nao"/>
+    <property column="BL_EXIGE_QTD_VOLUMES" length="1" name="blExigeQtdVolumes" not-null="true" type="sim_nao"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to MotAberturaMotDisposicao -->
+    <bag cascade="none" inverse="true" lazy="true" name="motAberturaMotDisposicoes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.MotAberturaMotDisposicao</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_ABERTURA_NC"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.MotAberturaMotDisposicao"/>
+    </bag>
+    <!-- bi-directional one-to-many association to SetorMotivoAberturaNc -->
+    <bag cascade="none" inverse="true" lazy="true" name="setorMotivoAberturaNcs">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.SetorMotivoAberturaNc</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_ABERTURA_NC"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.SetorMotivoAberturaNc"/>
+    </bag>
+    <!-- bi-directional one-to-many association to OcorrenciaNaoConformidade -->
+    <bag cascade="none" inverse="true" lazy="true" name="ocorrenciaNaoConformidades">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_ABERTURA_NC"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade"/>
+    </bag>
+    <!-- bi-directional one-to-many association to DescricaoPadraoNc -->
+    <bag cascade="none" inverse="true" lazy="true" name="descricaoPadraoNcs">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.DescricaoPadraoNc</meta>
+ 	        <key>
+            <column name="ID_MOTIVO_ABERTURA_NC"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.DescricaoPadraoNc"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.seguros.model.ProcessoSinistro" 
+    table="PROCESSO_SINISTRO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idProcessoSinistro"
+        type="java.lang.Long"
+        column="ID_PROCESSO_SINISTRO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PROCESSO_SINISTRO_SQ</param>
+        </generator>
+    </id>
+    
+   	<version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrProcessoSinistro"
+		type="java.lang.String"
+        column="NR_PROCESSO_SINISTRO"
+        not-null="true"
+        length="30"
+    />
+    <property
+        name="dhSinistro"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_SINISTRO"/><column name="DH_SINISTRO_TZR"/></property>
+    <property
+        name="dhFechamento"
+		type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_FECHAMENTO"/><column name="DH_FECHAMENTO_TZR"/></property>    
+    <property
+        name="dhAbertura"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_ABERTURA"/><column name="DH_ABERTURA_TZR"/></property>    
+    <property
+        name="tpLocalSinistro"
+		column="TP_LOCAL_SINISTRO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_LOCAL_SINISTRO</param>
+	    </type>
+    </property>
+    <property
+        name="nrKmSinistro"
+        type="java.lang.Integer"
+        column="NR_KM_SINISTRO"
+        length="6"
+        not-null="false"
+    />
+    <property
+        name="dsSinistro"
+        type="java.lang.String"
+        column="DS_SINISTRO"
+        length="1500"
+        not-null="true"
+    />
+    <property
+        name="dsLocalSinistro"
+        type="java.lang.String"
+        column="DS_LOCAL_SINISTRO"
+        length="1500"
+        not-null="false"
+    />
+    <property
+        name="obSinistro"
+        type="java.lang.String"
+        column="OB_SINISTRO"
+        length="1500"
+    />
+    <property
+        name="nrBoletimOcorrencia"
+			        type="java.lang.Long"
+            column="NR_BOLETIM_OCORRENCIA"
+        length="10"
+        not-null="false"
+    />
+    <property
+        name="dsJustificativaEncerramento"
+			        type="java.lang.String"
+            column="DS_JUSTIFICATIVA_ENCERRAMENTO"
+        length="1500"
+        not-null="false"
+    />
+    
+	<!-- LMS-6178 -->
+	<property
+        name="vlFranquia"
+		type="java.math.BigDecimal"
+        column="VL_FRANQUIA"
+        length="19"
+        not-null="true"
+    />
+    <property
+        name="dsComunicadoCorretora"
+		type="java.lang.String"
+        column="DS_COMUNICADO_CORRETORA"
+        length="1500"
+        not-null="false"
+    />
+
+    <!-- Associations -->
+  
+  	<!-- LMS-6178 -->
+	<many-to-one
+        name="motorista"
+        class="com.mercurio.lms.contratacaoveiculos.model.Motorista"
+        not-null="false"
+    >
+        <column name="ID_MOTORISTA" />
+    </many-to-one>
+    
+    <many-to-one
+        name="situacaoReembolso"
+        class="com.mercurio.lms.seguros.model.SituacaoReembolso"
+        not-null="false"
+    >
+        <column name="ID_SITUACAO_REEMBOLSO" />
+    </many-to-one>
+  
+    <!-- bi-directional many-to-one association to TipoSeguro -->
+    <many-to-one
+        name="tipoSeguro"
+        class="com.mercurio.lms.seguros.model.TipoSeguro"
+        not-null="true"
+    >
+        <column name="ID_TIPO_SEGURO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Aeroporto -->
+    <many-to-one
+        name="aeroporto"
+        class="com.mercurio.lms.municipios.model.Aeroporto"
+        not-null="false"
+    >
+        <column name="ID_AEROPORTO" />
+    </many-to-one>
+    
+    
+    <!-- bi-directional many-to-one association to MeioTransporte -->
+    <many-to-one
+        name="meioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        not-null="false"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+   <many-to-one
+        name="usuarioAbertura"
+        entity-name="usuario"
+        not-null="true"
+    >
+	    <column name="ID_USUARIO_ABERTURA" />
+    </many-to-one>
+        <many-to-one
+        name="usuarioFechamento"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO_FECHAMENTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ReguladoraSeguro -->
+    
+    <!-- bi-directional many-to-one association to TipoSinistro -->
+    <many-to-one
+        name="tipoSinistro"
+        class="com.mercurio.lms.seguros.model.TipoSinistro"
+        not-null="true"
+    >
+        <column name="ID_TIPO_SINISTRO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Rodovia -->
+    <many-to-one
+        name="rodovia"
+        class="com.mercurio.lms.municipios.model.Rodovia"
+        not-null="false"
+    >
+        <column name="ID_RODOVIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to CustoAdicionalSinistro -->
+    <bag
+        name="custoAdicionalSinistros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.CustoAdicionalSinistro</meta>
+ 	        <key>
+            <column name="ID_PROCESSO_SINISTRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.seguros.model.CustoAdicionalSinistro"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DoctoProcessoSinistro -->
+    <bag
+        name="doctoProcessoSinistros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.DoctoProcessoSinistro</meta>
+ 	        <key>
+            <column name="ID_PROCESSO_SINISTRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.seguros.model.DoctoProcessoSinistro"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ReciboIndenizacao -->
+    <bag
+        name="reciboIndenizacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.ReciboIndenizacao</meta>
+ 	        <key>
+            <column name="ID_PROCESSO_SINISTRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.ReciboIndenizacao"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to ReciboReembolsoProcesso -->
+    <bag
+        name="reciboReembolsoProcessos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.ReciboReembolsoProcesso</meta>
+ 	        <key>
+            <column name="ID_PROCESSO_SINISTRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.seguros.model.ReciboReembolsoProcesso"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to FotoProcessoSinistro -->
+    <bag
+        name="fotoProcessoSinistros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.FotoProcessoSinistro</meta>
+ 	        <key>
+            <column name="ID_PROCESSO_SINISTRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.seguros.model.FotoProcessoSinistro"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="false"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

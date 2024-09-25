@@ -1,0 +1,461 @@
+<form  name="formParam"  class="form-horizontal content-padding" ng-submit="storeParam($event)">
+
+	<div class="fixed-top">
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar"
+			ng-disabled="disableBotoesCrud">
+			{{'salvar' |  translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="cliente" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-cliente
+				ng-model="data.cliente"
+				id="cliente"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.cliente.nmPessoa">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="divisaoCliente" data-labelSize="4" data-fieldSize="8">
+			<input type="text" disabled ng-model="data.divisaoCliente.nmDivisaoCliente">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="tabelaPrecos" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-tabela-preco
+				ng-model="data.tabelaPreco"
+				id="tabelaPreco"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.tabelaPreco.descricao">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="servico" data-labelSize="4" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.servico.nomeServico">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="origem" data-labelSize="3" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.dsRotaOrigem">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="destino" data-labelSize="3" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.dsRotaDestino">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="especificacaoRota" data-labelSize="3" data-fieldSize="8">
+            <textarea id="especificacaoRota" rows="2" maxlength="500" ng-model="data.dsEspecificacaoRota" class="form-control" style="resize: none;"></textarea>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="moeda" data-labelSize="3" data-fieldSize="2">
+            <input type="text" disabled ng-model="data.tabelaPreco.moeda.siglaSimbolo" />
+		</div>
+	</div>
+	
+	<accordion close-others="false" id="accordionFretePeso" ng-init="isOpen = true;isOpen1 = true;isOpen2 = true;isOpen3 = true;isOpen4 = true;isOpen5 = true;isOpen6 = true;isOpen7 = true;">
+	
+<!-- FRETE PESO -->
+		<accordion-group is-open="isOpen">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></span>
+				{{'fretePeso' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="minimoFretePeso" data-labelSize="4" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_FRETE_MINIMO"
+						id="minimoFretePeso"
+						ng-model="data.tpIndicadorMinFretePeso"
+						ng-change="validateMinimoFretePeso()"
+						required>
+						<option value=""></option>
+					</select>
+					<div>
+						<input type="text"  ng-model="data.vlMinFretePeso" data-numeric="{mDec: 2, vMin: '0'}" class="form-control text-right"
+							ng-blur="validateMinimoFretePeso()"
+							ng-disabled="vlMinFretePesoDisabled"
+							required>
+					</div>
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="percentualMinimoProgressivo" data-labelSize="4" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_ACRESCIMO_DESCONTO"
+						id="percentualMinimoProgressivo"
+						ng-model="data.tpIndicadorPercMinimoProgr"
+						required>
+						<option value=""></option>
+					</select>
+					<div>
+						<input type="text" required ng-model="data.vlPercMinimoProgr" data-numeric="{mDec: '2', vMin: '0'}" data-percentual class="form-control text-right" adsm-custom-validation="vlPercMinimoProgrValidate">
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="fretePeso" data-labelSize="4" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="fretePeso"
+						ng-model="data.tpIndicadorFretePeso"
+						ng-change="validateFretePeso()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlFretePeso" data-numeric="{mDec: 4}" class="form-control text-right"
+						ng-blur="validateFretePeso()"
+						ng-disabled="vlFretePesoDisabled"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="valorMinimoFreteQuilo" data-labelSize="4" data-fieldSize="4">
+					<input type="text"  ng-model="data.vlMinimoFreteQuilo" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateMinimoFreteQuilo()"
+						required>
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="pagaPesoExcedente" data-labelSize="4">
+					<input type="checkbox"  ng-model="data.blPagaPesoExcedente"
+						ng-change="validatePagaPesoExcedente()">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="tarifaMinima" data-labelSize="4" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="tarifaMinima"
+						ng-model="data.tpTarifaMinima"
+						ng-change="validateTarifaMinima()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlTarifaMinima" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateTarifaMinima()"
+						ng-disabled="vlTarifaMinimaDisabled"
+						required>
+				</div>
+				
+				<div adsm-add-field data-boxSize="6" data-label="valorFreteVolume" data-labelSize="4" data-fieldSize="4">
+		           <input type="text"  ng-model="data.vlFreteVolume" data-numeric="{mDec: 2}" class="form-control text-right"
+		           	ng-blur="validateFreteVolume()"
+		           	required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="valorTarifaEspecifica" data-labelSize="4" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="valorTarifaEspecifica"
+						ng-model="data.tpIndicVlrTblEspecifica"
+						ng-change="validateTarifaEspecifica()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlTblEspecifica" data-numeric="{mDec: 2, vMin: '0'}" class="form-control text-right"
+						ng-blur="validateTarifaEspecifica()"
+						ng-disabled="vlTblEspecificaDisabled"
+						required>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- FRETE VALOR -->
+		<accordion-group is-open="isOpen1">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen1, 'glyphicon-chevron-right': !isOpen1}"></span>
+				{{'freteValor' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="advalorem1" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_ADVALOREM"
+						id="advalorem1"
+						ng-model="data.tpIndicadorAdvalorem"
+						ng-change="validateAdvalorem1()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlAdvalorem" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateAdvalorem1()"
+						ng-disabled="vlAdvaloremDisabled"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="advalorem2" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_ADVALOREM"
+						id="advalorem2"
+						ng-model="data.tpIndicadorAdvalorem2"
+						ng-change="validateAdvalorem2()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlAdvalorem2" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateAdvalorem2()"
+						ng-disabled="vlAdvalorem2Disabled"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="valorReferencia" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="valorReferencia"
+						ng-model="data.tpIndicadorValorReferencia"
+						ng-change="validateValorReferencia()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlValorReferencia" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateValorReferencia()"
+						ng-disabled="vlValorReferenciaDisabled"
+						required>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- FRETE PERCENTUAL -->
+		<accordion-group is-open="isOpen2">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen2, 'glyphicon-chevron-right': !isOpen2}"></span>
+				{{'fretePercentual' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualFretePercentual" data-labelSize="5" data-fieldSize="4">
+					<input type="text"  ng-model="data.pcFretePercentual" data-numeric="{mDec: '2', vMax: '100', vMin: '0'}" data-percentual class="form-control text-right"
+						ng-blur="validatePercentualFretePercentual()"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="valorMinimoFretePercentual" data-labelSize="5" data-fieldSize="4">
+					<input type="text"  ng-model="data.vlMinimoFretePercentual" data-numeric="{mDec: '2', vMin: '0'}" data-percentual class="form-control text-right"
+						ng-blur="validateFretePercentual()"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="valorToneladaFretePercentual" data-labelSize="5" data-fieldSize="4">
+					<input type="text"  ng-model="data.vlToneladaFretePercentual" data-numeric="{mDec: '2', vMin: '0'}" data-percentual class="form-control text-right"
+						ng-blur="validateFretePercentual()"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="pesoReferenciaFretePercentual" data-labelSize="5" data-multiSize="5,0">
+					<div>
+						<input type="text"  ng-model="data.psFretePercentual" data-numeric="{mDec: '3', vMin: '0'}" data-percentual class="form-control text-right"
+							ng-blur="validateFretePercentual()"
+							required>
+					</div>
+					<div adsm-add-field data-boxSize="2" data-label="kg"></div>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- GRIS -->
+		<accordion-group is-open="isOpen3">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen3, 'glyphicon-chevron-right': !isOpen3}"></span>
+				{{'gris' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualGris" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_ADVALOREM"
+						id="percentualGris"
+						ng-model="data.tpIndicadorPercentualGris"
+						ng-change="validatePercentualGris()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlPercentualGris" data-numeric="{mDec: '2'}" data-percentual class="form-control text-right"
+						ng-blur="validatePercentualGris()"
+						ng-disabled="vlPercentualGrisDisabled"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="minimoGris" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="minimoGris"
+						ng-model="data.tpIndicadorMinimoGris"
+						ng-change="validateMinimoGris()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlMinimoGris" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateMinimoGris()"
+						ng-disabled="vlMinimoGrisDisabled"
+						required>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- PEDAGIO -->
+		<accordion-group is-open="isOpen4">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen4, 'glyphicon-chevron-right': !isOpen4}"></span>
+				{{'pedagio' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="valorPedagio" data-labelSize="5" data-multiSize="8,4">
+		            <select
+						adsm-domain="DM_INDICADOR_PEDAGIO"
+						id="valorPedagio"
+						ng-model="data.tpIndicadorPedagio"
+						ng-change="validatePedagio()"
+						required>
+						<option value=""></option>
+					</select>
+					<div>
+						<input type="text"  ng-model="data.vlPedagio" data-numeric="{mDec: 5, vMin: '0'}" class="form-control text-right"
+							ng-blur="validatePedagio()"
+							ng-disabled="vlPedagioDisabled"
+							required>
+					</div>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- TRT -->
+		<accordion-group is-open="isOpen5">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen5, 'glyphicon-chevron-right': !isOpen5}"></span>
+				{{'trt' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualTrt" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_ADVALOREM"
+						id="percentualTrt"
+						ng-model="data.tpIndicadorPercentualTrt"
+						ng-change="validatePercentualTrt()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlPercentualTrt" data-numeric="{mDec: '2'}" data-percentual class="form-control text-right"
+						ng-change="validatePercentualTrt()"
+						ng-disabled="vlPercentualTrtDisabled"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="minimoTrt" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="minimoTrt"
+						ng-model="data.tpIndicadorMinimoTrt"
+						ng-change="validateMinimoTrt()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlMinimoTrt" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateMinimoTrt()"
+						ng-disabled="vlMinimoTrtDisabled"
+						required>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- TDE -->
+		<accordion-group is-open="isOpen6">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen6, 'glyphicon-chevron-right': !isOpen6}"></span>
+				{{'tde' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualTde" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_ADVALOREM"
+						id="percentualTde"
+						ng-model="data.tpIndicadorPercentualTde"
+						ng-change="validatePercentualTde()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlPercentualTde" data-numeric="{mDec: '2'}" data-percentual class="form-control text-right"
+						ng-blur="validatePercentualTde()"
+						ng-disabled="vlPercentualTdeDisabled"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="minimoTde" data-labelSize="5" data-multiSize="6,6">
+		            <select
+						adsm-domain="DM_INDICADOR_PARAMETRO_CLIENTE"
+						id="minimoTde"
+						ng-model="data.tpIndicadorMinimoTde"
+						ng-change="validateMinimoTde()"
+						required>
+						<option value=""></option>
+					</select>
+					<input type="text"  ng-model="data.vlMinimoTde" data-numeric="{mDec: 2}" class="form-control text-right"
+						ng-blur="validateMinimoTde()"
+						ng-disabled="vlMinimoTdeDisabled"
+						required>
+				</div>
+			</div>
+		</accordion-group>
+		
+<!-- TOTAL FRETE -->
+		<accordion-group is-open="isOpen7">
+			<accordion-heading>
+				<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOpen7, 'glyphicon-chevron-right': !isOpen7}"></span>
+				{{'totalFrete' | translate}}
+			</accordion-heading>	
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualDescontoFreteTotal" data-labelSize="5" data-fieldSize="2">
+					<input type="text"  ng-model="data.pcDescontoFreteTotal" data-numeric="{mDec: '2', vMax: '100', vMin: '0'}" data-percentual class="form-control text-right"
+						ng-blur="validatePercentualDescontoFreteTotal()"
+						required>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualCobrancaReentrega" data-labelSize="5" data-fieldSize="2">
+					<input type="text" required ng-model="data.pcCobrancaReentrega" data-numeric="{mDec: '2', vMax: '100', vMin: '0'}" data-percentual class="form-control text-right">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="percentualCobrancaDevolucoes" data-labelSize="5" data-fieldSize="2">
+					<input type="text" required ng-model="data.pcCobrancaDevolucoes" data-numeric="{mDec: '2', vMax: '100', vMin: '0'}" data-percentual class="form-control text-right">
+				</div>
+			</div>
+		</accordion-group>
+		
+	</accordion>
+	
+</form>

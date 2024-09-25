@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class lazy="true" name="com.mercurio.lms.municipios.model.Pais" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="PAIS">
+	<meta attribute="implement-equals" inherit="false">true</meta>
+	
+	<cache usage="read-write"/>
+
+	<id column="ID_PAIS" name="idPais" type="java.lang.Long">
+		<generator class="sequence">
+			<param name="sequence">PAIS_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="sgPais"
+		type="java.lang.String"
+		column="SG_PAIS"
+		length="3"
+		not-null="true"
+	/>
+	<property
+		name="sgResumida"
+		type="java.lang.String"
+		column="SG_RESUMIDA"
+		length="2"
+	/>
+	<property
+		name="nmPais"
+		type="varcharI18n"
+		column="NM_PAIS_I"
+		length="500"
+		not-null="true"
+	/>
+	<property
+		name="cdIso"
+		type="java.lang.Integer"
+		column="CD_ISO"
+		length="2"
+	/>
+	<property
+		name="tpSituacao"
+		column="TP_SITUACAO"
+		length="1"
+		not-null="true"
+	>
+		<meta attribute="use-in-tostring">true</meta>
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+	<property
+		name="tpBuscaEndereco"
+		column="TP_BUSCA_ENDERECO"
+		length="1"
+		not-null="true"
+	>
+		<meta attribute="use-in-tostring">true</meta>
+		<type name="domain">
+			<param name="domainName">DM_TIPO_BUSCA_ENDERECO</param>
+		</type>
+	</property>
+    <property
+    	name="blCepOpcional"
+    	type="sim_nao"
+    	column="BL_CEP_OPCIONAL"
+    	not-null="true"
+    	length="1"
+    />
+    <property
+    	name="blCepDuplicado"
+    	type="sim_nao"
+    	column="BL_CEP_DUPLICADO"
+    	not-null="true"
+    	length="1"
+    />
+    <property
+    	name="blCepAlfanumerico"
+    	type="sim_nao"
+    	column="BL_CEP_ALFANUMERICO"
+    	not-null="true"
+    	length="1"
+    />
+
+    <property
+		name="nrBacen"
+		type="java.lang.Long"
+		column="NR_BACEN"
+		length="10"
+		not-null="false"
+	/>
+
+	<!-- Associations -->
+	<!-- uni-directional many-to-one association to Zona -->
+	<many-to-one class="com.mercurio.lms.municipios.model.Zona" name="zona">
+		<column name="ID_ZONA"/>
+	</many-to-one>
+	<!-- uni-directional many-to-one association to MoedaPais -->
+	<bag cascade="none" inverse="true" lazy="true" name="moedaPais">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.MoedaPais</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.configuracoes.model.MoedaPais"/>
+	</bag>
+	<!-- bi-directional one-to-many association to RotaPreco -->
+	<bag cascade="none" inverse="true" lazy="true" name="rotaPrecosByIdPaisOrigem">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.RotaPreco</meta>
+		<key>
+			<column name="ID_PAIS_ORIGEM"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.tabelaprecos.model.RotaPreco"/>
+	</bag>
+	<!-- bi-directional one-to-many association to RotaPreco -->
+	<bag cascade="none" inverse="true" lazy="true" name="rotaPrecosByIdPaisDestino">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.RotaPreco</meta>
+		<key>
+			<column name="ID_PAIS_DESTINO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.tabelaprecos.model.RotaPreco"/>
+	</bag>
+	<!-- bi-directional one-to-many association to DiaSemana -->
+	<bag cascade="none" inverse="true" lazy="true" name="diaSemanas">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.DiaSemana</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.configuracoes.model.DiaSemana"/>
+	</bag>
+	<!-- bi-directional one-to-many association to PaisEnquadramento -->
+	<bag cascade="none" inverse="true" lazy="true" name="paisEnquadramentos">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.PaisEnquadramento</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.sgr.model.PaisEnquadramento"/>
+	</bag>
+	<!-- bi-directional one-to-many association to RestricaoColeta -->
+	<bag cascade="none" inverse="true" lazy="true" name="restricaoColetas">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.RestricaoColeta</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.coleta.model.RestricaoColeta"/>
+	</bag>
+	<!-- bi-directional one-to-many association to IndicadorFinanceiro -->
+	<bag cascade="none" inverse="true" lazy="true" name="indicadorFinanceiros">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.IndicadorFinanceiro</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.configuracoes.model.IndicadorFinanceiro"/>
+	</bag>
+	<!-- bi-directional one-to-many association to PermissoEmpresaPais -->
+	<bag cascade="none" inverse="true" lazy="true" name="permissoEmpresaPaisByIdPaisDestino">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PermissoEmpresaPais</meta>
+		<key>
+			<column name="ID_PAIS_DESTINO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.municipios.model.PermissoEmpresaPais"/>
+	</bag>
+	<!-- bi-directional one-to-many association to PermissoEmpresaPais -->
+	<bag cascade="none" inverse="true" lazy="true" name="permissoEmpresaPaisByIdPaisOrigem">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PermissoEmpresaPais</meta>
+		<key>
+			<column name="ID_PAIS_ORIGEM"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.municipios.model.PermissoEmpresaPais"/>
+	</bag>
+	<!-- bi-directional one-to-many association to Rodovia -->
+	<bag cascade="none" inverse="true" lazy="true" name="rodovias">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Rodovia</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.municipios.model.Rodovia"/>
+	</bag>
+	<!-- bi-directional one-to-many association to MeioTranspRodoPermisso -->
+	<bag cascade="none" inverse="true" lazy="true" name="meioTranspRodoPermissos">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.MeioTranspRodoPermisso</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.contratacaoveiculos.model.MeioTranspRodoPermisso"/>
+	</bag>
+	<!-- bi-directional one-to-many association to ParametroCliente -->
+	<bag cascade="none" inverse="true" lazy="true" name="parametroClientesByIdPaisDestino">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ParametroCliente</meta>
+		<key>
+			<column name="ID_PAIS_DESTINO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.ParametroCliente"/>
+	</bag>
+	<!-- bi-directional one-to-many association to ParametroCliente -->
+	<bag cascade="none" inverse="true" lazy="true" name="parametroClientesByIdPaisOrigem">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ParametroCliente</meta>
+		<key>
+			<column name="ID_PAIS_ORIGEM"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.ParametroCliente"/>
+	</bag>
+	<!-- bi-directional one-to-many association to HorarioCorteCliente -->
+	<bag cascade="none" inverse="true" lazy="true" name="horarioCorteClientes">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.HorarioCorteCliente</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.HorarioCorteCliente"/>
+	</bag>
+	<!-- bi-directional one-to-many association to PrazoEntregaCliente -->
+	<bag cascade="none" inverse="true" lazy="true" name="prazoEntregaClientesByIdPaisDestino">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PrazoEntregaCliente</meta>
+		<key>
+			<column name="ID_PAIS_DESTINO"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.PrazoEntregaCliente"/>
+	</bag>
+	<!-- bi-directional one-to-many association to PrazoEntregaCliente -->
+	<bag cascade="none" inverse="true" lazy="true" name="prazoEntregaClientesByIdPaisOrigem">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PrazoEntregaCliente</meta>
+		<key>
+			<column name="ID_PAIS_ORIGEM"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.vendas.model.PrazoEntregaCliente"/>
+	</bag>
+	<!-- bi-directional one-to-many association to Feriado -->
+	<bag cascade="none" inverse="true" lazy="true" name="feriados">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Feriado</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.municipios.model.Feriado"/>
+	</bag>
+	<!-- bi-directional one-to-many association to Banco -->
+	<bag cascade="none" inverse="true" lazy="true" name="bancos">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.Banco</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.configuracoes.model.Banco"/>
+	</bag>
+	<!-- bi-directional one-to-many association to UnidadeFederativa -->
+	<bag cascade="none" inverse="true" lazy="true" name="unidadeFederativas">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.UnidadeFederativa</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.municipios.model.UnidadeFederativa"/>
+	</bag>
+	<!-- bi-directional one-to-many association to AliquotaIva -->
+	<bag cascade="none" inverse="true" lazy="true" name="aliquotaIvas">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.AliquotaIva</meta>
+		<key>
+			<column name="ID_PAIS"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.tributos.model.AliquotaIva"/>
+	</bag> 
+
+</class>
+</hibernate-mapping>

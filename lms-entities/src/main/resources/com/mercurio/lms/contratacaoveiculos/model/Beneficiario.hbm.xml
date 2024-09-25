@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contratacaoveiculos.model.Beneficiario" 
+    table="BENEFICIARIO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id name="idBeneficiario" column="ID_BENEFICIARIO">
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>		
+  
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    <one-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        outer-join="auto"
+        constrained="true"
+    />
+    <!-- bi-directional one-to-many association to ReciboFreteCarreteiro -->
+    <bag
+        name="reciboFreteCarreteiros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro</meta>
+ 	        <key>
+            <column name="ID_BENEFICIARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.ReciboFreteCarreteiro"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to BeneficiarioProprietario -->
+    <bag
+        name="beneficiarioProprietarios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.BeneficiarioProprietario</meta>
+ 	        <key>
+            <column name="ID_BENEFICIARIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.BeneficiarioProprietario"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

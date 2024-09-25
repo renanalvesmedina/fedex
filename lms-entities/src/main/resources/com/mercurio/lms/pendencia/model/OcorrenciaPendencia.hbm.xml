@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.pendencia.model.OcorrenciaPendencia" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="OCORRENCIA_PENDENCIA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_OCORRENCIA_PENDENCIA" name="idOcorrenciaPendencia" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">OCORRENCIA_PENDENCIA_SQ</param>
+        </generator>
+    </id>
+
+    <property column="CD_OCORRENCIA" length="3" name="cdOcorrencia" not-null="true" type="java.lang.Short" unique="true"/>
+    <property column="DS_OCORRENCIA_I" length="500" name="dsOcorrencia" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property column="TP_OCORRENCIA" length="1" name="tpOcorrencia" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_OCORRENCIA_PENDENCIA</param>
+	    </type>
+    </property>
+    <property column="TP_PERMISSAO_UNIDADE" length="1" name="tpPermissaoUnidade" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_PERMISSAO_UNIDADE_PENDENCIA</param>
+	    </type>
+    </property>
+    <property column="BL_DESCONTA_DPE" length="1" name="blDescontaDpe" not-null="true" type="sim_nao">
+    </property>
+    <property column="BL_EXIGE_RNC" length="1" name="blExigeRnc" not-null="true" type="sim_nao">
+    </property>
+    <property column="BL_PERMITE_OCOR_PARA_MANIF" length="1" name="blPermiteOcorParaManif" not-null="true" type="sim_nao">
+    </property>
+    <property column="BL_APREENSAO" length="1" name="blApreensao" not-null="true" type="sim_nao">
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to LiberacaoBloqueio -->
+    <bag cascade="none" inverse="true" lazy="true" name="liberacaoBloqueiosByIdOcorrenciaLiberacao">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.LiberacaoBloqueio</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_LIBERACAO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.LiberacaoBloqueio"/>
+    </bag>
+    <!-- bi-directional one-to-many association to LiberacaoBloqueio -->
+    <bag cascade="none" inverse="true" lazy="true" name="liberacaoBloqueiosByIdOcorrenciaBloqueio">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.LiberacaoBloqueio</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_BLOQUEIO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.LiberacaoBloqueio"/>
+    </bag>
+    <!-- bi-directional one-to-many association to OcorrenciaDoctoServico -->
+    <bag cascade="none" inverse="true" lazy="true" name="ocorrenciaDoctoServicosByIdOcorBloqueio">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico</meta>
+ 	        <key>
+            <column name="ID_OCOR_BLOQUEIO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico"/>
+    </bag>
+    <!-- bi-directional one-to-many association to OcorrenciaDoctoServico -->
+    <bag cascade="none" inverse="true" lazy="true" name="ocorrenciaDoctoServicosByIdOcorLiberacao">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico</meta>
+ 	        <key>
+            <column name="ID_OCOR_LIBERACAO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico"/>
+    </bag>
+    <!-- bi-directional many-to-one association to Evento -->
+    <many-to-one class="com.mercurio.lms.sim.model.Evento" name="evento" not-null="true">
+        <column name="ID_EVENTO"/>
+    </many-to-one>
+
+	
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,81 @@
+<form class="form-horizontal content-padding" data-ng-submit="consultar()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="removeByIds()" class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir">
+			{{'excluir' |  translate }}
+		</button>
+		<button type="button" data-ng-click="clearFilter()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' |  translate }}
+		</button>
+	</div>
+
+	<div class="form-horizontal">
+		<div class="row">
+			<div adsm-add-field data-boxSize="6" data-label="lote" data-labelSize="2">
+				<input type="text" class="form-control" ng-model="filter.nrLote" id="nrLote" mask="integer" maxlength="5" />
+			</div>
+			<div adsm-add-field data-boxSize="6" data-label="dataEnvioLote" data-labelSize="4" data-multiSize="6">
+				<input id="dtEnvioLoteInicial" adsm-date-picker  ng-model="filter.dtEnvioLoteInicial" mask="date"
+					   class="form-control" data-end="filter.dtEnvioLoteFinal" data-maxinterval="30">
+				<input id="dtEnvioLoteFinal" adsm-date-picker ng-model="filter.dtEnvioLoteFinal" mask="date"
+					   class="form-control" data-start="filter.dtEnvioLoteInicial" data-maxinterval="30">
+			</div>
+		</div>
+		<div class="row">
+			<div adsm-add-field data-boxSize="3" data-label="tipoLote" data-labelSize="5">
+				<select adsm-domain="DM_TP_LOTE_COB_TERCEIRA" id="tpLote" ng-model="filter.tpLote">
+					<option value=""></option>
+				</select>
+			</div>
+			<div adsm-add-field data-boxSize="3" data-label="lotesEnviados" data-labelSize="5">
+				<select adsm-domain="DM_SIM_NAO" id="tpLoteEnviado" ng-model="filter.tpLoteEnviado">
+					<option value=""></option>
+				</select>
+			</div>
+			<div adsm-add-field data-boxSize="6" data-label="dataAlteracaoLote" data-labelSize="4" data-multiSize="6">
+				<input id="dtAlteracaoLoteInicial" adsm-date-picker
+					   ng-model="filter.dtAlteracaoLoteInicial" mask="date"
+					   class="form-control" data-end="filter.dtAlteracaoLoteFinal">
+				<input id="dtAlteracaoLoteFinal" adsm-date-picker
+					   ng-model="filter.dtAlteracaoLoteFinal" mask="date"
+					   class="form-control" data-start="filter.dtAlteracaoLoteInicial">
+			</div>
+		</div>
+		<div class="row">
+			<div adsm-add-field data-boxSize="6" data-label="descricao" data-labelSize="2">
+				<input type="text" class="form-control"  ng-model="filter.descricao" id="descricao" maxlength="100" />
+			</div>
+
+			<div adsm-add-field data-boxSize="6" data-label="fatura" data-labelSize="4" data-multiSize="3">
+				<input lms-filial ng-model="filter.filial" id="filial" class="form-control">
+				<input lms-fatura="{filial: filter.filial}" ng-disabled="!filter.filial" ng-model="filter.fatura" id="fatura" class="form-control">
+			</div>
+
+		</div>
+
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<table adsm-table="listTableParams"
+				class="table adsm-table-hover table-condensed table-clickable adsm-table"
+				style="width: 100%"
+				show-checkboxes="true">
+				<tbody>
+					<tr ng-repeat="row in page" ng-click="detail(row)">
+						<td column-title="lote">{{row.nrLote}}</td>
+						<td column-title="descricao" sortable="'descricao'">{{row.descricao}}</td>
+						<td column-title="tipoLote" sortable="'tpLote'">{{row.tpLote.descriptionAsString}}</td>
+						<td column-title="dataHoraEnvio">{{row.dtEnvioFormatada}}</td>
+						<td column-title="dataHoraAlteracao">{{row.dtAlteracaoFormatada}}</td>
+						<td column-title="usuarioAlteracao">{{row.usuario.nmUsuario}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</form>

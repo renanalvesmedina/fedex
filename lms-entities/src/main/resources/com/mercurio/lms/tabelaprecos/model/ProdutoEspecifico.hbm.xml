@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.tabelaprecos.model.ProdutoEspecifico" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="PRODUTO_ESPECIFICO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_PRODUTO_ESPECIFICO" name="idProdutoEspecifico" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PRODUTO_ESPECIFICO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="NR_TARIFA_ESPECIFICA" length="3" name="nrTarifaEspecifica" not-null="true" type="java.lang.Short" unique="true"/>
+    <property column="DS_PRODUTO_ESPECIFICO_I" length="500" name="dsProdutoEspecifico" not-null="true" type="varcharI18n"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property column="PS_MINIMO" length="18" name="psMinimo" type="java.math.BigDecimal"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to FaixaProgressiva -->
+    <bag cascade="none" inverse="true" lazy="true" name="faixaProgressivas">
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.FaixaProgressiva</meta>
+		<key>
+			<column name="ID_PRODUTO_ESPECIFICO"/>
+		</key>
+        <one-to-many class="com.mercurio.lms.tabelaprecos.model.FaixaProgressiva"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

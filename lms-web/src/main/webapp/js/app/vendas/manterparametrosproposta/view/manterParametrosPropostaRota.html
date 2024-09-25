@@ -1,0 +1,216 @@
+<form class="form-horizontal content-padding">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="continuar()" class="btn btn-default btn-lg pull-right" id="continuar">
+			{{'continuar' |  translate }}
+		</button>
+	</div>
+
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="cliente" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-cliente
+				ng-model="data.cliente"
+				id="cliente"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.cliente.nmPessoa">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="divisaoCliente" data-labelSize="4" data-fieldSize="8">
+			<input type="text" disabled ng-model="data.divisaoCliente.nmDivisaoCliente">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="tabelaPrecos" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-tabela-preco
+				ng-model="data.tabelaPreco"
+				id="tabelaPreco"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.tabelaPreco.descricao">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="servico" data-labelSize="4" data-fieldSize="8">
+            <input type="text" disabled ng-model="data.servico.nomeServico">
+		</div>
+	</div>
+
+
+<accordion close-others="false" ng-init="isOpen = true;">
+	<accordion-group is-open="isOpenAccordionOrigem">
+		<accordion-heading>{{'origem' | translate}}</accordion-heading>
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="zona" data-labelSize="3" data-fieldSize="8">
+					<select data-adsm-chosen id="rotaOrigemZona"
+						data-ng-options="data as data.dsZona for data in zonas track by data.idZona"
+						data-ng-model="data.rotaOrigemZona" 
+						ng-change="limpaCamposRotaOrigem(CAMPO_ZONA)"
+						ng-disabled="disabledByTpProposta">
+						<option value=""></option>
+					</select>
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="pais" data-labelSize="3" data-fieldSize="8">
+					<input lms-pais="{ idZona : data.rotaOrigemZona.idZona }"
+						ng-model="data.rotaOrigemPais"
+						id="rotaOrigemPais"
+						ng-change="limpaCamposRotaOrigem(CAMPO_PAIS)"
+						class="form-control" 
+						ng-disabled="disabledByTpProposta || !data.rotaOrigemZona"/>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="uf" data-labelSize="3" data-fieldSize="8">
+					<input lms-unidade-federativa="{ idPais : data.rotaOrigemPais.idPais }"
+						ng-model="data.rotaOrigemUf"
+						id="rotaOrigemUf"
+						ng-blur="changeUFOrigem()"
+						class="form-control" 
+						ng-disabled="disabledByTpProposta || !data.rotaOrigemPais"
+						/>
+				</div>
+
+
+				<div adsm-add-field data-boxSize="6" data-label="municipio" data-labelSize="3" data-fieldSize="8">
+					<input lms-municipio="{idUnidadeFederativa : data.rotaOrigemUf.idUnidadeFederativa}"
+						ng-model="data.rotaOrigemMunicipio"
+						id="rotaOrigemMunicipio"
+						class="form-control" ng-disabled="disabledByTpProposta || !data.rotaOrigemUf || data.rotaOrigemAeroporto" />
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="filial" data-labelSize="3" data-multiSize="2,7">
+					<input lms-filial
+						ng-model="data.rotaOrigemFilial"
+						id="rotaOrigemFilial"
+						class="form-control" 
+						ng-change="changeFilialOrigem()"
+						ng-disabled="disabledByTpProposta || rotaOrigemFilialDisabled || data.rotaOrigemAeroporto"
+						/>
+					<input type="text" disabled  ng-model="data.rotaOrigemFilial.nmFilial">
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="aeroporto" data-labelSize="3" data-multiSize="2,7">
+		            <input
+						lms-aeroporto
+						ng-model="data.rotaOrigemAeroporto"	
+						id="rotaOrigemAeroporto"
+						class="form-control" 
+						ng-disabled="disabledByTpProposta || rotaOrigemAeroportoDisabled || data.rotaOrigemFilial">
+		           <input type="text" disabled ng-model="data.rotaOrigemAeroporto.nmAeroporto">
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="tipoLocalizacao" data-labelSize="3" data-fieldSize="8">
+					<select data-adsm-chosen id="rotaOrigemTipoLocalizacao"
+						data-ng-options="data as data.dsTipoLocalizacaoMunicipio for data in tiposLocalizacao track by data.idTipoLocalizacaoMunicipio"
+						data-ng-model="data.rotaOrigemTipoLocalizacao" 
+						ng-disabled="disabledByTpProposta || rotaOrigemTipoLocalizacaoDisabled">
+						<option value=""></option>
+					</select>
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="grupoRegiao" data-labelSize="3" data-fieldSize="8">
+					<select data-adsm-chosen="{unidadeFederativa.idUnidadeFederativa : data.rotaOrigemUf.idUnidadeFederativa}" id="rotaOrigemIdGrupoRegiao"
+						data-ng-options="data as data.dsGrupoRegiao for data in gruposRegiaoOrigem track by data.idGrupoRegiao"
+						data-ng-model="data.rotaOrigemGrupoRegiao"
+						ng-disabled="disabledByTpProposta || !data.rotaOrigemUf">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+	</accordion-group>
+
+	<accordion-group is-open="isOpenAccordionDestino">
+		<accordion-heading>{{'destino' | translate}}</accordion-heading>
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="zona" data-labelSize="3" data-fieldSize="8">
+					<select data-adsm-chosen id="rotaDestinoZona"
+						data-ng-options="data as data.dsZona for data in zonas track by data.idZona"
+						data-ng-model="data.rotaDestinoZona" 
+						ng-change="limpaCamposRotaDestino(CAMPO_ZONA)"
+						ng-disabled="disabledByTpProposta">
+						<option value=""></option>
+					</select>
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="pais" data-labelSize="3" data-fieldSize="8">
+					<input lms-pais="{ idZona : data.rotaDestinoZona.idZona }"
+						ng-model="data.rotaDestinoPais"
+						id="rotaDestinoPais"
+						ng-change="limpaCamposRotaDestino(CAMPO_PAIS)"
+						class="form-control" 
+						ng-disabled="disabledByTpProposta || !data.rotaDestinoZona"/>
+				</div>
+
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="uf" data-labelSize="3" data-fieldSize="8">
+					<input lms-unidade-federativa="{ idPais : data.rotaDestinoPais.idPais }"
+						ng-model="data.rotaDestinoUf"
+						id="rotaDestinoUf"
+						ng-blur="changeUFDestino()"
+						class="form-control" 
+						ng-disabled="disabledByTpProposta || !data.rotaDestinoPais"
+						/>
+				</div>
+
+
+				<div adsm-add-field data-boxSize="6" data-label="municipio" data-labelSize="3" data-fieldSize="8">
+					<input lms-municipio="{idUnidadeFederativa : data.rotaDestinoUf.idUnidadeFederativa}"
+						ng-model="data.rotaDestinoMunicipio"
+						id="rotaDestinoMunicipio"
+						class="form-control" ng-disabled="disabledByTpProposta || !data.rotaDestinoUf || data.rotaDestinoAeroporto"/>
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="filial" data-labelSize="3" data-multiSize="2,7">
+					<input lms-filial
+						ng-model="data.rotaDestinoFilial"
+						id="rotaDestinoFilial"
+						class="form-control" 
+						ng-change="changeFilialDestino()"
+						ng-disabled="disabledByTpProposta || rotaDestinoFilialDisabled || data.rotaDestinoAeroporto"
+						/>
+					<input type="text" disabled  ng-model="data.rotaDestinoFilial.nmFilial">
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="aeroporto" data-labelSize="3" data-multiSize="2,7">
+		            <input
+						lms-aeroporto
+						ng-model="data.rotaDestinoAeroporto"	
+						id="rotaDestinoAeroporto"
+						class="form-control" 
+						ng-disabled="disabledByTpProposta || rotaDestinoAeroportoDisabled || data.rotaDestinoFilial">
+		           <input type="text" disabled ng-model="data.rotaDestinoAeroporto.nmAeroporto">
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="tipoLocalizacao" data-labelSize="3" data-fieldSize="8">
+					<select data-adsm-chosen id="rotaDestinoTipoLocalizacao"
+						data-ng-options="data as data.dsTipoLocalizacaoMunicipio for data in tiposLocalizacao track by data.idTipoLocalizacaoMunicipio"
+						data-ng-model="data.rotaDestinoTipoLocalizacao" 
+						ng-disabled="disabledByTpProposta || rotaDestinoTipoLocalizacaoDisabled">
+						<option value=""></option>
+					</select>
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="grupoRegiao" data-labelSize="3" data-fieldSize="8">
+					<select data-adsm-chosen="{unidadeFederativa.idUnidadeFederativa : data.rotaDestinoUf.idUnidadeFederativa}" id="rotaDestinoIdGrupoRegiao"
+						data-ng-options="data as data.dsGrupoRegiao for data in gruposRegiaoOrigem track by data.idGrupoRegiao"
+						data-ng-model="data.rotaDestinoGrupoRegiao"
+						ng-disabled="disabledByTpProposta || !data.rotaDestinoUf">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+	</accordion-group>
+	<accordion/>
+</form>

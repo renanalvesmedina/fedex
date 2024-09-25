@@ -1,0 +1,263 @@
+<style type="text/css">
+	.liberar-credito-modal .modal-dialog{
+		width: 540px;
+	}
+</style>
+
+
+<form class="form-horizontal content-padding" data-ng-submit="store()"> 
+	<div class="fixed-top"> 
+		<button type="button" data-ng-click="clearData()" class="btn btn-default btn-lg pull-right" id="limparDados">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="button" data-ng-click="removeById()" ng-disabled="disabilitarEdicaoDigitado()" class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir" data-ng-disabled="isRemoveByIdDisabled()">
+			{{'excluir' |  translate }}
+		</button>
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar">
+			{{'salvar' |  translate }}
+		</button>
+
+		<button type="button" ng-click="liberarCreditoBancarioModal()" class="btn btn-default btn-lg pull-right" id="liberar">
+			{{'liberar' |  translate }}
+		</button>  
+	</div> 
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'filialDeCredito' |  translate }}</label>
+			<div class="col-lg-7">
+				<div class="multi-input">
+					<div class="col-xs-3">
+						<input
+							lms-filial
+							ng-model="data.filial"
+							ng-disabled="disabilitarEdicaoDigitado()"
+							id="filial"
+							class="form-control"
+							required>
+				    </div>
+					<div class="col-xs-9">
+						<input type="text" disabled class="form-control" value="{{data.filial.nmFilial}}" id="filial.nmFilial">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> 
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'banco' |  translate }}</label>
+			<div class="col-lg-7">
+				<div class="multi-input">
+					<div class="col-xs-3">						
+						<input disabled class="form-control text-right" ng-model="data.banco.nrBanco" id="banco.nrBanco">
+					</div>
+					<div class="col-xs-9">
+						<input lms-banco
+							ng-model="data.banco" 
+							id="banco"
+							class="form-control"
+							ng-disabled="disabilitarEdicaoDigitado()"
+							ng-change="changeBanco()"
+							required>																					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'dtCredito' |  translate }}</label>
+			<div class="col-lg-7">
+				<div class="multi-input">
+				
+					<div class="col-xs-3">
+						<input
+							id="dataCredito.periodoInicialCredito"
+							adsm-date-picker
+							ng-model="data.dtCredito"
+							mask="date"
+							ng-disabled="disabilitarEdicaoDigitado()"
+							class="form-control"
+							data-end="filter.dtCredito"
+							data-maxInterval="{{ getIntervaloMax() }}" 
+							required />
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'valorCredito' |  translate }}</label>
+			<div class="col-lg-7">
+				<div class="multi-input">
+				
+					<div class="col-xs-3">
+						<input
+							type="text"
+							class="form-control"
+							id="vlCredito"
+							data-numeric data-moeda
+							ng-model="data.vlCredito"
+							ng-blur="cao();"
+							ng-disabled="disabilitarEdicaoDigitado()"
+							required 
+						/>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'modalidade' |  translate }}</label>
+			<div class="col-lg-7">
+				<select
+					adsm-domain="DM_TP_MODALIDADE_CRED_BANC"
+					id="tpModalidade"
+					ng-model="data.tpModalidade"
+					ng-disabled="disabilitarEdicaoDigitado()"
+					required>
+					<option value=""></option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'tipoClassificacao' |  translate }}</label>
+			<div class="col-lg-7">
+				<select
+					adsm-domain="DM_CLASSIFICACAO_CRED_BANC"
+					id="tpClassificacao"
+					ng-model="data.tpClassificacao">
+					<option value=""></option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'origemRegistro' |  translate }}</label>
+			<div class="col-lg-7">
+				<select
+					adsm-domain="DM_TP_ORIGEM_CRED_BANC"
+					id="tpOrigem"
+					ng-model="data.tpOrigem"
+					disabled>
+					<option value=""></option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'situacao' |  translate }}</label>
+			<div class="col-lg-7">
+				<select
+					adsm-domain="DM_TP_SITUACAO_CRED_BANC"
+					id="tpSituacao"
+					ng-model="data.tpSituacao"
+					disabled>
+					<option value=""></option>
+				</select>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'valorSaldo' |  translate }}</label>
+			
+			<div class="col-lg-7">
+				<input
+					type="text"
+					class="form-control"
+					id="vlSaldo"
+					data-numeric data-moeda
+					ng-model="data.saldo"
+					disabled /> 
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'cpfCnpj' |  translate }}</label>
+			<div class="col-lg-7">
+				<input type="text" ng-model="data.dsCpfCnpj" id="dsCpfCnpj" class="form-control" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'nomeRazaoSocial' |  translate }}</label>
+			<div class="col-lg-7">
+				<input type="text" ng-model="data.dsNomeRazaoSocial" id="dsNomeRazaoSocial" class="form-control" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'numeroBoleto' |  translate }}</label>
+			<div class="col-lg-7">
+				<input type="text" ng-model="data.dsBoleto" id="data.dsBoleto" class="form-control" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'observacoes' |  translate }}</label>
+			<div class="col-lg-7">
+				 <input type="text" ng-model="data.obCreditoBancario" id="obCreditoBancario" class="form-control" style="height: 50px" />
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'usuarioAlteracao' |  translate }}</label>
+			<div class="col-lg-7">
+				<div class="multi-input">
+					<div class="col-xs-6">
+						<input
+							type="text"
+							ng-model="data.usuario"
+							lms-usuario-lms
+							class="form-control"
+							disabled />
+				    </div>
+					<div class="col-xs-6">
+						<input
+							type="text"
+							ng-model="data.usuario.nmUsuario"
+							class="form-control"
+							disabled="true" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row"> 
+		<div class="form-group">
+			<label class="col-lg-3 control-label">{{'dataAlteracao' |  translate }}</label>
+			<div class="col-lg-7">
+				<input type="text" ng-model="data.dtAlteracao" id="dtAlteracao" class="form-control" disabled="true" />
+			</div>
+		</div>
+	</div>
+
+</form> 

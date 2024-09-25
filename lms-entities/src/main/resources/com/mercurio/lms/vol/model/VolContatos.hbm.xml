@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vol.model.VolContatos" 
+    table="CONTATO_RECUSA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idContato"
+        type="java.lang.Long"
+        column="ID_CONTATO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CONTATO_RECUSA_SQ</param>
+        </generator>
+    </id>
+    
+    <property
+        name="nmContato"
+		type="java.lang.String"
+        column="NM_CONTATO"
+        not-null="true"
+        length="60"
+    />
+    
+     <property
+        name="obContato"
+		type="java.lang.String"
+        column="OB_CONTATO"
+        length="500"
+    />
+    
+     <property
+        name="dsEmail"
+		type="java.lang.String"
+        column="DS_EMAIL"
+        not-null="true"
+        length="100"
+    />
+    
+        <property
+        name="dsFuncao"
+		type="java.lang.String"
+        column="DS_FUNCAO"
+        length="60"
+    />
+    
+     <property
+        name="blAtivo"
+			        type="sim_nao"
+            column="BL_ATIVO"
+        not-null="false"
+        length="1"
+    />
+    
+    
+     <property
+        name="dsDepartamento"
+		type="java.lang.String"
+        column="DS_DEPARTAMENTO"
+        length="60"
+    />
+
+
+    <!-- Associations -->
+      
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+     <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true"
+    >
+        <column name="ID_PESSOA" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to VolEmailsRecusa -->
+    <bag
+        name="volEmailsRecusas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolEmailsRecusa</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolEmailsRecusa"
+        />
+    </bag>
+    
+</class>
+</hibernate-mapping>
+

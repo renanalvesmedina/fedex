@@ -1,0 +1,232 @@
+<style>
+
+.modal-destinos-aereo .modal-dialog{
+	width: 520px;
+}
+
+.coluna-padrao {
+	min-width: 350px !important;
+	max-width: 500px !important;
+}
+
+.coluna-padrao input{
+	width: 23%;
+	display: inline !important;
+}
+
+.coluna-peso {
+	min-width: 250px !important;
+	max-width: 350px !important;
+}
+
+.coluna-peso input{
+	width: 46%;
+	display: inline !important;
+}
+
+.coluna-padrao .coluna-padrao span{
+	padding-left: 2px;
+}
+
+.row-disabled{
+	color:grey;
+	font-style:italic;
+}
+
+.open-modal-disabled{
+	cursor: not-allowed !important;
+}
+
+</style>
+
+<form name="formParam"  class="form-horizontal content-padding">
+
+	<div class="fixed-top">
+		<button type="button" class="btn btn-default btn-lg pull-right" id="salvar" permission="salvar" ng-disabled="btnSalvarDisabled" ng-click="salvar()">
+			{{'salvar' |  translate }}
+		</button>
+		<button type="button" class="btn btn-default btn-lg pull-right" id="salvar" permission="salvar" ng-disabled="btnGerarDisabled" ng-click="gerarDestinosAereo(true)">
+			{{'gerarDestinos' |  translate }}
+		</button>
+	</div>
+
+	<table adsm-table="destinosAereoTable"
+			data-adsm-table-internal-loading="true"
+			disabled-remove-button="true"
+			data-show-checkboxes="true"
+			ng-disabled="destinosAereoTableDisabled">
+
+		 <thead>
+			<tr>
+				<th>
+					<input type="checkbox" data-ng-disabled="disabled || data.length == 0" value="" name="filter-checkbox"
+						class="select_all ng-scope ng-pristine ng-valid" ng-click="checkUncheckAll()" ng-indeterminate="checkboxes.indeterminate"
+						ng-model="checkboxes.checked" style="cursor: pointer;">
+				</th>
+				<th >
+					{{'destino' |  translate }}
+				</th>
+				<th>
+					{{'valorMinimo' |  translate }}
+				</th>
+				<th>
+					{{'valorPorKg' |  translate }}
+				</th>
+				<th>
+					{{'pesoMinimo' |  translate }}
+				</th>
+				<th ng-show="showCabecalhoProdutoEspecifico">
+					{{nomeCabecalhoProdutoEspecifico}}
+				</th>
+				<th>
+					{{'advalorem1' |  translate }}
+				</th>
+				<th>
+					{{'advalorem2' |  translate }}
+				</th>
+
+				<th>
+					{{'taxaColetaUrbanaConvencional' |  translate }}
+				</th>
+				<th>
+					{{'taxaColetaInteriorConvencional' |  translate }}
+				</th>
+				<th>
+					{{'taxaColetaUrbanaEmergencia' |  translate }}
+				</th>
+				<th>
+					{{'taxaColetaInteriorEmergencia' |  translate }}
+				</th>
+				<th>
+					{{'taxaEntregaUrbanaConvencional' |  translate }}
+				</th>
+				<th>
+					{{'taxaEntregaInteriorConvencional' |  translate }}
+				</th>
+				<th>
+					{{'taxaEntregaUrbanaEmergencia' |  translate }}
+				</th>
+				<th>
+					{{'taxaEntregaInteriorEmergencia' |  translate }}
+				</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			<tr ng-repeat="row in page">
+				<td style="vertical-align: middle !important;" ng-class="{'row-disabled': !row.checked}">{{row.dsDestino}}</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalFreteMinimo" value="{{row.colunaValorMinimo.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlFreteMinimo" value="{{row.colunaValorMinimo.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorFreteMinimo" value="{{row.colunaValorMinimo.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcFreteMinimo" value="{{row.colunaValorMinimo.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaValorMinimo, 'M','valorMinimo', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalValoPorKg" value="{{row.colunaValoPorKg.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlValoPorKg" value="{{row.colunaValoPorKg.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorValoPorKg" value="{{row.colunaValoPorKg.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcValoPorKg" value="{{row.colunaValoPorKg.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaValoPorKg, 'K','valorPorKg', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-peso">
+					<input type="text" id="vlOriginalPesoMinimo" value="{{row.colunaPesoMinimo.vlOriginal | number: 3}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlValorPesoMinimo" value="{{row.colunaPesoMinimo.valor | number: 3}}" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaPesoMinimo, 'PM','pesoMinimo', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td ng-show="showCabecalhoProdutoEspecifico" class="coluna-padrao">
+					<input type="text" id="vlOriginalProdutoEspecifico" value="{{row.colunaProdutoEspecifico.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlProdutoEspecifico" value="{{row.colunaProdutoEspecifico.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorProdutoEspecifico" value="{{row.colunaProdutoEspecifico.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcProdutoEspecifico" value="{{row.colunaProdutoEspecifico.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaProdutoEspecifico, 'P', null, row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalAdValorem1" value="{{row.colunaAdValorem1.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlAdValorem1" value="{{row.colunaAdValorem1.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorAdValorem1" value="{{row.colunaAdValorem1.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcAdValorem1" value="{{row.colunaAdValorem1.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaAdValorem1, 'G','advalorem1', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalAdValorem2" value="{{row.colunaAdValorem2.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlAdValorem2" value="{{row.colunaAdValorem2.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorAdValorem2" value="{{row.colunaAdValorem2.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcAdValorem2" value="{{row.colunaAdValorem2.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaAdValorem2, 'G','advalorem2', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxColUrbConv" value="{{row.colunaTxColUrbConv.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxColUrbConv" value="{{row.colunaTxColUrbConv.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxColUrbConv" value="{{row.colunaTxColUrbConv.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxColUrbConv" value="{{row.colunaTxColUrbConv.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxColUrbConv, 'TPV','taxaColetaUrbanaConvencional', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxColIntConv" value="{{row.colunaTxColIntConv.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxColIntConv" value="{{row.colunaTxColIntConv.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxColIntConv" value="{{row.colunaTxColIntConv.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxColIntConv" value="{{row.colunaTxColIntConv.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxColIntConv, 'TPV','taxaColetaInteriorConvencional', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxColUrbEm" value="{{row.colunaTxColUrbEm.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxColUrbEm" value="{{row.colunaTxColUrbEm.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxColUrbEm" value="{{row.colunaTxColUrbEm.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxColUrbEm" value="{{row.colunaTxColUrbEm.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxColUrbEm, 'TPV','taxaColetaUrbanaEmergencia', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxColIntEm" value="{{row.colunaTxColIntEm.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxColIntEm" value="{{row.colunaTxColIntEm.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxColIntEm" value="{{row.colunaTxColIntEm.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxColIntEm" value="{{row.colunaTxColIntEm.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxColIntEm, 'T', 'taxaColetaInteriorEmergencia', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxEntUrbConv" value="{{row.colunaTxEntUrbConv.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxEntUrbConv" value="{{row.colunaTxEntUrbConv.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxEntUrbConv" value="{{row.colunaTxEntUrbConv.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxEntUrbConv" value="{{row.colunaTxEntUrbConv.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxEntUrbConv, 'TPV','taxaEntregaUrbanaConvencional', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxEntIntConv" value="{{row.colunaTxEntIntConv.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxEntIntConv" value="{{row.colunaTxEntIntConv.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxEntIntConv" value="{{row.colunaTxEntIntConv.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxEntIntConv" value="{{row.colunaTxEntIntConv.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxEntIntConv, 'TPV','taxaEntregaInteriorConvencional', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxEntUrbEm" value="{{row.colunaTxEntUrbEm.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxEntUrbEm" value="{{row.colunaTxEntUrbEm.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxEntUrbEm" value="{{row.colunaTxEntUrbEm.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxEntUrbEm" value="{{row.colunaTxEntUrbEm.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxEntUrbEm, 'TPV','taxaEntregaUrbanaEmergencia', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+
+				<td class="coluna-padrao">
+					<input type="text" id="vlOriginalTxEntIntEm" value="{{row.colunaTxEntIntEm.vlOriginal | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="vlTxEntIntEm" value="{{row.colunaTxEntIntEm.valor | number: 2}}" class="form-control" disabled="disabled">
+					<input type="text" id="dsIndicadorTxEntIntEm" value="{{row.colunaTxEntIntEm.tpIndicador.descriptionAsString}}" class="form-control" disabled="disabled">
+					<input type="text" id="pcTxEntIntEm" value="{{row.colunaTxEntIntEm.percentual | number: 2}}%" class="form-control" disabled="disabled">
+					<span ng-click="openModalGenerico(row.dsDestino, row.colunaTxEntIntEm, 'T','taxaEntregaInteriorEmergencia', row.checked)" class="glyphicon glyphicon-pencil" ng-class="{'open-modal-disabled': !row.checked}"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+</form>

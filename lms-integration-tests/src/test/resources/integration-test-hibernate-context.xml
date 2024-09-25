@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
+		"spring-beans.dtd">
+
+<beans>
+	<bean id="hibernate-mappings-merger" class="com.mercurio.adsm.core.util.ConfigAggregator">
+		<constructor-arg>
+			<list>
+				<ref bean="lms-entities-mappings" />
+				<ref bean="adsm-domain-mappings"/>
+				<ref bean="adsm-binder-mappings"/>
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<bean id="hibernate-annotatedClasses-merger" class="com.mercurio.adsm.core.util.ConfigAggregator">
+		<constructor-arg>
+			<list>
+				<ref bean="lms-entities-annotatedClasses" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory" class="com.mercurio.adsm.core.model.hibernate.AdsmLocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="mappingLocations">
+			<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+				<property name="targetObject">
+					<ref bean="hibernate-mappings-merger" />
+				</property>
+				<property name="targetMethod">
+					<value>getConfigEntries</value>
+				</property>
+			</bean>
+		</property>
+		<property name="annotatedClasses">
+			<bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+				<property name="targetObject">
+					<ref bean="hibernate-annotatedClasses-merger" />
+				</property>
+				<property name="targetMethod">
+					<value>getConfigEntries</value>
+				</property>
+			</bean>
+		</property>
+		<property name="hibernateProperties">
+			<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+				<property name="location" value="classpath:hsqldb-hibernate.properties" />
+			</bean>
+		</property>
+		<property name="typeDefinitions">
+			<list>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="sim_nao" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.SimNaoType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="stringI18n" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.StringI18nUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="varcharI18n" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.VarcharI18nUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="domain" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.DomainCompositeUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="binaryblob" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.BinaryBlobUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="jtdatetimetzr" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.JodaTimeDateTimeTZRUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="jtdatetime" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.JodaTimeDateTimeUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="jtyearmonthday" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.JodaTimeYearMonthDayUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="jtyearmonthday_v" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.JodaTimeYearMonthDayNotNullUserType" />
+				</bean>
+				<bean class="org.springframework.orm.hibernate3.TypeDefinitionBean">
+					<property name="typeName" value="jttimeofday" />
+					<property name="typeClass" value="com.mercurio.adsm.core.model.hibernate.JodaTimeTimeOfDayUserType" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"><value>${jdbc.driverClassName}</value></property>
+		<property name="url"><value>${jdbc.url}</value></property>
+		<property name="username"><value>${jdbc.username}</value></property>
+		<property name="password"><value>${jdbc.password}</value></property>
+	</bean>
+
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory">
+			<ref local="sessionFactory" />
+		</property>
+	</bean>
+
+	<!-- ========================= BUSINESS OBJECT DEFINITIONS ========================= -->
+
+	<bean id="messageSource" class="com.mercurio.adsm.framework.util.DBMessageSource">
+		<property name="jdbcTemplate">
+			<ref local="jdbcTemplate" />
+		</property>
+	</bean>
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+
+	<bean id="stringI18nParser" class="com.mercurio.adsm.core.util.StringI18nParserImpl" lazy-init="false">
+		<property name="pullParserFactory" ref="xmlPullParserFactory" />
+		<property name="collectStatistics" value="true" />
+	</bean>
+
+	<bean id="xmlPullParserFactory" class="org.xmlpull.v1.XmlPullParserFactory" factory-method="newInstance" lazy-init="false">
+		<property name="namespaceAware" value="false" />
+		<property name="validating" value="false" />
+	</bean>
+
+	<bean id="stringI18nUtil" class="com.mercurio.adsm.core.util.StringI18nUtil" factory-method="newInstance" lazy-init="false">
+		<constructor-arg ref="stringI18nParser" />
+	</bean>
+
+</beans>

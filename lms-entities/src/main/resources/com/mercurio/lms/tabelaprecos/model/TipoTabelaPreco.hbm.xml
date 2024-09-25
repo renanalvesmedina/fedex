@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tabelaprecos.model.TipoTabelaPreco" 
+    table="TIPO_TABELA_PRECO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTipoTabelaPreco"
+        type="java.lang.Long"
+        column="ID_TIPO_TABELA_PRECO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_TABELA_PRECO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsIdentificacao"
+			        type="java.lang.String"
+            column="DS_IDENTIFICACAO"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpTipoTabelaPreco"
+		    column="TP_TIPO_TABELA_PRECO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_TABELA_PRECO</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="nrVersao"
+			        type="java.lang.Integer"
+            column="NR_VERSAO"
+        length="6"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to TabelaPreco -->
+    <bag
+        name="tabelaPrecos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.TabelaPreco</meta>
+ 	        <key>
+            <column name="ID_TIPO_TABELA_PRECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Servico -->
+    <many-to-one
+        name="servico"
+        class="com.mercurio.lms.configuracoes.model.Servico"
+        not-null="true"
+    >
+        <column name="ID_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one
+        name="empresaByIdEmpresaCadastrada"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA_CADASTRADA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one
+        name="empresaByIdEmpresaLogada"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA_LOGADA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

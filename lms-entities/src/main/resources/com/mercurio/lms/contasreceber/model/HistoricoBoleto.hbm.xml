@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.HistoricoBoleto" 
+    table="HISTORICO_BOLETO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idHistoricoBoleto"
+        type="java.lang.Long"
+        column="ID_HISTORICO_BOLETO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">HISTORICO_BOLETO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhOcorrencia"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_OCORRENCIA"/><column name="DH_OCORRENCIA_TZR"/></property>
+    <property
+        name="tpSituacaoHistoricoBoleto"
+		    column="TP_SITUACAO_HISTORICO_BOLETO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_HISTORICO_BOLETO</param>
+	    </type>
+    </property>
+    <property
+        name="dsHistoricoBoleto"
+			        type="java.lang.String"
+            column="DS_HISTORICO_BOLETO"
+        length="60"
+    />    
+    <property
+        name="tpSituacaoAprovacao"
+		    column="TP_SITUACAO_APROVACAO"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>    
+  
+    <property
+        name="idPendencia"
+		type="java.lang.Long"
+        column="ID_PENDENCIA" />
+  
+    <!-- bi-directional one-to-many association to HistoricoMotivoOcorrencia -->
+    <bag
+        name="historicoMotivoOcorrencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.HistoricoMotivoOcorrencia</meta>
+ 	        <key>
+            <column name="ID_HISTORICO_BOLETO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.HistoricoMotivoOcorrencia"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to OcorrenciaBanco -->
+    <many-to-one
+        name="ocorrenciaBanco"
+        class="com.mercurio.lms.contasreceber.model.OcorrenciaBanco"
+        not-null="true"
+    >
+        <column name="ID_OCORRENCIA_BANCO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Boleto -->
+    <many-to-one
+        name="boleto"
+        class="com.mercurio.lms.contasreceber.model.Boleto"
+        not-null="true"
+    >
+        <column name="ID_BOLETO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MotivoOcorrencia -->
+    <many-to-one
+        name="motivoOcorrencia"
+        class="com.mercurio.lms.contasreceber.model.MotivoOcorrencia"
+        not-null="true"
+    >
+        <column name="ID_MOTIVO_OCORRENCIA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

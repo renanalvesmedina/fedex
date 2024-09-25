@@ -1,0 +1,273 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteirocoletaentrega.model.TabelaColetaEntrega" 
+    table="TABELA_COLETA_ENTREGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTabelaColetaEntrega"
+        type="java.lang.Long"
+        column="ID_TABELA_COLETA_ENTREGA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TABELA_COLETA_ENTREGA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpRegistro"
+		    column="TP_REGISTRO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_TABELA_COLETA_ENTREGA</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpSituacaoAprovacao"
+		    column="TP_SITUACAO_APROVACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SITUACAO_APROVACAO_TABELA_FRETE_EVENT</param>
+	    </type>
+    </property>
+    <property
+        name="blDomingo"
+			        type="sim_nao"
+            column="BL_DOMINGO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blSegunda"
+			        type="sim_nao"
+            column="BL_SEGUNDA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blTerca"
+			        type="sim_nao"
+            column="BL_TERCA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blQuarta"
+			        type="sim_nao"
+            column="BL_QUARTA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blQuinta"
+			        type="sim_nao"
+            column="BL_QUINTA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blSexta"
+			        type="sim_nao"
+            column="BL_SEXTA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blSabado"
+			        type="sim_nao"
+            column="BL_SABADO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="hrDiariaInicial"
+			        type="jttimeofday"
+            column="HR_DIARIA_INICIAL"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoMeioTransporte -->
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte"
+    >
+        <column name="ID_TIPO_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to SolicitacaoContratacao -->
+    <many-to-one
+        name="solicitacaoContratacao"
+        class="com.mercurio.lms.contratacaoveiculos.model.SolicitacaoContratacao"
+        not-null="true"
+    >
+        <column name="ID_SOLICITACAO_CONTRATACAO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TipoTabelaColetaEntrega -->
+    <many-to-one
+        name="tipoTabelaColetaEntrega"
+        class="com.mercurio.lms.fretecarreteirocoletaentrega.model.TipoTabelaColetaEntrega"
+        not-null="true"
+    >
+        <column name="ID_TIPO_TABELA_COLETA_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ParcelaTabelaCe -->
+    <bag
+        name="parcelaTabelaCes"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan,all"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.ParcelaTabelaCe</meta>
+ 	        <key>
+            <column name="ID_TABELA_COLETA_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteirocoletaentrega.model.ParcelaTabelaCe"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ControleCarga -->
+    <bag
+        name="controleCargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.ControleCarga</meta>
+ 	        <key>
+            <column name="ID_TABELA_COLETA_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.ControleCarga"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to MeioTransporteRodoviario -->
+    <many-to-one
+        name="meioTransporteRodoviario"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one>
+       <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="false"
+    >
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+    
+    
+    <property
+        name="tpCalculo"
+		column="TP_CALCULO"
+        not-null="true"
+        length="2" >
+		<type name="domain">
+        	<param name="domainName">DM_TP_CALCULO_TABELA_COLETA_ENTREGA</param>
+	    </type>
+    </property>
+    
+	<many-to-one
+        name="rotaColetaEntrega"
+        class="com.mercurio.lms.municipios.model.RotaColetaEntrega"  
+        not-null="false" >
+        <column name="ID_ROTA_COLETA_ENTREGA" />
+    </many-to-one>
+    
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false" >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+
+    <!-- bi-directional one-to-many association to NotaCreditoColeta -->
+    <bag name="notaCreditoColetas"
+        lazy="true"
+        inverse="true"
+		cascade="none">
+ 	        <key>
+ 	        	<column name="ID_TABELA_COLETA_ENTREGA" />
+        	</key>
+        	<one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoColeta" />
+    </bag>
+
+    <!-- bi-directional one-to-many association to NotaCreditoDocto -->
+    <bag name="notaCreditoDoctos"
+        lazy="true"
+        inverse="true"
+        cascade="none">
+            <key>
+                <column name="ID_TABELA_COLETA_ENTREGA" />
+            </key>
+            <one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.NotaCreditoDocto" />
+    </bag>
+
+    <!-- bi-directional one-to-many association to FaixaPesoParcelaTabelaCE -->
+    <bag name="faixasPesoParcelaTabelaCE"
+        lazy="true"
+        inverse="true"
+        cascade="none">
+            <key>
+                <column name="ID_TABELA_COLETA_ENTREGA" />
+            </key>
+            <one-to-many class="com.mercurio.lms.fretecarreteirocoletaentrega.model.FaixaPesoParcelaTabelaCE" />
+    </bag>
+
+</class>
+</hibernate-mapping>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.workflow.model.Comite" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="COMITE">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_COMITE" name="idComite" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">COMITE_SQ</param>
+        </generator>
+    </id>
+
+    <property column="NM_COMITE_I" length="500" name="nmComite" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_MODAL" length="1" name="tpModal">
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property column="TP_ABRANGENCIA" length="1" name="tpAbrangencia">
+		<type name="domain">
+        	<param name="domainName">DM_ABRANGENCIA</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to Integrante -->
+    <bag cascade="none" inverse="true" lazy="true" name="integrantes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.Integrante</meta>
+ 	        <key>
+            <column name="ID_COMITE"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.workflow.model.Integrante"/>
+    </bag>
+    <!-- bi-directional one-to-many association to EventoWorkflow -->
+    <bag cascade="none" inverse="true" lazy="true" name="eventoWorkflows">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.EventoWorkflow</meta>
+ 	        <key>
+            <column name="ID_COMITE"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.workflow.model.EventoWorkflow"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

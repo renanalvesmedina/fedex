@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+
+	<joined-subclass 
+		name="com.mercurio.lms.expedicao.model.NotaFiscalServico" 
+		extends="com.mercurio.lms.expedicao.model.DoctoServico"
+		table="NOTA_FISCAL_SERVICO"
+	>
+		<key column="ID_NOTA_FISCAL_SERVICO"/>
+	
+		<property
+			name="nrNotaFiscalServico"
+			type="java.lang.Long"
+			column="NR_NOTA_FISCAL_SERVICO"
+			not-null="true"
+			length="8"
+		/>
+		<property
+			name="tpSituacaoNf"
+			column="TP_SITUACAO_NF"
+			not-null="true"
+			length="1"
+		>
+			<type name="domain">
+				<param name="domainName">DM_STATUS_NOTA_FISCAL</param>
+			</type>
+		</property>
+		<property
+			name="tpNotaFiscalServico"
+			column="TP_NOTA_FISCAL_SERVICO"
+			not-null="true"
+			length="1"
+		>
+			<type name="domain">
+				<param name="domainName">DM_TIPO_DOCUMENTO_SERVICO</param>
+			</type>
+		</property>
+		<property
+			name="dtInicial"
+			type="jtyearmonthday"
+			column="DT_INICIAL"
+			length="7"
+		/>
+		<property
+			name="dtFinal"
+			type="jtyearmonthday"
+			column="DT_FINAL"
+			length="7"
+		/>
+		<property
+		name="dhCancelamento"
+		type="jtdatetimetzr"
+		length="7"
+		><column name="DH_CANCELAMENTO"/><column name="DH_CANCELAMENTO_TZR"/></property>
+		<property
+			name="dsSerie"
+			type="java.lang.String"
+			column="DS_SERIE"
+			length="2"
+		/>
+		<property
+			name="nrFormulario"
+			type="java.lang.Integer"
+			column="NR_FORMULARIO"
+			length="8"
+		/>
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to Municipio -->
+		<many-to-one
+			name="municipio"
+			class="com.mercurio.lms.municipios.model.Municipio"
+			not-null="true"
+		>
+			<column name="ID_MUNICIPIO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Filial -->
+		<many-to-one
+			name="filial"
+			class="com.mercurio.lms.municipios.model.Filial"
+			not-null="true"
+		>
+			<column name="ID_FILIAL_ORIGEM" />
+		</many-to-one>
+		<!-- bi-directional one-to-many association to ImpostoServico -->
+		<bag
+			name="impostoServicos"
+			lazy="true"
+			inverse="true"
+			cascade="all"
+		>
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.ImpostoServico</meta>
+			<key>
+				<column name="ID_NOTA_FISCAL_SERVICO" />
+			</key>
+			<one-to-many 
+				class="com.mercurio.lms.expedicao.model.ImpostoServico"
+			/>
+		</bag>
+	</joined-subclass>
+
+</hibernate-mapping>

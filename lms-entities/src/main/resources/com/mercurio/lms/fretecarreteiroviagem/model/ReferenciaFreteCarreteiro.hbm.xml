@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaFreteCarreteiro" 
+    table="REFERENCIA_FRETE_CARRETEIRO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idReferenciaFreteCarreteiro"
+        type="java.lang.Long"
+        column="ID_REFERENCIA_FRETE_CARRETEIRO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">REFERENCIA_FRETE_CARRETEIRO_SQ</param>
+        </generator>
+    </id>
+    
+	<version name="versao" column="NR_VERSAO"/>	
+	
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        unique="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to UnidadeFederativa -->
+    <many-to-one
+        name="unidadeFederativaByIdUnidadeDestino"
+        class="com.mercurio.lms.municipios.model.UnidadeFederativa"
+        not-null="true"
+    >
+        <column name="ID_UNIDADE_FEDERATIVA_DESTINO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to UnidadeFederativa -->
+    <many-to-one
+        name="unidadeFederativaByIdUnidadeFederativaOrigem"
+        class="com.mercurio.lms.municipios.model.UnidadeFederativa"
+        not-null="true"
+    >
+        <column name="ID_UNIDADE_FEDERATIVA_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ReferenciaTipoVeiculo -->
+    <bag
+        name="referenciaTipoVeiculos"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaTipoVeiculo</meta>
+ 	        <key>
+            <column name="ID_REFERENCIA_FRETE_CARRETEIRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaTipoVeiculo"
+        />
+    </bag>
+  
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>
+    
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="true"
+    >
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

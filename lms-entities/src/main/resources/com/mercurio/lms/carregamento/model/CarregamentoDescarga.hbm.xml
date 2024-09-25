@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.CarregamentoDescarga" 
+    table="CARREGAMENTO_DESCARGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idCarregamentoDescarga"
+        type="java.lang.Long"
+        column="ID_CARREGAMENTO_DESCARGA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CARREGAMENTO_DESCARGA_SQ</param>
+        </generator>
+    </id>
+
+	<version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="tpOperacao"
+		    column="TP_OPERACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_OPERACAO_CARREG_DESCARGA</param>
+	    </type>
+    </property>
+    <property
+        name="tpStatusOperacao"
+		    column="TP_STATUS_OPERACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_CARREG_DESCARGA</param>
+	    </type>
+    </property>
+    <property
+        name="tpStatusWorkflow"
+		    column="TP_STATUS_WORKFLOW"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="dhInicioOperacao"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_INICIO_OPERACAO"/><column name="DH_INICIO_OPERACAO_TZR"/></property>
+    <property
+        name="dhFimOperacao"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_FIM_OPERACAO"/><column name="DH_FIM_OPERACAO_TZR"/></property>
+    <property
+        name="dhCancelamentoOperacao"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_CANCELAMENTO_OPERACAO"/><column name="DH_CANCELAMENTO_OPERACAO_TZR"/></property>
+    <property
+        name="obOperacao"
+		type="java.lang.String"
+        column="OB_OPERACAO"
+        length="200"
+    />
+    <property
+        name="obCancelamento"
+		type="java.lang.String"
+        column="OB_CANCELAMENTO"
+        length="200"
+    />
+    <property
+        name="obSemLacre"
+		type="java.lang.String"
+        column="OB_SEM_LACRE"
+        length="200"
+    />        
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuarioIniciado"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_INICIADO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuarioFinalizado"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_FINALIZADO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MotivoCancelDescarga -->
+    <many-to-one
+        name="motivoCancelDescarga"
+        class="com.mercurio.lms.carregamento.model.MotivoCancelDescarga"
+        not-null="true"
+    >
+        <column name="ID_MOTIVO_CANCEL_DESCARGA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to EquipeOperacao -->
+    <bag
+        name="equipeOperacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.EquipeOperacao</meta>
+ 	        <key>
+            <column name="ID_CARREGAMENTO_DESCARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.EquipeOperacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to CarregamentoPreManifesto -->
+    <bag
+        name="carregamentoPreManifestos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.CarregamentoPreManifesto</meta>
+ 	        <key>
+            <column name="ID_CARREGAMENTO_DESCARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.CarregamentoPreManifesto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DescargaManifesto -->
+    <bag
+        name="descargaManifestos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.DescargaManifesto</meta>
+ 	        <key>
+            <column name="ID_CARREGAMENTO_DESCARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.DescargaManifesto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DispCarregDescQtde -->
+    <bag
+        name="dispCarregDescQtdes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.DispCarregDescQtde</meta>
+ 	        <key>
+            <column name="ID_CARREGAMENTO_DESCARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.DispCarregDescQtde"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to FotoCarregmtoDescarga -->
+    <bag
+        name="fotoCarregmtoDescargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.FotoCarregmtoDescarga</meta>
+ 	        <key>
+            <column name="ID_CARREGAMENTO_DESCARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.FotoCarregmtoDescarga"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DispCarregIdentificado -->
+    <bag
+        name="dispCarregIdentificados"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.DispCarregIdentificado</meta>
+ 	        <key>
+            <column name="ID_CARREGAMENTO_DESCARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.DispCarregIdentificado"
+        />
+    </bag>
+	<!-- bi-directional one-to-many association to JustificativaDoctoNaoCarregado -->
+    <bag
+        name="justificativasDoctosNaoCarregados"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.JustificativaDoctoNaoCarregado</meta>
+ 	    <key>
+        	<column name="ID_CARREGAMENTO_DESCARGA" />
+	    </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.JustificativaDoctoNaoCarregado"
+        />
+    </bag>    
+    <!-- bi-directional many-to-one association to PostoAvancado -->
+    <many-to-one
+        name="postoAvancado"
+        class="com.mercurio.lms.municipios.model.PostoAvancado"
+        not-null="false"
+    >
+        <column name="ID_POSTO_AVANCADO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Box -->
+    <many-to-one
+        name="box"
+        class="com.mercurio.lms.portaria.model.Box"
+        not-null="true"
+    >
+        <column name="ID_BOX" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

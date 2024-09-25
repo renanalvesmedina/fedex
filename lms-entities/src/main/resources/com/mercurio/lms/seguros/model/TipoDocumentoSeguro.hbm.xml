@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.seguros.model.TipoDocumentoSeguro" 
+    table="TIPO_DOCUMENTO_SEGURO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTipoDocumentoSeguro"
+        type="java.lang.Long"
+        column="ID_TIPO_DOCUMENTO_SEGURO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_DOCUMENTO_SEGURO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="dsTipo"
+			        type="java.lang.String"
+            column="DS_TIPO"
+        not-null="true"
+        unique="true"
+        length="50"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to DoctoProcessoSinistro -->
+    <bag
+        name="doctoProcessoSinistros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.DoctoProcessoSinistro</meta>
+ 	        <key>
+            <column name="ID_TIPO_DOCUMENTO_SEGURO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.seguros.model.DoctoProcessoSinistro"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

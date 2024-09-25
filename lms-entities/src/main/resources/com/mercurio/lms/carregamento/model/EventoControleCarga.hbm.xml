@@ -1,0 +1,200 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.EventoControleCarga" 
+    table="EVENTO_CONTROLE_CARGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idEventoControleCarga"
+        type="java.lang.Long"
+        column="ID_EVENTO_CONTROLE_CARGA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EVENTO_CONTROLE_CARGA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhEventoSolicitacao"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_EVENTO_SOLICITACAO"/><column name="DH_EVENTO_SOLICITACAO_TZR"/></property>
+    <property
+        name="dhEvento"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_EVENTO"/><column name="DH_EVENTO_TZR"/></property>
+    <property
+        name="dhEventoOriginal"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_EVENTO_ORIGINAL"/><column name="DH_EVENTO_ORIGINAL_TZR"/></property>
+    <property
+        name="tpEventoControleCarga"
+        column="TP_EVENTO_CONTROLE_CARGA"
+        not-null="true"
+        length="2">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_EVENTO_CONTROLE_CARGA</param>
+	    </type>
+    </property>
+    <property
+        name="dsEvento"
+		type="java.lang.String"
+        column="DS_EVENTO"
+        length="300"
+    />
+	<property
+		name="vlLiberacao"
+		type="java.math.BigDecimal"
+		column="VL_LIBERACAO"
+		not-null="false"
+		length="18" />    
+
+    <property
+        name="psReal"
+			        type="java.math.BigDecimal"
+            column="PS_REAL"
+        length="10"
+    />
+    <property
+        name="psAforado"
+			        type="java.math.BigDecimal"
+            column="PS_AFORADO"
+        length="10"
+    />
+    <property
+        name="vlTotal"
+			        type="java.math.BigDecimal"
+            column="VL_TOTAL"
+        length="12"
+    />
+    <property
+        name="pcOcupacaoCalculado"
+			        type="java.math.BigDecimal"
+            column="PC_OCUPACAO_CALCULADO"
+        length="5"
+    />
+    <property
+        name="pcOcupacaoAforadoCalculado"
+			        type="java.math.BigDecimal"
+            column="PC_OCUPACAO_AFORADO_CALCULADO"
+        length="5"
+    />
+    <property
+        name="pcOcupacaoInformado"
+			        type="java.math.BigDecimal"
+            column="PC_OCUPACAO_INFORMADO"
+        length="5"
+    />
+    <property
+        name="dsObservacao"
+		type="java.lang.String"
+        column="DS_OBSERVACAO"
+        length="300"
+    />
+    
+    <property
+        name="tpSituacaoPendencia"
+		    column="TP_SITUACAO_PENDENCIA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    
+    <!-- Associations -->
+  
+
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="false"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+
+    
+    <many-to-one
+        name="meioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+
+    <many-to-one
+        name="equipeOperacao"
+        class="com.mercurio.lms.carregamento.model.EquipeOperacao"
+        not-null="true"
+    >
+        <column name="ID_EQUIPE_OPERACAO" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to ControleCarga -->    
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+    >
+ 	   <column name="ID_PENDENCIA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioAprovador"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO_APROVADOR" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioSolicitacao"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO_SOLICITACAO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,124 @@
+<form class="form-horizontal content-padding" name="informarChegadaSaidaForm" data-ng-submit="salvar()">
+    <div class="fixed-top">
+        <button type="button" id="limpar" class="btn btn-default btn-lg pull-right"
+                ng-click="clear()" tabindex="6">{{'limpar' | translate }}
+        </button>
+        <button type="submit" id="salvar" class="btn btn-default btn-lg pull-right"
+                ng-disabled="dataIsEmpty() || informarChegadaSaidaForm.$invalid"
+                tabindex="5">{{'salvar' | translate }}
+        </button>
+    </div>
+
+    <div class="row">
+        <div adsm-add-field data-boxSize="6" data-label="frotaPlaca" data-labelSize="4" data-multiSize="4,4">
+            <input id="frota" class="form-control" type="text" ng-model="filter.resultSuggest.nrFrota"
+                   disabled>
+            <input
+                    class="form-control"
+                    id="placa"
+                    type="text"
+                    lms-frota-placa-entrada-saida-portaria="{idFilial: idFilial}"
+                    ng-model="filter.resultSuggest"
+                    adsm-focus="true"
+                    tabindex="1"
+                    maxlength="7">
+        </div>
+
+        <div class="col-sm-12 margin-top-20">
+            <accordion close-others="false">
+                <accordion-group is-open="status.open">
+                    <accordion-heading>
+                        <span class="pull-left glyphicon"
+                              data-ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></span>
+                        {{title}}
+                    </accordion-heading>
+
+                    <div class="row" data-ng-if="!dataIsEmpty()" adsm-loading="showLoading">
+                        <div class="col-sm-6">
+                            <div class="form-group form-group-margin-bottom-bootstrap">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap"
+                                       ng-if="data.tipo === 'CHEGADA'">{{'dataHoraChegada' | translate}}</label>
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap"
+                                       ng-if="data.tipo === 'SAIDA'">{{'dataHoraSaida' | translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static" ng-if="data.tipo === 'CHEGADA'">{{data.dhChegada |
+                                        dateTime}}</p>
+                                    <p class="form-control-static" ng-if="data.tipo === 'SAIDA'">{{data.dhSaida |
+                                        dateTime}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-margin-bottom-bootstrap">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap">{{'tipoMeioTransporte'
+                                    | translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{data.dsTipoMeioTransporte}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-margin-bottom-bootstrap">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap">{{'semiReboque'
+                                    | translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{data.nrFrotaReboque}} <span
+                                            data-ng-if="data.nrFrotaReboque">-</span>
+                                        {{data.nrIdentificadorReboque}}</span></p>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-margin-bottom-bootstrap">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap">{{'motorista'
+                                    | translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{data.nrIdentificacao}} <span
+                                            data-ng-if="data.nrIdentificacao">-</span> {{data.nmPessoa}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-margin-bottom-bootstrap"
+                                 data-ng-if="mostrarCampoControleCarga">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap">{{'controleCarga'
+                                    | translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{data.sgFilial}} <span
+                                            data-ng-if="data.sgFilial">-</span> {{data.nrControleCarga}}</p>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-margin-bottom-bootstrap" data-ng-if="mostrarCampoRota">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap">{{'rota' |
+                                    translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{data.dsRota}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" data-ng-if="mostrarCampoLacres">
+                            <div class="form-group form-group-margin-bottom-bootstrap">
+                                <label class="col-sm-4 control-label control-label-padding-top-bootstrap"
+                                       style="padding-top: 7px">{{'lacres' | translate}}</label>
+                                <div class="col-sm-8">
+                                    <p class="form-control-static">{{formataLacres(data.lacres)}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-ng-if="mostrarCamposQuilometragem">
+                            <div adsm-add-field data-boxSize="6" data-label="virouHodometro" data-labelSize="4"
+                                 class="form-group-margin-bottom-bootstrap">
+                                <input type="checkbox" id="virouHodometro" ng-model="data.blVirouHodometro"
+                                       ng-disabled="!habilitarCamposQuilometragem" tabindex="2">
+                            </div>
+                            <div adsm-add-field data-boxSize="6" data-label="quilometragem" data-labelSize="4"
+                                 data-fieldSize="8" class="form-group-margin-bottom-bootstrap">
+                                <input type="text" class="form-control" ng-model="data.nrQuilometragem"
+                                       id="quilometragem" data-numeric="{maxLength: '7'}"
+                                       ng-disabled="!habilitarCamposQuilometragem"
+                                       ng-required="habilitarCamposQuilometragem" tabindex="3">
+                            </div>
+                            <div adsm-add-field data-boxSize="6" data-label="observacao" data-labelSize="4"
+                                 data-fieldSize="8" class="form-group-margin-bottom-bootstrap">
+                                <input type="text" class="form-control" ng-model="data.observacao" id="observacao"
+                                       maxlength="500" tabindex="4" ng-disabled="!habilitarCamposQuilometragem">
+                            </div>
+                        </div>
+                    </div>
+                </accordion-group>
+            </accordion>
+        </div>
+    </div>
+</form>

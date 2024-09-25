@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.vendas.model.ReajusteCliente" 
+	table="REAJUSTE_CLIENTE"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idReajusteCliente"
+		type="java.lang.Long"
+		column="ID_REAJUSTE_CLIENTE"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">REAJUSTE_CLIENTE_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="nrReajuste"
+		type="java.lang.Long"
+		column="NR_REAJUSTE"
+		not-null="true"
+		length="10"
+	/>
+	<property
+		name="tpSituacaoAprovacao"
+		column="TP_SITUACAO_APROVACAO"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_STATUS_WORKFLOW</param>
+		</type>
+	</property>
+	<property
+		name="dsJustificativa"
+		type="string"
+		column="DS_JUSTIFICATIVA"
+		length="100"
+	/>
+	<property
+		name="blEfetivado"
+		type="sim_nao"
+		column="BL_EFETIVADO"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="pcReajusteSugerido"
+		type="java.math.BigDecimal"
+		column="PC_REAJUSTE_SUGERIDO"
+		not-null="true"
+		length="5"
+	/>
+	<property
+		name="pcReajusteAcordado"
+		type="java.math.BigDecimal"
+		column="PC_REAJUSTE_ACORDADO"
+		not-null="true"
+		length="5"
+	/>
+	<property
+		name="dtInicioVigencia"
+		type="jtyearmonthday"
+		column="DT_INICIO_VIGENCIA"
+		not-null="true"
+		length="7"
+	/>
+	<property
+		name="dtAprovacao"
+		type="jtyearmonthday"
+		column="DT_APROVACAO"
+		length="7"
+	/>
+
+	<property
+		name="blReajustaPercTde"
+		type="sim_nao"
+		column="BL_REAJUSTA_PERC_TDE"
+		not-null="false"
+		length="1"
+	/>
+
+	<property
+		name="blReajustaPercTrt"
+		type="sim_nao"
+		column="BL_REAJUSTA_PERC_TRT"
+		not-null="false"
+		length="1"
+	/>
+
+	<property
+		name="blReajustaPercGris"
+		type="sim_nao"
+		column="BL_REAJUSTA_PERC_GRIS"
+		not-null="false"
+		length="1"
+	/>
+
+	<property
+		name="blReajustaAdValorEm"
+		type="sim_nao"
+		column="BL_REAJUSTA_ADVALOREM"
+		not-null="false"
+		length="1"
+	/>
+
+	<property
+		name="blReajustaAdValorEm2"
+		type="sim_nao"
+		column="BL_REAJUSTA_ADVALOREM_2"
+		not-null="false"
+		length="1"
+	/>
+
+	<property
+		name="blReajustaFretePercentual"
+		type="sim_nao"
+		column="BL_REAJUSTA_FRETE_PERCENTUAL"
+		not-null="false"
+		length="1"
+	/>
+ 	
+	<property
+		name="blGerarSomenteMarcados"
+		type="sim_nao"
+		column="BL_GERAR_SOMENTE_MARCADOS"
+		not-null="false"
+		length="1"
+	/>
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to Usuario -->
+	<many-to-one
+		name="usuarioByIdUsuarioAprovou"
+		entity-name="usuario"
+		not-null="true"
+	>
+		<column name="ID_USUARIO_APROVOU" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Pendencia -->
+	<many-to-one
+		name="pendenciaAprovacao"
+		class="com.mercurio.lms.workflow.model.Pendencia"
+	>
+		<column name="ID_PENDENCIA_APROVACAO"/>
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filial"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true"
+	>
+		<column name="ID_FILIAL" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Cliente -->
+	<many-to-one
+		name="cliente"
+		class="com.mercurio.lms.vendas.model.Cliente"
+		not-null="true"
+	>
+		<column name="ID_CLIENTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to DivisaoCliente -->
+	<many-to-one
+		name="divisaoCliente"
+		class="com.mercurio.lms.vendas.model.DivisaoCliente"
+	>
+		<column name="ID_DIVISAO_CLIENTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TabelaDivisaoCliente -->
+	<many-to-one
+		name="tabelaDivisaoCliente"
+		class="com.mercurio.lms.vendas.model.TabelaDivisaoCliente"
+	>
+		<column name="ID_TABELA_DIVISAO_CLIENTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to TabelaPreco -->
+	<many-to-one
+		name="tabelaPreco"
+		class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+		not-null="false"
+	>
+		<column name="ID_TABELA_PRECO" />
+	</many-to-one>	
+	
+	<property
+		name="dtEfetivacao"
+		type="jtyearmonthday"
+		column="DT_EFETIVACAO"
+		length="7"
+	/>
+	
+	<many-to-one
+		name="usuarioEfetivacao"
+		entity-name="usuario"
+		not-null="true"
+	>
+		<column name="ID_USUARIO_EFETIVACAO" />
+	</many-to-one>
+	
+</class>
+</hibernate-mapping>

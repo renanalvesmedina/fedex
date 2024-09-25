@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.Cedente" 
+    table="CEDENTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idCedente"
+        type="java.lang.Long"
+        column="ID_CEDENTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CEDENTE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="cdCedente"
+			        type="java.lang.Long"
+            column="CD_CEDENTE"
+        not-null="true"
+        length="12"
+    />
+    <property
+        name="sqCobranca"
+			        type="java.lang.Long"
+            column="SQ_COBRANCA"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="nrContaCorrente"
+			        type="java.lang.String"
+            column="NR_CONTA_CORRENTE"
+        not-null="true"
+        length="12"
+    />
+
+    <property
+        name="nrCarteira"
+			        type="java.lang.Short"
+            column="NR_CARTEIRA"
+        length="3"
+    />
+    <property
+        name="dtUltimaRemessaCobranca"
+			        type="jtyearmonthday"
+            column="DT_ULTIMA_REMESSA_COBRANCA"
+        length="7"
+    />
+    <property
+        name="dtUltimoRetornoCobranca"
+			        type="jtyearmonthday"
+            column="DT_ULTIMO_RETORNO_COBRANCA"
+        length="7"
+    />
+    <property
+        name="dsNomeArquivoCobranca"
+			        type="java.lang.String"
+            column="DS_NOME_ARQUIVO_COBRANCA"
+        length="60"
+    />
+    <property
+        name="dsCedente"
+			        type="java.lang.String"
+            column="DS_CEDENTE"
+        not-null="true"
+        length="12"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to AgenciaBancaria -->
+    <many-to-one
+        name="agenciaBancaria"
+        class="com.mercurio.lms.configuracoes.model.AgenciaBancaria"
+        not-null="true"
+    >
+        <column name="ID_AGENCIA_BANCARIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to Filial -->
+    <bag
+        name="filiaisByIdCedente"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Filial</meta>
+ 	        <key>
+            <column name="ID_CEDENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.Filial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Filial -->
+    <bag
+        name="filiaisByIdCedenteBloqueto"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Filial</meta>
+ 	        <key>
+            <column name="ID_CEDENTE_BLOQUETO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.Filial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ComplementoEmpresaCedente -->
+    <bag
+        name="complementoEmpresaCedentes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ComplementoEmpresaCedente</meta>
+ 	        <key>
+            <column name="ID_CEDENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ComplementoEmpresaCedente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Cliente -->
+    <bag
+        name="clientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Cliente</meta>
+ 	        <key>
+            <column name="ID_CEDENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.Cliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Fatura -->
+    <bag
+        name="faturas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Fatura</meta>
+ 	        <key>
+            <column name="ID_CEDENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Fatura"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Boleto -->
+    <bag
+        name="boletos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.Boleto</meta>
+ 	        <key>
+            <column name="ID_CEDENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.Boleto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to CedenteModalAbrangencia -->
+    <bag
+        name="cedenteModalAbrangencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.CedenteModalAbrangencia</meta>
+ 	        <key>
+            <column name="ID_CEDENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.CedenteModalAbrangencia"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

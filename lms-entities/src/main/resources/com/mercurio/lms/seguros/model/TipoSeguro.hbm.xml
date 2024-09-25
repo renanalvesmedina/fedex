@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.seguros.model.TipoSeguro" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="TIPO_SEGURO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <cache usage="read-write"/>
+
+	<id column="ID_TIPO_SEGURO" name="idTipoSeguro" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_SEGURO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="TP_MODAL" length="1" name="tpModal">
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property column="TP_ABRANGENCIA" length="1" name="tpAbrangencia">
+		<type name="domain">
+        	<param name="domainName">DM_ABRANGENCIA</param>
+	    </type>
+    </property>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property> 
+       
+    <property column="DS_TIPO_I" length="500" name="dsTipo" not-null="true" type="varcharI18n" unique="true"/>
+       
+    <property column="SG_TIPO" length="10" name="sgTipo" not-null="true" type="java.lang.String" unique="true"/>
+    
+    <property column="BL_ENVOLVE_CARGA" length="1" name="blEnvolveCarga" not-null="true" type="java.lang.String"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ProcessoSinistro -->
+    <bag cascade="none" inverse="true" lazy="true" name="processoSinistros">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.seguros.model.ProcessoSinistro</meta>
+ 	        <key>
+            <column name="TISE_ID_TIPO_SEGURO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.seguros.model.ProcessoSinistro"/>
+    </bag>
+    
+    <!-- uni-directional many-to-many association to Sinistro -->
+    <idbag cascade="none" name="seguroTipoSinistros" table="SEGURO_TIPO_SINISTRO">
+		    <collection-id column="ID_SEGURO_TIPO_SINISTRO" type="java.lang.Long">
+		        <generator class="sequence">
+		            <param name="sequence">SEGURO_TIPO_SINISTRO_SQ</param>
+		        </generator>
+		    </collection-id>
+ 	        <key>
+            <column name="ID_TIPO_SEGURO"/>
+        </key>
+        <many-to-many class="com.mercurio.lms.seguros.model.TipoSinistro">
+            <column name="ID_TIPO_SINISTRO"/>
+        </many-to-many>
+    </idbag>
+    
+    <!-- bi-directional one-to-many association to ApoliceSeguro -->
+    <bag cascade="none" inverse="true" lazy="true" name="apoliceSeguros">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PostoPassagemCc</meta>
+ 	        <key>
+            <column name="ID_TIPO_SEGURO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.PostoPassagemCc"/>
+    </bag>
+    <!-- bi-directional one-to-many association to DoctoServicoSeguros -->
+    <bag cascade="none" inverse="true" lazy="true" name="doctoServicoSeguros">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.DoctoServicoSeguros</meta>
+ 	        <key>
+            <column name="ID_TIPO_SEGURO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.expedicao.model.DoctoServicoSeguros"/>
+    </bag>	
+	
+</class>
+</hibernate-mapping>

@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.ProtocoloTransferencia" 
+    table="PROTOCOLO_TRANSFERENCIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idProtocoloTransferencia"
+        type="java.lang.Long"
+        column="ID_PROTOCOLO_TRANSFERENCIA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PROTOCOLO_TRANSFERENCIA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhProtocolo"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_PROTOCOLO"/><column name="DH_PROTOCOLO_TZR"/></property>
+    <property
+        name="tpDestinatario"
+		    column="TP_DESTINATARIO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">TP_DESTINATARIO</param>
+	    </type>
+    </property>
+    <property
+        name="nmRecebedorCliente"
+			        type="java.lang.String"
+            column="NM_RECEBEDOR_CLIENTE"
+        length="240"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Funcionario -->
+    <many-to-one
+        name="funcionario"
+        class="com.mercurio.lms.configuracoes.model.Funcionario"
+        not-null="true"
+    >
+        <column name="ID_FUNCIONARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Setor -->
+    <many-to-one
+        name="setor"
+        class="com.mercurio.lms.configuracoes.model.Setor"
+        not-null="true"
+    >
+        <column name="ID_SETOR" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to LotePendencia -->
+    <bag
+        name="lotePendencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.LotePendencia</meta>
+ 	        <key>
+            <column name="ID_PROTOCOLO_TRANSFERENCIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.LotePendencia"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

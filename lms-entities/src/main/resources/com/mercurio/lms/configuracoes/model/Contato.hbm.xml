@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.Contato" 
+    table="CONTATO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idContato"
+        type="java.lang.Long"
+        column="ID_CONTATO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CONTATO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nmContato"
+			        type="java.lang.String"
+            column="NM_CONTATO"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpContato"
+		    column="TP_CONTATO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_CONTATO_PESSOA</param>
+	    </type>
+    </property>
+    <property
+        name="nrRepresentante"
+			        type="java.lang.Long"
+            column="NR_REPRESENTANTE"
+        length="10"
+    />
+    <property
+        name="dtAniversario"
+			        type="jtyearmonthday"
+            column="DT_ANIVERSARIO"
+        length="7"
+    />
+    <property
+        name="dsEmail"
+			        type="java.lang.String"
+            column="DS_EMAIL"
+        length="60"
+    />
+    <property
+        name="dsFuncao"
+			        type="java.lang.String"
+            column="DS_FUNCAO"
+        length="60"
+    />
+    <property
+        name="dsDepartamento"
+			        type="java.lang.String"
+            column="DS_DEPARTAMENTO"
+        length="60"
+    />
+    <property
+        name="obContato"
+			        type="java.lang.String"
+            column="OB_CONTATO"
+        length="500"
+    />
+    
+    <property
+        name="dtCadastro"
+			        type="jtyearmonthday"
+            column="DT_CADASTRO"
+        length="7"
+    />
+    
+    <property
+        name="dtUltimaMovimentacao"
+			        type="jtyearmonthday"
+            column="DT_ULTIMA_MOVIMENTACAO"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to VersaoContatoPce -->
+    <bag
+        name="versaoContatoPces"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.VersaoContatoPce</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.VersaoContatoPce"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ContatoComunicacao -->
+    <bag
+        name="contatoComunicacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.ContatoComunicacao</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sim.model.ContatoComunicacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to AgendaCobranca -->
+    <bag
+        name="agendaCobrancas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.AgendaCobranca</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.AgendaCobranca"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TelefoneContato -->
+    <bag
+        name="telefoneContatos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.TelefoneContato</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.TelefoneContato"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to ContatoCorrespondencia -->
+    <bag
+        name="contatoCorrespondencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.ContatoCorrespondencia</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.ContatoCorrespondencia"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true"
+    >
+        <column name="ID_PESSOA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+
+    <one-to-one name="dispositivoContato"
+                class="com.mercurio.lms.configuracoes.model.DispositivoContato"
+                property-ref="contato"
+                cascade="all">
+    </one-to-one>
+
+    <!-- bi-directional one-to-many association to VolFabricante -->
+    <bag
+        name="volFabricantes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolFabricante</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolFabricante"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to VolOperadorasTelefonia -->
+    <bag
+        name="volOperadorasTelefonias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolOperadorasTelefonia</meta>
+ 	        <key>
+            <column name="ID_CONTATO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolOperadorasTelefonia"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.ControleTrecho" 
+    table="CONTROLE_TRECHO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idControleTrecho"
+        type="java.lang.Long"
+        column="ID_CONTROLE_TRECHO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CONTROLE_TRECHO_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="dhPrevisaoSaida"
+		type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_PREVISAO_SAIDA"/><column name="DH_PREVISAO_SAIDA_TZR"/></property>
+    <property
+        name="dhPrevisaoChegada"
+        type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_PREVISAO_CHEGADA"/><column name="DH_PREVISAO_CHEGADA_TZR"/></property>
+    <property
+        name="dhSaida"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_SAIDA"/><column name="DH_SAIDA_TZR"/></property>
+    <property
+        name="dhChegada"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_CHEGADA"/><column name="DH_CHEGADA_TZR"/></property>
+    <property
+        name="nrTempoViagem"
+		type="java.lang.Integer"
+        column="NR_TEMPO_VIAGEM"
+        length="6"
+        not-null="false"
+    />
+    <property
+        name="nrTempoOperacao"
+		type="java.lang.Integer"
+        column="NR_TEMPO_OPERACAO"
+        length="6"
+        not-null="false"
+    />
+    <property
+        name="nrDistancia"
+		type="java.lang.Integer"
+        column="NR_DISTANCIA"
+        length="6"
+        not-null="true"
+    />
+    
+    <property
+        name="blTrechoDireto"
+	    type="sim_nao"
+        column="BL_TRECHO_DIRETO"
+        not-null="true"
+        length="1"
+    />
+    <property
+        name="blInseridoManualmente"
+	    type="sim_nao"
+        column="BL_INSERIDO_MANUALMENTE"
+        not-null="true"
+        length="1"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to PostoAvancadoCc -->
+    <bag
+        name="postoAvancadoCcs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PostoAvancadoCc</meta>
+ 	    <key>
+            <column name="ID_CONTROLE_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.PostoAvancadoCc"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to EventoMeioTransporte -->
+    <bag
+        name="eventoMeioTransportes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.EventoMeioTransporte</meta>
+ 	        <key>
+            <column name="ID_CONTROLE_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.EventoMeioTransporte"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to SolicMonitPreventivo -->
+    <bag
+        name="solicMonitPreventivos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.SolicMonitPreventivo</meta>
+ 	        <key>
+            <column name="ID_CONTROLE_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.SolicMonitPreventivo"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to LocalTroca -->
+    <bag
+        name="localTrocas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.LocalTroca</meta>
+ 	        <key>
+            <column name="ID_CONTROLE_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.LocalTroca"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Manifesto -->
+    <bag
+        name="manifestos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.Manifesto</meta>
+ 	        <key>
+            <column name="ID_CONTROLE_TRECHO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.Manifesto"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to TrechoRotaIdaVolta -->
+    <many-to-one
+        name="trechoRotaIdaVolta"
+        class="com.mercurio.lms.municipios.model.TrechoRotaIdaVolta"
+        not-null="false"
+    >
+        <column name="ID_TRECHO_ROTA_IDA_VOLTA" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

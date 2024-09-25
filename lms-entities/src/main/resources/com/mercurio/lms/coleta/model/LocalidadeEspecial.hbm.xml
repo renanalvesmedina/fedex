@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.coleta.model.LocalidadeEspecial" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="LOCALIDADE_ESPECIAL">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_LOCALIDADE_ESPECIAL" name="idLocalidadeEspecial" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LOCALIDADE_ESPECIAL_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_LOCALIDADE_I" length="500" name="dsLocalidade" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one class="com.mercurio.lms.municipios.model.Filial" name="filial" not-null="true">
+        <column name="ID_FILIAL"/>
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to UnidadeFederativa -->
+    <many-to-one class="com.mercurio.lms.municipios.model.UnidadeFederativa" name="unidadeFederativa" not-null="true">
+        <column name="ID_UNIDADE_FEDERATIVA"/>
+    </many-to-one>
+
+
+    <!-- bi-directional one-to-many association to DetalheColeta -->
+    <bag cascade="none" inverse="true" lazy="true" name="detalheColetas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.DetalheColeta</meta>
+ 	        <key>
+            <column name="ID_LOCALIDADE_ESPECIAL"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.coleta.model.DetalheColeta"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

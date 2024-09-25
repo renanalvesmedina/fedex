@@ -1,0 +1,324 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.expedicao.model.NotaFiscalConhecimento" 
+	table="NOTA_FISCAL_CONHECIMENTO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idNotaFiscalConhecimento"
+		type="java.lang.Long"
+		unsaved-value="null"
+		column="ID_NOTA_FISCAL_CONHECIMENTO"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">NOTA_FISCAL_CONHECIMENTO_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="nrNotaFiscal"
+		type="java.lang.Integer"
+		column="NR_NOTA_FISCAL"
+		not-null="true"
+		length="9"
+	/>
+	<property
+		name="vlTotal"
+		type="java.math.BigDecimal"
+		column="VL_TOTAL"
+		not-null="true"
+		length="18"
+	/>
+	<property
+		name="qtVolumes"
+		type="java.lang.Short"
+		column="QT_VOLUMES"
+		not-null="true"
+		length="4"
+	/>
+	<property
+		name="psMercadoria"
+		type="java.math.BigDecimal"
+		column="PS_MERCADORIA"
+		not-null="true"
+		length="8"
+	/>
+	<property
+		name="dtEmissao"
+		type="jtyearmonthday"
+		column="DT_EMISSAO"
+		not-null="true"
+		length="7"
+	/>
+	<property
+		name="nrCfop"
+		type="java.math.BigInteger"
+		column="NR_CFOP"
+		length="22"
+	/>
+	<property
+		name="tpDocumento"
+		type="java.lang.String"
+		column="TP_DOCUMENTO"
+		length="2"
+	/>
+	<property
+		name="vlBaseCalculo"
+		type="java.math.BigDecimal"
+		column="VL_BASE_CALCULO"
+		length="18"
+	/>
+	<property
+		name="vlIcms"
+		type="java.math.BigDecimal"
+		column="VL_ICMS"
+		length="18"
+	/>
+	<property
+		name="dtSaida"
+		type="jtyearmonthday"
+		column="DT_SAIDA"
+		length="7"
+	/>
+	<property
+		name="dsSerie"
+		type="java.lang.String"
+		column="DS_SERIE"
+		length="3"
+	/>
+	<property
+		name="psCubado"
+		type="java.math.BigDecimal"
+		column="PS_CUBADO"
+		length="8"
+	/>
+	<property
+		name="psCubadoNotfis"
+		type="java.math.BigDecimal"
+		column="PS_CUBADO_NOTFIS"
+		length="8"
+	/>
+	<property
+		name="psAferido"
+		type="java.math.BigDecimal"
+		column="PS_AFERIDO"
+		length="8"
+	/>
+	<property
+		name="vlTotalProdutos"
+		type="java.math.BigDecimal"
+		column="VL_TOTAL_PRODUTOS"
+		length="18"
+	/>
+	<property
+		name="vlBaseCalculoSt"
+		type="java.math.BigDecimal"
+		column="VL_BASE_CALCULO_ST"
+		length="18"
+	/>
+	<property
+		name="vlIcmsSt"
+		type="java.math.BigDecimal"
+		column="VL_ICMS_ST"
+		length="18"
+	/>
+	<property
+		name="nrPinSuframa"
+		type="java.lang.Integer"
+		column="NR_PIN_SUFRAMA"
+		length="9"
+	/>
+
+	<property
+		name="nrChave"
+		type="java.lang.String"
+		column="NR_CHAVE"
+		length="15"
+	/>
+	
+	
+	<property
+		name="blProdutoPerigoso"
+		type="sim_nao"
+		column="BL_PRODUTO_PERIGOSO"
+		not-null="false"
+		length="1"
+	/>
+	
+	<property
+		name="blControladoPoliciaCivil"
+		type="sim_nao"
+		column="BL_CONTROLADO_POLICIA_CIVIL"
+		not-null="false"
+		length="1"
+	/>
+	
+	<property
+		name="blControladoPoliciaFederal"
+		type="sim_nao"
+		column="BL_CONTROLADO_POLICIA_FEDERAL"
+		not-null="false"
+		length="1"
+	/>
+	
+	<property
+		name="blControladoExercito"
+		type="sim_nao"
+		column="BL_CONTROLADO_EXERCITO"
+		not-null="false"
+		length="1"
+	/>	
+
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to Cliente -->
+	<many-to-one
+		name="cliente"
+		class="com.mercurio.lms.vendas.model.Cliente"
+		not-null="true"
+	>
+		<column name="ID_CLIENTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Conhecimento -->
+	<many-to-one
+		name="conhecimento"
+		class="com.mercurio.lms.expedicao.model.Conhecimento"
+		not-null="true"
+	>
+		<column name="ID_CONHECIMENTO" />
+	</many-to-one>
+	<!-- bi-directional one-to-many association to NfItemMda -->
+	<bag
+		name="nfItemMdas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.NfItemMda</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.pendencia.model.NfItemMda"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ReciboIndenizacaoNf -->
+	<bag
+		name="reciboIndenizacaoNfs"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.ReciboIndenizacaoNf</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.indenizacoes.model.ReciboIndenizacaoNf"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to NfCartaMercadoria -->
+	<bag
+		name="nfCartaMercadorias"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.NfCartaMercadoria</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.pendencia.model.NfCartaMercadoria"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to NotaOcorrenciaNc -->
+	<bag
+		name="notaOcorrenciaNcs"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.NotaOcorrenciaNc</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.rnc.model.NotaOcorrenciaNc"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ManifestoEntregaDocumento -->
+	<bag
+		name="manifestoEntregaDocumentos"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ManifestoEntregaDocumento</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.entrega.model.ManifestoEntregaDocumento"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to NfDadosComp -->
+	<bag
+		name="nfDadosComps"
+		lazy="true"
+		cascade="all" inverse="true"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.NfDadosComp</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.expedicao.model.NfDadosComp"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to ItemNfCto -->
+	<bag
+		name="itemNfCtos"
+		lazy="true"
+		inverse="true"
+		cascade="all"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.ItemNfCto</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.expedicao.model.ItemNfCto"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to VolumeNotaFiscal -->
+	<bag
+		name="volumeNotaFiscais"
+		lazy="true"
+		inverse="true"
+		cascade="all"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.VolumenotaFiscal</meta>
+		<key>
+			<column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.expedicao.model.VolumeNotaFiscal"
+		/>
+	</bag>
+</class>
+</hibernate-mapping>

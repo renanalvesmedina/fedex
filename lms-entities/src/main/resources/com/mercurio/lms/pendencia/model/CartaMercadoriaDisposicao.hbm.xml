@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.CartaMercadoriaDisposicao" 
+    table="CARTA_MERCADORIA_DISPOSICAO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idMercadoriaDisposicao"
+        type="java.lang.Long"
+        column="ID_MERCADORIA_DISPOSICAO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CARTA_MERCADORIA_DISPOSICAO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nmContato"
+			        type="java.lang.String"
+            column="NM_CONTATO"
+        not-null="true"
+        length="80"
+    />
+    <property
+        name="nrTelefoneEmpresa"
+			        type="java.lang.String"
+            column="NR_TELEFONE_EMPRESA"
+        not-null="true"
+        length="15"
+    />
+    <property
+        name="nrFaxEmpresa"
+			        type="java.lang.String"
+            column="NR_FAX_EMPRESA"
+        not-null="true"
+        length="15"
+    />
+    <property
+        name="nrRamal"
+			        type="java.lang.Short"
+            column="NR_RAMAL"
+        length="4"
+        not-null="false"
+    />
+    <property
+        name="dsEmailCliente"
+			        type="java.lang.String"
+            column="DS_EMAIL_CLIENTE"
+        length="80"
+    />
+    <property
+        name="dsEmailFuncionario"
+			        type="java.lang.String"
+            column="DS_EMAIL_FUNCIONARIO"
+        length="80"
+    />
+    <property
+        name="obCarta"
+			        type="java.lang.String"
+            column="OB_CARTA"
+        length="200"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_EMISSAO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to NfCartaMercadoria -->
+    <bag
+        name="nfCartaMercadorias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.NfCartaMercadoria</meta>
+ 	        <key>
+            <column name="ID_MERCADORIA_DISPOSICAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.NfCartaMercadoria"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="true"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

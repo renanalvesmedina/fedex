@@ -1,0 +1,177 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vol.model.VolEquipamentos" 
+    table="EQUIPAMENTO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idEquipamento"
+        type="java.lang.Long"
+        column="ID_EQUIPAMENTO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EQUIPAMENTO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="blHabilitado"
+			        type="sim_nao"
+            column="BL_HABILITADO"
+        not-null="true"
+        length="1"
+    />
+    <property
+        name="dsNumero"
+			        type="java.lang.String"
+            column="DS_NUMERO"
+        not-null="true"
+        length="20"
+    />
+    <property
+        name="tpTarifa"
+            column="TP_TARIFA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TP_TARIFA</param>
+	    </type>
+    </property>
+    <property
+        name="dsImei"
+			        type="java.lang.String"
+            column="DS_IMEI"
+        length="30"
+    />
+    <property
+        name="nmPin2"
+			        type="java.lang.Short"
+            column="NM_PIN2"
+        length="4"
+    />
+    <property
+        name="nmPin"
+			        type="java.lang.Short"
+            column="NM_PIN"
+        length="4"
+    />
+    <property
+        name="dsIccid"
+			        type="java.lang.String"
+            column="DS_ICCID"
+        length="30"
+    />
+    <property
+        name="dhAtualizacao"
+			        type="jtdatetimetzr"
+        length="13"
+    ><column name="DH_ATUALIZACAO"/><column name="DH_ATUALIZACAO_TZR"/></property>
+    <property
+        name="nmVersao"
+			        type="java.lang.String"
+            column="NM_VERSAO"
+        length="5"
+    />
+    <property
+        name="versaoSO"
+			        type="java.lang.String"
+            column="VERSAO_SO"
+        length="5"
+    />
+    <property
+        name="obObservacao"
+			        type="java.lang.String"
+            column="OB_OBSERVACAO"
+        length="200"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporte -->
+    <many-to-one
+        name="meioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to VolTiposUso -->
+    <many-to-one
+        name="volTiposUso"
+        class="com.mercurio.lms.vol.model.VolTiposUso"
+        not-null="true"
+    >
+        <column name="ID_TIPOS_USO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to VolModeloseqps -->
+    <many-to-one
+        name="volModeloseqp"
+        class="com.mercurio.lms.vol.model.VolModeloseqps"
+        not-null="true"
+    >
+        <column name="ID_MODELOEQP" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to VolOperadorasTelefonia -->
+    <many-to-one
+        name="volOperadorasTelefonia"
+        class="com.mercurio.lms.vol.model.VolOperadorasTelefonia"
+        not-null="true"
+    >
+        <column name="ID_OPERADORA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to VolLogEnviosSms -->
+    <bag
+        name="volLogEnviosSms"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolLogEnviosSms</meta>
+ 	        <key>
+            <column name="ID_EQUIPAMENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolLogEnviosSms"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to VolRetiradasEqptos -->
+    <bag
+        name="volRetiradasEqptos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolRetiradasEqptos</meta>
+ 	        <key>
+            <column name="ID_EQUIPAMENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolRetiradasEqptos"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

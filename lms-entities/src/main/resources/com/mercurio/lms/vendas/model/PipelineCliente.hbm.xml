@@ -1,0 +1,234 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<class 
+    name="com.mercurio.lms.vendas.model.PipelineCliente" 
+    table="PIPELINE_CLIENTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPipelineCliente"
+        type="java.lang.Long"
+        column="ID_PIPELINE_CLIENTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PIPELINE_CLIENTE_SQ</param>
+        </generator>
+    </id>
+    
+    <property
+		name="percProbabilidade"
+		type="java.math.BigDecimal"
+		column="PC_PROBABILIDADE"
+		length="6"
+		not-null="true"
+	/>
+    
+    <property
+	        name="tpSituacao"
+			column="TP_SITUACAO"
+	        not-null="true"
+	        length="1"
+    	>
+			<type name="domain">
+        		<param name="domainName">DM_SITUACAO_PIPELINE</param>
+		    </type>
+	</property>
+	
+	<property
+		name="blClienteNovo"
+		type="sim_nao"
+		column="BL_CLIENTE_NOVO"
+		length="1"
+	/>
+	
+	<property
+			name="vlReceitaAtual"
+			type="java.math.BigDecimal"
+			column="VL_RECEITA_ATUAL"
+			length="15"
+	/>
+		
+	<property
+			name="vlReceitaPrevista"
+			type="java.math.BigDecimal"
+			column="VL_RECEITA_PREVISTA"
+			length="15"
+	/>
+	
+	<property
+	        name="tpMotivoPerda"
+			column="TP_MOTIVO_PERDA"
+	        length="2"
+    	>
+			<type name="domain">
+        		<param name="domainName">DM_MOTIVO_PERDA</param>
+		    </type>
+	</property>	
+	
+	<property
+        name="dtPerda"
+		type="jtyearmonthday"
+        column="DT_PERDA"
+        length="7"
+    />
+    
+    <property
+        name="nmCliente"
+		type="java.lang.String"
+        column="NM_CLIENTE"
+        length="50"
+        not-null="false"
+    />
+    
+ 	<property
+        name="nrMesFechamento"
+		type="java.lang.String"
+        column="NR_MES_FECHAMENTO"
+        length="2"
+        not-null="false"
+    />
+	
+	<property
+        name="nrMesFechamentoAtualizado"
+		type="java.lang.String"
+        column="NR_MES_FECHAMENTO_ATUALIZADO"
+        length="2"
+        not-null="false"
+    />
+	
+    <property
+        name="nrAnoFechamento"
+		type="java.lang.String"
+        column="NR_ANO_FECHAMENTO"
+        length="4"
+        not-null="false"
+    />
+	
+	<property
+        name="nrAnoFechamentoAtualizado"
+		type="java.lang.String"
+        column="NR_ANO_FECHAMENTO_ATUALIZADO"
+        length="50"
+        not-null="false"
+    />
+	
+	<property
+	        name="tpProbabilidade"
+			column="TP_PROBABILIDADE"
+	        not-null="false"
+	        length="1"
+    	>
+			<type name="domain">
+        		<param name="domainName">DM_PROBABILIDADE_PIPELINE</param>
+		    </type>
+	</property>
+	
+	<property
+	        name="tpNegociacao"
+			column="TP_NEGOCIACAO"
+	        not-null="false"
+	        length="1"
+    	>
+			<type name="domain">
+        		<param name="domainName">DM_NEGOCIACAO_PIPELINE</param>
+		    </type>
+	</property>
+
+    <!-- Associations -->
+    
+    <!-- bi-directional many-to-one association to ID_FILIAL_USUARIO -->    
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Moeda -->
+	<many-to-one
+		name="moeda"
+		class="com.mercurio.lms.configuracoes.model.Moeda"
+		not-null="true"
+	>
+		<column name="ID_MOEDA" />
+	</many-to-one>
+    
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+        
+    <many-to-one
+        name="clienteByIdClienteRespnsavel"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE_RESPONSAVEL"/>
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    
+     <!-- bi-directional many-to-one association to ID_SEGMENTO_MERCADO -->    
+    <many-to-one
+        name="segmentoMercado"
+        class="com.mercurio.lms.vendas.model.SegmentoMercado"
+        not-null="true"
+    >
+        <column name="ID_SEGMENTO_MERCADO" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to PipelineReceita -->
+     <bag
+        name="listPipelineReceita"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PipelineReceita</meta>
+ 	        <key>
+            <column name="ID_PIPELINE_CLIENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.PipelineReceita"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to PipelineReceita -->
+     <bag
+        name="listPipelineEtapas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PipelineEtapa</meta>
+ 	        <key>
+            <column name="ID_PIPELINE_CLIENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.PipelineEtapa"
+        />
+    </bag>
+   
+    
+ </class> 
+</hibernate-mapping>

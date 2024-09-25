@@ -1,0 +1,85 @@
+<style type="text/css">	
+	table td {
+		vertical-align: middle !important;
+	}
+		
+	table tbody tr {
+		height: 45px !important;
+	}	
+	
+	.subtable {
+		display: table;
+		border-collapse: collapse;
+	}
+	
+	.subtable .row {
+		display: table-row;
+	}
+	
+	.subtable .cell {
+		display: table-cell;
+		border-right: 1px solid black;
+		padding-left: 5px;
+    	padding-right: 5px;
+    	width: 120px;
+	}
+	
+	.subtable .cell:last-child {
+		border-right: none;
+	}
+</style>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<div class="fixed-top">
+		<button id="btPrecos" 
+			type="button" 
+			ng-if="!data.disabled && tabelafretecarreteiro.isMatriz"
+			class="btn btn-default btn-lg pull-right ng-binding"
+			data-ng-click="createPrecos();">{{'incluir' | translate}}</button>
+	</div>
+	
+	<div class="row" ng-if="!data.disabled && tabelafretecarreteiro.isMatriz">
+		<div class="col-sm-12">
+			<div class="grid-btn-container">
+				<button type="button" 
+					data-ng-click="removeTabelaValoresByIds()" 
+					class="btn btn-default btn-lg" 
+					id="excluir">
+					<span class="glyphicon glyphicon-trash"></span>
+				</button>
+			</div>
+		</div>
+	</div>
+	
+	<table adsm-table="tabelaValoresTableParams" 
+		class="table adsm-table-hover table-condensed table-clickable adsm-table"
+		data-show-checkboxes="!data.disabled && tabelafretecarreteiro.isMatriz"
+		style="width: 100%">
+		<tbody>
+			<tr ng-repeat="row in page" ng-click="editPrecos(row)">
+				<td column-title="meioTransporte"
+					style="min-width: 100px; max-width: 260px;">
+					{{row.meioTransporte.nrFrota}} / {{row.meioTransporte.nrIdentificador}}
+				</td>
+				<td column-title="fatoresCalculo"				
+					style="min-width: 100px; max-width: 400px;">
+					<div class="subtable" ng-if="row.listFatorCalculo.length > 0">
+						<div class="row">								
+							<div class="cell" ng-repeat="fator in row.listFatorCalculo">									
+								<div>
+									<strong>{{ fator.nome | translate }}</strong>	
+								</div>
+								<div>
+									{{ fator.valor | currency }}	
+								</div>	
+							</div>
+						</div>
+					</div>			
+					<div ng-if="row.listFatorCalculo.length == 0">
+						{{ 'nenhumValorDefinido' | translate }}
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

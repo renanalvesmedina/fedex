@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.FilialRota" 
+    table="FILIAL_ROTA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idFilialRota"
+        type="java.lang.Long"
+        column="ID_FILIAL_ROTA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">FILIAL_ROTA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrOrdem"
+			        type="java.lang.Byte"
+            column="NR_ORDEM"
+        not-null="true"
+        length="2"
+    />
+    
+     <property
+        name="blDestinoRota"
+			        type="sim_nao"
+            column="BL_DESTINO_ROTA"
+        not-null="false"
+        length="1"
+    />
+    <property
+        name="blOrigemRota"
+			        type="sim_nao"
+            column="BL_ORIGEM_ROTA"
+        not-null="false"
+        length="1"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Rota -->
+    <many-to-one
+        name="rota"
+        class="com.mercurio.lms.municipios.model.Rota"
+        not-null="true"
+    >
+        <column name="ID_ROTA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to TrechoRotaIdaVolta -->
+    <bag
+        name="trechoRotaIdaVoltasByIdFilialRotaOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TrechoRotaIdaVolta</meta>
+ 	        <key>
+            <column name="ID_FILIAL_ROTA_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.TrechoRotaIdaVolta"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TrechoRotaIdaVolta -->
+    <bag
+        name="trechoRotaIdaVoltasByIdFilialRotaDetino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TrechoRotaIdaVolta</meta>
+ 	        <key>
+            <column name="ID_FILIAL_ROTA_DETINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.TrechoRotaIdaVolta"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

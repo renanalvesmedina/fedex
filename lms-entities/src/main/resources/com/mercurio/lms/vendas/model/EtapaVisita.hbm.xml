@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vendas.model.EtapaVisita" 
+    table="ETAPA_VISITA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idEtapaVisita"
+        type="java.lang.Long"
+        column="ID_ETAPA_VISITA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ETAPA_VISITA_SQ</param>
+        </generator>
+    </id>
+
+	<version name="versao" column="NR_VERSAO"/>
+	
+    <property
+        name="nrTelefone"
+			        type="java.lang.String"
+            column="NR_TELEFONE"
+        length="20"
+    />
+    <property
+        name="nrDDI"
+			        type="java.lang.String"
+            column="NR_DDI"
+        length="5"
+    />    
+    <property
+        name="nrDDD"
+			        type="java.lang.String"
+            column="NR_DDD"
+        length="5"
+    />    
+    <property
+        name="tpModal"
+		    column="TP_MODAL"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property
+        name="tpAbrangencia"
+		    column="TP_ABRANGENCIA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ABRANGENCIA</param>
+	    </type>
+    </property>
+    <property
+        name="tpPerspectivaFaturamento"
+		    column="TP_PERSPECTIVA_FATURAMENTO"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_PERSPECTIVA_FATUR</param>
+	    </type>
+    </property>
+    <property
+        name="dsContato"
+			        type="java.lang.String"
+            column="DS_CONTATO"
+        length="60"
+    />
+    <property
+        name="dsAreaAtuacao"
+			        type="java.lang.String"
+            column="DS_AREA_ATUACAO"
+        length="60"
+    />
+    <property
+        name="dsEmail"
+			        type="java.lang.String"
+            column="DS_EMAIL"
+        length="60"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Visita -->
+    <many-to-one
+        name="visita"
+        class="com.mercurio.lms.vendas.model.Visita"
+        not-null="true"
+    >
+        <column name="ID_VISITA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ServicoOferecido -->
+    <bag
+        name="servicoOferecidos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ServicoOferecido</meta>
+ 	        <key>
+            <column name="ID_ETAPA_VISITA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.ServicoOferecido"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to TipoVisita -->
+    <many-to-one
+        name="tipoVisita"
+        class="com.mercurio.lms.vendas.model.TipoVisita"
+        not-null="true"
+    >
+        <column name="ID_TIPO_VISITA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to CampanhaMarketing -->
+    <many-to-one
+        name="campanhaMarketing"
+        class="com.mercurio.lms.vendas.model.CampanhaMarketing"
+        not-null="true"
+    >
+        <column name="ID_CAMPANHA_MARKETING" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

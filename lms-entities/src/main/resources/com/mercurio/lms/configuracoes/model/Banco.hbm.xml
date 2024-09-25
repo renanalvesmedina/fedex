@@ -1,0 +1,143 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.Banco" 
+    table="BANCO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idBanco"
+        type="java.lang.Long"
+        column="ID_BANCO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">BANCO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrBanco"
+			        type="java.lang.Short"
+            column="NR_BANCO"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="nmBanco"
+			        type="java.lang.String"
+            column="NM_BANCO"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to RecebimentoRecibo -->
+    <bag
+        name="recebimentoRecibos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.RecebimentoRecibo</meta>
+ 	        <key>
+            <column name="ID_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.RecebimentoRecibo"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ReciboIndenizacao -->
+    <bag
+        name="reciboIndenizacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.ReciboIndenizacao</meta>
+ 	        <key>
+            <column name="ID_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.ReciboIndenizacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to AgenciaBancaria -->
+    <bag
+        name="agenciaBancarias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.AgenciaBancaria</meta>
+ 	        <key>
+            <column name="ID_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.AgenciaBancaria"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to OcorrenciaBanco -->
+    <bag
+        name="ocorrenciaBancos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.OcorrenciaBanco</meta>
+ 	        <key>
+            <column name="ID_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.OcorrenciaBanco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Cliente -->
+    <bag
+        name="clientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Cliente</meta>
+ 	        <key>
+            <column name="ID_BANCO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.Cliente"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Pais -->
+    <many-to-one
+        name="pais"
+        class="com.mercurio.lms.municipios.model.Pais"
+        not-null="true"
+    >
+        <column name="ID_PAIS" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

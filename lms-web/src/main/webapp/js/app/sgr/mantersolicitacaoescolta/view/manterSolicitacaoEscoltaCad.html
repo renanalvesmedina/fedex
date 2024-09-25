@@ -1,0 +1,409 @@
+<form class="form-horizontal content-padding" ng-submit="store()">
+	<div class="fixed-top">
+		<div ng-include src="contextPath + 'js/app/common/view/templates/form-buttons-cad.html'" />
+	</div>
+
+	<div class="row">
+		<div adsm-add-field boxSize="4" label="solicitacaoEscolta" labelSize="6" multiSize="4">
+			<input
+				lms-filial
+				maxlength="3"
+				ng-model="data.filialSolicitante"
+				ng-readonly="data.id"
+				required
+				type="text"
+			/>
+			<input
+				class="text-right"
+				disabled
+				ng-model="data.nrSolicitacaoEscolta"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="4" label="situacao" labelSize="4">
+			<input
+				disabled
+				ng-model="data.tpSituacao.descriptionAsString"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="4" label="usuarioSolicitante" labelSize="4">
+			<input
+				disabled
+				ng-model="data.nmUsuarioSolicitacao"
+				type="text"
+			/>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field boxSize="4" label="dataInclusao" labelSize="6">
+			<input
+				adsm-date-time
+				disabled
+				ng-model="data.dhInclusao"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="4" label="inicioPrevisto" labelSize="4">
+			<input
+				adsm-date-time
+				ng-model="data.dhInicioPrevisto"
+				required
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="4" label="fimPrevisto" labelSize="4">
+			<input
+				adsm-date-time
+				ng-model="data.dhFimPrevisto"
+				required
+				type="text"
+			/>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field boxSize="6" label="tpEscolta" labelSize="4">
+			<select 
+				adsm-chosen
+				ng-model="data.idExigenciaGerRisco"
+				ng-options="data.id as data.dsResumida for data in exigenciasDataSource"
+				required
+			>
+				<option value="" />
+			</select>
+		</div>
+		<div adsm-add-field boxSize="3" label="viaturas" labelSize="6">
+			<input
+				class="text-right"
+				ng-model="data.qtViaturas"
+				numeric="{ vMin : 1, maxLength : 2 }"
+				required
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="3" label="quilometragem" labelSize="6">
+			<input
+				class="text-right"
+				ng-model="data.nrKmSolicitacaoEscolta"
+				numeric="{ vMin : 1, maxLength : 4 }"
+				type="text"
+			/>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field boxSize="6" label="clienteSolicitante" labelSize="4" multiSize="5">
+			<input
+				lms-cliente
+				ng-model="data.clienteEscolta"
+				required
+				type="text"
+			/>
+			<input
+				disabled
+				ng-model="data.clienteEscolta.nmPessoa"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="3" label="controleCarga" labelSize="6" multiSize="4">
+			<input
+				lms-controle-carga
+				ng-model="data.controleCarga"
+				type="text"
+			/>
+			<input
+				class="text-right"
+				disabled
+				ng-model="data.controleCarga.nrControleCarga"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="3" label="naturezaProduto" labelSize="6">
+			<select
+				lms-natureza-produto
+				ng-model="data.idNaturezaProduto"
+				required
+			>
+				<option value="" />
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field boxSize="6" label="origem" labelSize="4">
+			<select
+				adsm-domain="DM_TIPO_ORIGEM_SOLIC_ESCOLTA"
+				ng-change="clearOrigem()"
+				ng-model="data.tpOrigem"
+				required
+			>
+				<option value="" />
+			</select>
+		</div>
+		<div adsm-add-field boxSize="6" label="destino" labelSize="3">
+			<select
+				adsm-domain="DM_TIPO_DESTINO_SOLIC_ESCOLTA"
+				ng-change="clearDestino()"
+				ng-model="data.tpDestino"
+				required
+			>
+				<option value="" />
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group" ng-show="data.tpOrigem.value === 'F'">
+				<div class="col-lg-4" />
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input
+								class="form-control"
+								lms-filial
+								maxlength="3"
+								ng-model="data.filialOrigem"
+								ng-required="data.tpOrigem.value === 'F'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-9">
+							<input
+								class="form-control"
+								disabled
+								ng-model="data.filialOrigem.nmFilial"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-show="data.tpOrigem.value === 'C'">
+				<div class="col-lg-4" />
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="col-xs-5">
+							<input
+								class="form-control"
+								lms-cliente
+								ng-model="data.clienteOrigem"
+								ng-required="data.tpOrigem.value === 'C'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-7">
+							<input
+								class="form-control"
+								disabled
+								ng-model="data.clienteOrigem.nmPessoa"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-show="data.tpOrigem.value === 'A'">
+				<div class="col-lg-4" />
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input
+								class="form-control"
+								lms-aeroporto
+								ng-model="data.aeroportoOrigem"
+								ng-required="data.tpOrigem.value === 'A'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-9">
+							<input
+								class="form-control"
+								disabled
+								maxlength="3"
+								ng-model="data.aeroportoOrigem.nmAeroporto"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group" ng-show="data.tpDestino.value === 'F'">
+				<div class="col-lg-3" />
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input
+								class="form-control"
+								lms-filial
+								maxlength="3"
+								ng-model="data.filialDestino"
+								ng-required="data.tpDestino.value === 'F'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-9">
+							<input
+								class="form-control"
+								disabled
+								ng-model="data.filialDestino.nmFilial"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-show="data.tpDestino.value === 'C'">
+				<div class="col-lg-3" />
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-5">
+							<input
+								class="form-control"
+								lms-cliente
+								ng-model="data.clienteDestino"
+								ng-required="data.tpDestino.value === 'C'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-7">
+							<input
+								class="form-control"
+								disabled
+								ng-model="data.clienteDestino.nmPessoa"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-show="data.tpDestino.value === 'A'">
+				<div class="col-lg-4" />
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input
+								class="form-control"
+								lms-aeroporto
+								maxlength="3"
+								ng-model="data.aeroportoDestino"
+								ng-required="data.tpDestino.value === 'A'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-9">
+							<input
+								class="form-control"
+								disabled
+								ng-model="data.aeroportoDestino.nmAeroporto"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-group" ng-show="data.tpDestino.value === 'R'">
+				<div class="col-lg-4" />
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="col-xs-9">
+							<input
+								class="form-control"
+								lms-rota-coleta-entrega
+								ng-model="data.rotaColetaEntrega"
+								ng-required="data.tpDestino.value === 'R'"
+								type="text"
+							/>
+						</div>
+						<div class="col-xs-3">
+							<input
+								class="form-control text-right"
+								disabled
+								ng-model="data.rotaColetaEntrega.nrRota"
+								type="text"
+							/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field boxSize="3" label="meioTransporte" labelSize="4" multiSize="6">
+			<input
+				lms-meio-transporte
+				ng-model="data.meioTransporteByIdTransportado"
+				type="text"
+			/>
+			<input
+				class="text-right"
+				disabled
+				ng-model="data.meioTransporteByIdTransportado.nrFrota"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="3" label="semiReboque" labelSize="4" multiSize="6">
+			<input
+				lms-meio-transporte
+				ng-model="data.meioTransporteBySemiReboque"
+				type="text"
+			/>
+			<input
+				class="text-right"
+				disabled
+				ng-model="data.meioTransporteBySemiReboque.nrFrota"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="6" label="motorista" labelSize="3" multiSize="5">
+			<input
+				lms-motorista
+				ng-model="data.motorista"
+				type="text"
+			/>
+			<input
+				disabled
+				ng-model="data.motorista.nmPessoa"
+				type="text"
+			/>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-lg-6 control-label">{{ 'vlCargaCliente' | translate }}</label>
+				<div class="col-lg-6">
+					<input
+						adsm-custom-validation="validateVlCarga"
+						class="form-control text-right"
+						moeda
+						ng-model="data.vlCargaCliente"
+						numeric
+						required
+						type="text"
+					/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-lg-6 control-label">{{ 'vlCargaTotal' | translate }}</label>
+				<div class="col-lg-6">
+					<input
+						adsm-custom-validation="validateVlCarga"
+						class="form-control text-right"
+						moeda
+						ng-model="data.vlCargaTotal"
+						numeric
+						type="text"
+					/>
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field boxSize="8" label="observacoes" labelSize="2">
+			<textarea
+				rows="4"
+				maxlength="400"
+				ng-model="data.dsObservacao"
+				class="form-control"
+			/>
+		</div>
+	</div>
+</form>

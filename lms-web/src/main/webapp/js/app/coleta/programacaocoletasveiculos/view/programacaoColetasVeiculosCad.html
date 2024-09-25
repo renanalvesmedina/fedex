@@ -1,0 +1,150 @@
+<div class="form-horizontal content-padding">
+	<div class="fixed-top"></div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'frotaPlaca' | translate }}</label>
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="multi-input">
+							<div class="col-xs-4">
+								<input type="text" disabled class="form-control" value="{{data.nrFrota}}" id="nrFrota">
+							</div>
+							<div class="col-xs-8">
+								<input disabled type="text" value="{{data.nrIdentificador}}" id="meioTransporte" class="form-control">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'valorColetar' | translate }}</label>
+				<div class="col-lg-8">
+					<input type="text" disabled class="form-control" ng-model="data.vlAColetar" id="vlTotalVerificado" data-numeric data-moeda />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'valorVeiculo' | translate }}</label>
+				<div class="col-lg-8">
+					<input type="text" disabled class="form-control" ng-model="data.vlTotalFrota" id="vlTotalFrota" data-numeric data-moeda />
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{ 'valorColetado' | translate }}</label>
+				<div class="col-lg-8">
+					<input type="text" disabled class="form-control" ng-model="data.vlColetado" id="vlColetado" data-numeric data-moeda />
+				</div>
+			</div>
+		</div>
+	</div>
+	<accordion close-others="false" ng-init="accordionOpen = {datas:true, coletasPendentes: true}"> <accordion-group
+		is-open="accordionOpen.coletasPendentes" heading="Coletas pendentes"
+	> <accordion-heading> <span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down':accordionOpen.coletasPendentes, 'glyphicon-chevron-right': !accordionOpen.coletasPendentes}"
+	></span> {{'coletasPendentes' | translate}} </accordion-heading>
+	<div class="row">
+		<table adsm-table="listTableColetasPendentes" show-checkboxes="true">
+			<tbody>
+				<tr ng-repeat="row in page">
+					<td column-title="coleta" style="text-align: center;" sortable="nrColeta">{{row.sgFilial}} {{row.nrColeta}}</td>
+					<td column-title="tipo" sortable="tpModoPedidoColeta">{{row.tpModoPedidoColeta}}</td>
+					<td column-title="dadosColeta" class="text-center coluna-acoes">
+						<span ng-click="openModalDadosColeta(row.idPedidoColeta)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+					</td>
+					<td column-title="identificacao" sortable="nrIdentificacaoFormatado" class="text-center">{{row.nrIdentificacaoFormatado}}</td>
+					<td column-title="cliente"  sortable="cliente">{{row.cliente}}</td>
+					<td column-title="endereco" sortable="enderecoComComplemento">{{row.enderecoComComplemento}}</td>
+					<td column-title="volumes" sortable="qtTotalVolumesVerificado">{{row.qtTotalVolumesVerificado}}</td>
+					<td column-title="pesoKG" sortable="psTotalVerificado">{{row.psTotalVerificado}}</td>
+					<td column-title="valor" sortable="vlTotalVerificado">{{row.vlTotalVerificado | currency: ''}}</td>
+					<td column-title="horarioColeta" sortable="strHorarioColeta">{{row.strHorarioColeta}}</td>
+				</tr>
+			</tbody>
+		</table>
+		<button type="button" class="btn btn-default btn-lg pull-right" data-ng-click="openModalRetornar()" id="btnRetornar">{{'retornar' |
+			translate }}</button>
+		<button type="button" class="btn btn-default btn-lg pull-right" data-ng-click="openModalExecutar()" id="btnExecutar">{{'executar' |
+			translate }}</button>
+	</div>
+	</accordion-group> <accordion-group is-open="accordionOpen.entregasRealizar" heading="Entregas a realizar"> <accordion-heading> <span
+		class="glyphicon" ng-class="{'glyphicon-chevron-down':accordionOpen.entregasRealizar, 'glyphicon-chevron-right': !accordionOpen.entregasRealizar}"
+	></span> {{'entregasRealizar' | translate}} </accordion-heading>
+	<div class="row">
+		<table adsm-table="listTableEntregasRealizar">
+			<tbody>
+				<tr ng-repeat="row in page">
+					<td column-title="documentoServico" sortable="nrDoctoServico">{{row.nrDoctoServico}}</td>
+					<td column-title="dpe" sortable="dtPrevEntrega">{{row.dtPrevEntrega | date:'dd/MM/yyyy'}}</td>
+					<td column-title="identificacao" sortable="nrIdentificacaoFormatado" class="text-center">{{row.nrIdentificacaoFormatado}}</td>
+					<td column-title="cliente" sortable="nmPessoaDestinatario">{{row.nmPessoaDestinatario}}</td>
+					<td column-title="endereco" sortable="dsEnderecoEntregaReal">{{row.dsEnderecoEntregaReal}}</td>
+					<td column-title="volumes" sortable="qtVolumes">{{row.qtVolumes}}</td>
+					<td column-title="pesoKG" sortable="psDoctoServico">{{row.psDoctoServico}}</td>
+					<td column-title="valor" sortable="vlTotalDocServico">{{row.vlTotalDocServico | currency: ''}}</td>
+					<td column-title="situacao" sortable="situacaoDoctoServico">{{row.situacaoDoctoServico}}</td>
+					<td column-title="veiculo" class="text-center coluna-acoes">
+						<span ng-click="openModalVeiculo(row.idControleCarga)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</accordion-group> <accordion-group is-open="accordionOpen.coletasRealizadas"> <accordion-heading> <span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down':accordionOpen.coletasRealizadas, 'glyphicon-chevron-right': !accordionOpen.coletasRealizadas}"
+	></span> {{'coletasRealizadas' | translate}} </accordion-heading>
+	<div class="row">
+		<table adsm-table="listTableColetasRealizadas">
+			<tbody>
+				<tr ng-repeat="row in page">
+					<td column-title="coleta" style="text-align: center;" sortable="nrColeta">{{row.sgFilial}} {{row.nrColeta}}</td>
+					<td column-title="tipo" sortable="tpModoPedidoColeta">{{row.tpModoPedidoColeta}}</td>
+					<td column-title="dadosColeta" class="text-center coluna-acoes">
+						<span ng-click="openModalDadosColeta(row.idPedidoColeta)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+					</td>
+					<td column-title="identificacao" sortable="nrIdentificacaoFormatado" class="text-center">{{row.nrIdentificacaoFormatado}}</td>
+					<td column-title="cliente" sortable="cliente">{{row.cliente}}</td>
+					<td column-title="endereco" sortable="enderecoComComplemento">{{row.enderecoComComplemento}}</td>
+					<td column-title="volumes" sortable="qtTotalVolumesVerificado">{{row.qtTotalVolumesVerificado}}</td>
+					<td column-title="pesoKG" sowrtable="psTotalVerificado">{{row.psTotalVerificado }}</td>
+					<td column-title="valor" sortable="vlTotalVerificado">{{row.vlTotalVerificado | currency: ''}}</td>
+					<td column-title="veiculo" class="text-center coluna-acoes">
+						<span ng-click="openModalVeiculo(row.idControleCarga)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</accordion-group> <accordion-group is-open="accordionOpen.entregasRealizadas" heading="Entregas Realizadas"> <accordion-heading>
+	<span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down':accordionOpen.entregasRealizadas, 'glyphicon-chevron-right': !accordionOpen.entregasRealizadas}"
+	></span> {{'entregasRealizadasTitulo' | translate}} </accordion-heading>
+	<div class="row">
+		<table adsm-table="listTableEntregasRealizadas">
+			<tbody>
+				<tr ng-repeat="row in page">
+					<td column-title="documentoServico" sortable="nrDoctoServico">{{row.nrDoctoServico}}</td>
+					<td column-title="OTD" sortable="dtPrevEntrega">{{row.dtPrevEntrega  | date:'dd/MM/yyyy'}}</td>
+					<td column-title="identificacao" sortable="nrIdentificacaoFormatado" class="text-center">{{row.nrIdentificacaoFormatado}}</td>
+					<td column-title="cliente" sortable="nmPessoaDestinatario">{{row.nmPessoaDestinatario}}</td>
+					<td column-title="endereco" sortable="dsEnderecoEntregaReal">{{row.dsEnderecoEntregaReal}}</td>
+					<td column-title="volumes" sortable="qtVolumes">{{row.qtVolumes}}</td>
+					<td column-title="pesoKG" sortable="psDoctoServico">{{row.psDoctoServico}}</td>
+					<td column-title="valor" sortable="vlTotalDocServico">{{row.vlTotalDocServico | currency: ''}}</td>
+					<td column-title="situacao" sortable="situacaoDoctoServico">{{row.situacaoDoctoServico}}</td>
+					<td column-title="veiculo" class="text-center coluna-acoes">
+						<span ng-click="openModalVeiculo(row.idControleCarga)" class="glyphicon glyphicon-search botao-detalhamento"> </span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	</accordion-group> </accordion>
+</div>

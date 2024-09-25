@@ -1,0 +1,181 @@
+<form class="form-horizontal content-padding" ng-if="data.id" name="form">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="salvarEquipeVendas()"
+				class="btn btn-default btn-lg pull-right" id="salvar-equipe"
+				ng-disabled="form.$invalid">
+			{{'salvarEquipe' |  translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="regional" data-labelSize="3" data-fieldSize="4">
+			<input type="text" ng-model="data.regional.dsRegional" disabled/>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="filial" data-labelSize="3" data-fieldSize="4" data-multiSize="3,9">
+			<input type="text" class="form-control" ng-model="data.filial.sgFilial" disabled />
+			<input type="text" class="form-control" ng-model="data.filial.nmFilial" disabled />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="territorio" data-labelSize="3" data-fieldSize="4">
+			<input type="text" class="form-control" ng-model="data.nmTerritorio" id="territorio" maxlength="50" disabled />
+		</div>
+	</div>
+
+	<accordion close-others="false" ng-init="equipeAtual.open = true">
+		<accordion-group is-open="equipeAtual.open">
+			<accordion-heading>
+				<span class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': equipeAtual.open, 'glyphicon-chevron-right': !equipeAtual.open}">
+				</span>
+				{{'equipeAtual' | translate}}
+			</accordion-heading>
+
+			<div class="row">
+				<div class="col-md-offset-1 col-md-10">
+					<table adsm-table="listEquipeVendas"
+						class="table table-condensed adsm-table no-pagination"
+						style="width: 100%"
+						show-checkboxes="false"
+						>
+						<tbody>
+							<tr ng-repeat="row in page" ng-form="formMembroEquipe" class="row-form">
+								<td column-title="'cargo' | translate" class="tipo-executivo" style="width: 20%">
+									<span>{{row.tpExecutivo.descriptionAsString}}</span>
+									<span class="verification" ng-show="row.usuario || row.periodoInicial || row.periodoFinal"></span>
+								</td>
+
+								<td column-title="'funcionario' | translate" class="tipo-executivo" style="width: 40%">
+									<div class="multi-input">
+										<div class="col-xs-4">
+											<input
+												type="text"
+												ng-model="row.usuario"
+												lms-comissionado
+												ng-disabled="row.id"
+												class="form-control suggest-comissionado suggest-comissionado-{{$index}}"
+												ng-required="row.periodoInicial || row.periodoFinal" />
+									    </div>
+										<div class="col-xs-8">
+											<input
+												type="text"
+												ng-model="row.usuario.nmUsuario"
+												class="form-control"
+												ng-disabled="true"
+												ng-required="row.periodoInicial"/>
+										</div>
+									</div>
+								</td>
+
+								<td column-title="'vigenciaInicial' | translate" style="text-align: center; width: 15%">
+									<input adsm-date-picker data-mask="date" ng-model="row.periodoInicial" data-end="row.periodoFinal"
+											ng-required="row.usuario.idUsuario || row.usuario || row.periodoFinal"/>
+								</td>
+								<td column-title="'vigenciaFinal' | translate" style="text-align: center; width: 15%">
+									<input adsm-date-picker data-mask="date" ng-model="row.periodoFinal" data-start="row.periodoInicial"/>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</accordion-group>
+
+		<accordion-group is-open="historico.open">
+			<accordion-heading>
+				<span class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': historico.open, 'glyphicon-chevron-right': !historico.open}">
+				</span>
+				{{'historico' | translate}}
+			</accordion-heading>
+
+			<div class="row">
+				<div class="col-md-offset-1 col-md-10">
+					<table adsm-table="listHistoricoEquipeVendas"
+						class="table table-condensed adsm-table no-pagination"
+						style="width: 100%"
+						show-checkboxes="false">
+						<tbody>
+							<tr ng-repeat="row in page" ng-class="isAtivo(row) ? 'is-ativo':'is-not-ativo'" class="historico">
+								<td column-title="'cargo' | translate" class="tipo-executivo" style="width: 15%">
+									<span>{{row.tpExecutivo.descriptionAsString}}</span>
+								</td>
+								<td column-title="'funcionario' | translate" class="tipo-executivo" style="width: 40%">
+									<span>[{{row.usuario.nrMatricula}}] {{row.usuario.nmUsuario}}</span>
+								</td>
+								<td column-title="'vigenciaInicial' | translate" style="text-align: center; width: 15%">
+									<span>{{row.periodoInicial | customDate}}</span>
+								</td>
+								<td column-title="'vigenciaFinal' | translate" style="text-align: center; width: 15%">
+									<span>{{(row.periodoFinal | customDate) || '-'}}</span>
+								</td>
+								<td column-title="'ativo' | translate" style="text-align: center; width: 5%">
+									<span class="verification"></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</accordion-group>
+	</accordion>
+
+</form>
+
+<style>
+	.adsm-table-pagination {
+		display: none;
+	}
+	.scroll-table {
+		overflow: initial;
+	}
+	.scroll-table td {
+		overflow: visible;
+	}
+	.row-form .tipo-executivo {
+		vertical-align: middle;
+	}
+	.row-form .tipo-executivo span {
+		display: inline-block;
+	}
+	.row-form .tipo-executivo .verification {
+		width: 16px;
+		height: 16px;
+	    margin-left: 5px;
+	    vertical-align: middle;
+	}
+	.row-form.ng-dirty.ng-valid .tipo-executivo .verification {
+		background: url('../img/check-icon-sm.png');
+		background-position-x: 0px;
+	}
+	.row-form.ng-dirty.ng-invalid-required .tipo-executivo .verification {
+		background: url('../img/check-icon-sm.png');
+		background-position-x: 16px;
+	}
+	.row-form.ng-dirty input.ng-invalid-required {
+		border-color: red;
+	}
+
+	.historico.is-not-ativo {
+		background-color: #F9F9F9;
+	}
+
+	.historico .verification{
+		display: inline-block;
+		vertical-align: middle;
+		width: 16px;
+		height: 16px;
+		background: url('../img/check-icon-sm.png');
+	}
+
+	.historico.is-ativo .verification {
+		background-position-x: 0px;
+	}
+
+	.historico.is-not-ativo .verification {
+		background-position-x: 16px;
+	}
+</style>

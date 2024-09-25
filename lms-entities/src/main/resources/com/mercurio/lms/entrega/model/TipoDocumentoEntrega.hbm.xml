@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.entrega.model.TipoDocumentoEntrega" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="TIPO_DOCUMENTO_ENTREGA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_TIPO_DOCUMENTO_ENTREGA" name="idTipoDocumentoEntrega" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TIPO_DOCUMENTO_ENTREGA_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_TIPO_DOCUMENTO_ENTREGA_I" length="500" name="dsTipoDocumentoEntrega" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_DOCUMENTO_COBRANCA" length="1" name="tpDocumentoCobranca" not-null="false">
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_DOCUMENTO_COBRANCA</param>
+	    </type>
+    </property>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to RegistroDocumentoEntrega -->
+    <bag cascade="none" inverse="true" lazy="true" name="registroDocumentoEntregas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.RegistroDocumentoEntrega</meta>
+ 	        <key>
+            <column name="ID_TIPO_DOCUMENTO_ENTREGA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.RegistroDocumentoEntrega"/>
+    </bag>
+    <!-- bi-directional one-to-many association to DocumentoCliente -->
+    <bag cascade="none" inverse="true" lazy="true" name="documentoClientes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DocumentoCliente</meta>
+ 	        <key>
+            <column name="ID_TIPO_DOCUMENTO_ENTREGA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.DocumentoCliente"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

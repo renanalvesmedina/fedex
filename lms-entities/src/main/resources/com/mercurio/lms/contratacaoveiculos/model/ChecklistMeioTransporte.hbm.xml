@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contratacaoveiculos.model.ChecklistMeioTransporte" 
+    table="CHECKLIST_MEIO_TRANSPORTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idChecklistMeioTransporte"
+        type="java.lang.Long"
+        column="ID_CHECKLIST_MEIO_TRANSPORTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CHECKLIST_MEIO_TRANSPORTE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dtRealizacao"
+		type="jtyearmonthday"
+        column="DT_REALIZACAO"
+        not-null="true"
+        length="7"
+    />
+    
+     <property
+        name="nrChecklist"
+	    type="java.lang.Long"
+        column="NR_CHECKLIST"
+        not-null="true"
+        
+    />  
+    <property
+        name="tpSituacao"
+		column="TP_SITUACAO_CHECKLIST"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_CHECKLIST</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+    
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+	        name="filial"
+	        class="com.mercurio.lms.municipios.model.Filial"
+	        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to SolicitacaoContratacao -->
+    <many-to-one
+        name="solicitacaoContratacao"
+        class="com.mercurio.lms.contratacaoveiculos.model.SolicitacaoContratacao"
+        not-null="true"
+    >
+        <column name="ID_SOLICITACAO_CONTRATACAO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to RespostaChecklist -->
+    <bag
+        name="respostaChecklists"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.RespostaChecklist</meta>
+ 	        <key>
+            <column name="ID_CHECKLIST_MEIO_TRANSPORTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.RespostaChecklist"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoaByIdSegundoMotorista"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="false"
+    >
+        <column name="ID_SEGUNDO_MOTORISTA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoaByIdPrimeiroMotorista"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true"
+    >
+        <column name="ID_MOTORISTA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

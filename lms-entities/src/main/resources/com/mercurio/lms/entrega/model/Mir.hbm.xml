@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.entrega.model.Mir" 
+    table="MIR"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idMir"
+        type="java.lang.Long"
+        column="ID_MIR"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MIR_SQ</param>
+        </generator>
+    </id>
+
+	<version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrMir"
+			        type="java.lang.Integer"
+            column="NR_MIR"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="tpMir"
+		    column="TP_MIR"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_MIR</param>
+	    </type>
+    </property>
+    <property
+        name="dhRecebimento"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_RECEBIMENTO"/><column name="DH_RECEBIMENTO_TZR"/></property>
+    
+    <property
+        name="dhEmissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+    
+    <property
+        name="tpDocumentoMir"
+		    column="TP_DOCUMENTO_MIR"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_DOCUMENTO_MIR</param>
+	    </type>
+    </property>
+    
+    <property
+        name="dhEnvio"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_ENVIO"/><column name="DH_ENVIO_TZR"/></property>
+
+    <!-- Associations -->
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuarioCriacao"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_CRIACAO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuarioRecebimento"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_RECEBIMENTO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to DocumentoMir -->
+    <bag
+        name="documentoMirs"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.DocumentoMir</meta>
+ 	        <key>
+            <column name="ID_MIR" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.DocumentoMir"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

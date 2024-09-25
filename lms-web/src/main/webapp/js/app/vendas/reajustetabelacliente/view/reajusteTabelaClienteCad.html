@@ -1,0 +1,118 @@
+<form class="form-horizontal content-padding" data-ng-submit="store()">
+
+	<div class="fixed-top">
+		
+		<button type="button" data-ng-click="clearData()" class="btn btn-default btn-lg pull-right" id="limparDados">
+			{{'limpar' |  translate }}
+		</button>
+		
+		<button type="button" data-ng-click="removeById()" class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir" ng-disabled="data.efetivado || !data.id">
+			{{'excluir' |  translate }}
+		</button>
+		
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="data.efetivado || data.situacaoWorkflow">
+			{{'salvar' |  translate }}
+		</button>
+		
+		<button type="button" data-ng-click="aprovar()" class="btn btn-default btn-lg pull-right" id="aprovar" ng-disabled="data.situacaoWorkflow || data.efetivado || !data.id">
+			{{'aprovar' |  translate }}
+		</button>
+		
+		<button type="button" data-ng-click="efetivar()" class="btn btn-default btn-lg pull-right" id="efetivar" ng-disabled="data.efetivado || data.situacaoWorkflow != 'A'">
+			{{'botaoEfetivar' |  translate }}
+		</button>
+		 
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="numeroReajuste" data-labelSize="4" data-fieldSize="8">
+			<input type="text" ng-model="data.numeroReajusteFilial" id="numeroReajusteFilial" disabled />
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="situacao" data-labelSize="4" data-fieldSize="8">
+			<input type="text" ng-model="data.situacaoWorkflowDesc" id="situacaoWorkflowDesc" disabled />
+		</div>
+		<div adsm-add-field data-boxSize="8" data-label="cliente" data-labelSize="4" data-fieldSize="4">
+			<select 
+				adsm-chosen  ng-model="aux.pessoa" id="pessoa" ng-change="changePessoaDetalhe()"  ng-disabled="data.id"
+				ng-options="data as data.dsPessoa for data in tiposPessoa track by data.idPessoa">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="nome" data-labelSize="4" data-fieldSize="8">
+			<input type="text" ng-model="data.nome" id="nome" disabled />
+		</div>
+		<div adsm-add-field data-boxSize="8" data-label="cpfCnpj" data-labelSize="4" data-fieldSize="4">
+			<input class="form-control" id="nrIdentificador" ng-model="data.nrIdentificacao" data-pessoa-mask="aux.pessoa.idPessoa" ng-disabled="!aux.pessoa.idPessoa || data.id" ng-blur="changeNrIdentificacao()" ng-required="!data.id" />
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="tabelaAtual" data-labelSize="4" data-fieldSize="8">
+			<input type="text" ng-model="data.tabelaAtual" id="tabelaAtual" disabled />
+		</div>
+		
+		<div adsm-add-field data-boxSize="8" data-label="divisaoCliente" data-labelSize="4" data-fieldSize="4">
+			<div ng-if="!data.id">
+				<select
+					data-adsm-chosen
+					id="divisao"    
+					data-ng-options="divisao as divisao.desc for divisao in listaDivisoes track by divisao.id"
+					ng-change="changeDivisaoCliente()"
+					ng-required="!data.id"
+					data-ng-model="aux.divisaoCliente">
+					<option value=""></option>
+				</select>
+			</div>
+			<input type="text" ng-model="data.divisaoCliente" id="divisaoCliente" ng-show="data.id" disabled />
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="funcionario" data-labelSize="4" data-fieldSize="8">
+			<input type="text" ng-model="data.nomeUsuario" id="nomeUsuario" disabled />
+		</div>
+		<div adsm-add-field data-boxSize="8" data-label="tabelaNova" data-labelSize="4" data-fieldSize="4">
+			<div ng-if="!data.id">
+				<input lms-tabela-nova-efetivada type="text" class="form-control" id="tabelaNova" ng-model="aux.tabelaNova" ng-required="!data.id" />
+			</div>
+			<div ng-if="data.id">	
+				<input type="text" ng-model="data.tabelaNova" class="form-control" id="tabelaNovaDesc" disabled />
+			</div>  
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="percentualSugerido" data-labelSize="4" data-fieldSize="8">
+			<input type="text" ng-model="data.percSugerido" id="percSugerido" data-numeric="{mDec: '2', vMax: '999'}" data-percentual  disabled />
+		</div>
+		<div adsm-add-field data-boxSize="8" data-label="percentualAcordado" data-labelSize="4" data-fieldSize="4">
+			<input type="text" ng-model="data.percAcordado" id="percAcordado" data-numeric="{mDec: '2', vMax: '999'}" data-percentual required />
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="dataEfetivada" data-labelSize="4" data-fieldSize="8">
+			<input id="dataEfetivacao" adsm-date-picker ng-model="data.dataEfetivacao" mask="date" class="form-control col-lg-6" disabled  />
+		</div>
+		<div adsm-add-field data-boxSize="8" data-label="vigenciaInicial" data-labelSize="4" data-fieldSize="4">
+			<input id="dataReajuste" adsm-date-picker ng-model="data.dataReajuste" mask="date" class="form-control col-lg-6" required />
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="efetivado" data-labelSize="4" data-fieldSize="8">
+			<input type="checkbox" id="checkedEfetivacao" ng-model="data.efetivado" disabled />
+		</div>
+		<div adsm-add-field data-boxSize="8" data-label="justificativa" data-labelSize="4" data-fieldSize="8">
+			<textarea rows="7" maxlength="500" ng-model="data.justificativa" id="justificativa" class="form-control"  style="resize: none;" required />
+		</div>
+	</div>
+	
+
+</form>

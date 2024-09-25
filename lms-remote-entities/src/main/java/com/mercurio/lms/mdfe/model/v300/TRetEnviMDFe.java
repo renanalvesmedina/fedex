@@ -1,0 +1,272 @@
+/*
+ * This class was automatically generated with 
+ * <a href="http://www.castor.org">Castor 1.3.3</a>, using an XML
+ * Schema.
+ * $Id$
+ */
+
+package com.mercurio.lms.mdfe.model.v300;
+
+/**
+ * Tipo Retorno do Pedido de Concessão de Autorização do MDF-e
+ * 
+ * @version $Revision$ $Date$
+ */
+@SuppressWarnings("serial")
+public class TRetEnviMDFe implements java.io.Serializable {
+
+    private java.lang.String versao;
+
+    /**
+     * Identificação do Ambiente:
+     * 1 - Produção
+     * 2 - Homologação
+     */
+    private java.lang.Object tpAmb;
+
+    /**
+     * Identificação da UF
+     */
+    private com.mercurio.lms.mdfe.model.v300.types.TCodUfIBGE cUF;
+
+    /**
+     * Versão do Aplicativo que recebeu o Arquivo.
+     */
+    private java.lang.String verAplic;
+
+    /**
+     * Código do status da mensagem enviada.
+     */
+    private java.lang.String cStat;
+
+    /**
+     * Descrição literal do status do serviço solicitado.
+     */
+    private java.lang.String xMotivo;
+
+    /**
+     * Dados do Recibo do Arquivo
+     */
+    private com.mercurio.lms.mdfe.model.v300.InfRec infRec;
+
+    public TRetEnviMDFe() {
+        super();
+    }
+
+    /**
+     * Returns the value of field 'cStat'. The field 'cStat' has
+     * the following description: Código do status da mensagem
+     * enviada.
+     * 
+     * @return the value of field 'CStat'.
+     */
+    public java.lang.String getCStat() {
+        return this.cStat;
+    }
+
+    /**
+     * Returns the value of field 'cUF'. The field 'cUF' has the
+     * following description: Identificação da UF
+     * 
+     * @return the value of field 'CUF'.
+     */
+    public com.mercurio.lms.mdfe.model.v300.types.TCodUfIBGE getCUF() {
+        return this.cUF;
+    }
+
+    /**
+     * Returns the value of field 'infRec'. The field 'infRec' has
+     * the following description: Dados do Recibo do Arquivo
+     * 
+     * @return the value of field 'InfRec'.
+     */
+    public com.mercurio.lms.mdfe.model.v300.InfRec getInfRec() {
+        return this.infRec;
+    }
+
+    /**
+     * Returns the value of field 'tpAmb'. The field 'tpAmb' has
+     * the following description: Identificação do Ambiente:
+     * 1 - Produção
+     * 2 - Homologação
+     * 
+     * @return the value of field 'TpAmb'.
+     */
+    public java.lang.Object getTpAmb() {
+        return this.tpAmb;
+    }
+
+    /**
+     * Returns the value of field 'verAplic'. The field 'verAplic'
+     * has the following description: Versão do Aplicativo que
+     * recebeu o Arquivo.
+     * 
+     * @return the value of field 'VerAplic'.
+     */
+    public java.lang.String getVerAplic() {
+        return this.verAplic;
+    }
+
+    /**
+     * Returns the value of field 'versao'.
+     * 
+     * @return the value of field 'Versao'.
+     */
+    public java.lang.String getVersao() {
+        return this.versao;
+    }
+
+    /**
+     * Returns the value of field 'xMotivo'. The field 'xMotivo'
+     * has the following description: Descrição literal do status
+     * do serviço solicitado.
+     * 
+     * @return the value of field 'XMotivo'.
+     */
+    public java.lang.String getXMotivo() {
+        return this.xMotivo;
+    }
+
+    /**
+     * Method isValid.
+     * 
+     * @return true if this object is valid according to the schema
+     */
+    public boolean isValid() {
+        try {
+            validate();
+        } catch (org.exolab.castor.xml.ValidationException vex) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 
+     * 
+     * @param out
+     * @throws org.exolab.castor.xml.MarshalException if object is
+     * null or if any SAXException is thrown during marshaling
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     */
+    public void marshal(final java.io.Writer out) throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException {
+        org.exolab.castor.xml.Marshaller.marshal(this, out);
+    }
+
+    /**
+     * 
+     * 
+     * @param handler
+     * @throws java.io.IOException if an IOException occurs during
+     * marshaling
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     * @throws org.exolab.castor.xml.MarshalException if object is
+     * null or if any SAXException is thrown during marshaling
+     */
+    public void marshal(final org.xml.sax.ContentHandler handler) throws java.io.IOException, org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException {
+        org.exolab.castor.xml.Marshaller.marshal(this, handler);
+    }
+
+    /**
+     * Sets the value of field 'cStat'. The field 'cStat' has the
+     * following description: Código do status da mensagem
+     * enviada.
+     * 
+     * @param cStat the value of field 'cStat'.
+     */
+    public void setCStat(final java.lang.String cStat) {
+        this.cStat = cStat;
+    }
+
+    /**
+     * Sets the value of field 'cUF'. The field 'cUF' has the
+     * following description: Identificação da UF
+     * 
+     * @param cUF the value of field 'cUF'.
+     */
+    public void setCUF(final com.mercurio.lms.mdfe.model.v300.types.TCodUfIBGE cUF) {
+        this.cUF = cUF;
+    }
+
+    /**
+     * Sets the value of field 'infRec'. The field 'infRec' has the
+     * following description: Dados do Recibo do Arquivo
+     * 
+     * @param infRec the value of field 'infRec'.
+     */
+    public void setInfRec(final com.mercurio.lms.mdfe.model.v300.InfRec infRec) {
+        this.infRec = infRec;
+    }
+
+    /**
+     * Sets the value of field 'tpAmb'. The field 'tpAmb' has the
+     * following description: Identificação do Ambiente:
+     * 1 - Produção
+     * 2 - Homologação
+     * 
+     * @param tpAmb the value of field 'tpAmb'.
+     */
+    public void setTpAmb(final java.lang.Object tpAmb) {
+        this.tpAmb = tpAmb;
+    }
+
+    /**
+     * Sets the value of field 'verAplic'. The field 'verAplic' has
+     * the following description: Versão do Aplicativo que recebeu
+     * o Arquivo.
+     * 
+     * @param verAplic the value of field 'verAplic'.
+     */
+    public void setVerAplic(final java.lang.String verAplic) {
+        this.verAplic = verAplic;
+    }
+
+    /**
+     * Sets the value of field 'versao'.
+     * 
+     * @param versao the value of field 'versao'.
+     */
+    public void setVersao(final java.lang.String versao) {
+        this.versao = versao;
+    }
+
+    /**
+     * Sets the value of field 'xMotivo'. The field 'xMotivo' has
+     * the following description: Descrição literal do status do
+     * serviço solicitado.
+     * 
+     * @param xMotivo the value of field 'xMotivo'.
+     */
+    public void setXMotivo(final java.lang.String xMotivo) {
+        this.xMotivo = xMotivo;
+    }
+
+    /**
+     * Method unmarshal.
+     * 
+     * @param reader
+     * @throws org.exolab.castor.xml.MarshalException if object is
+     * null or if any SAXException is thrown during marshaling
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     * @return the unmarshaled
+     * com.mercurio.lms.mdfe.model.v300.TRetEnviMDFe
+     */
+    public static com.mercurio.lms.mdfe.model.v300.TRetEnviMDFe unmarshal(final java.io.Reader reader) throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException {
+        return (com.mercurio.lms.mdfe.model.v300.TRetEnviMDFe) org.exolab.castor.xml.Unmarshaller.unmarshal(com.mercurio.lms.mdfe.model.v300.TRetEnviMDFe.class, reader);
+    }
+
+    /**
+     * 
+     * 
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     */
+    public void validate() throws org.exolab.castor.xml.ValidationException {
+        org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
+        validator.validate(this);
+    }
+
+}

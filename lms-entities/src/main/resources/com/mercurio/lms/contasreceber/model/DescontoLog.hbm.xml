@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.DescontoLog" 
+    table="LOG$_DESCONTO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idDescontoLog"
+        type="java.lang.Long"
+        column="ID_DESCONTO_LOG"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="foreign">
+            <param name="property">itemDescontoLog</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpSituacaoAprovacao"
+		    column="TP_SITUACAO_APROVACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="vlDesconto"
+			        type="java.math.BigDecimal"
+            column="VL_DESCONTO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="obDesconto"
+			        type="java.lang.String"
+            column="OB_DESCONTO"
+        length="500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to MotivoDesconto -->
+    <many-to-one
+        name="desconto"
+        class="com.mercurio.lms.contasreceber.model.Desconto"
+        not-null="true"
+    >
+        <column name="ID_DESCONTO" />
+    </many-to-one>
+    
+    <many-to-one
+        name="motivoDesconto"
+        class="com.mercurio.lms.contasreceber.model.MotivoDesconto"
+        not-null="true"
+    >
+        <column name="ID_MOTIVO_DESCONTO" />
+    </many-to-one>
+    
+    <many-to-one
+        name="reciboDesconto"
+        class="com.mercurio.lms.contasreceber.model.ReciboDesconto">
+        <column name="ID_RECIBO_DESCONTO" />
+    </many-to-one>
+    
+    <many-to-one
+        name="demonstrativoDesconto"
+        class="com.mercurio.lms.contasreceber.model.DemonstrativoDesconto">
+        <column name="ID_DEMONSTRATIVO_DESCONTO" />
+    </many-to-one>    
+    
+    <!-- bi-directional many-to-one association to DevedorDocServFat -->
+    <many-to-one
+        name="devedorDocServFat"
+        class="com.mercurio.lms.contasreceber.model.DevedorDocServFat"
+        not-null="true"
+    >
+        <column name="ID_DEVEDOR_DOC_SERV_FAT" />
+    </many-to-one>
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one>
+    
+    <property
+        name="dhLog"
+		type="jtdatetimetzr"
+        length="7"
+        not-null="true"
+    ><column name="DH_LOG"/><column name="DH_LOG_TZR"/></property>
+    <property
+        name="loginLog"
+        type="java.lang.String"
+        column="LOGIN_LOG"
+        length="60"
+    />
+    <property
+        name="opLog"
+        column="OP_LOG"
+		not-null="false"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_OP_LOG</param>
+		</type>
+	</property> 
+    
+     <many-to-one
+        name="itemFaturaLog"
+        class="com.mercurio.lms.contasreceber.model.ItemFaturaLog"
+        not-null="false"
+    >
+        <column name="ID_ITEM_FATURA_LOG" />
+    </many-to-one>
+    
+</class>
+</hibernate-mapping>

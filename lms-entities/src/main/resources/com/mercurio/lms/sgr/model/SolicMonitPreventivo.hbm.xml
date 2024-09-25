@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.sgr.model.SolicMonitPreventivo" 
+    table="SOLIC_MONIT_PREVENTIVO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idSolicMonitPreventivo"
+        type="java.lang.Long"
+        column="ID_SOLIC_MONIT_PREVENTIVO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SOLIC_MONIT_PREVENTIVO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrSmp"
+		type="java.lang.Integer"
+        column="NR_SMP"
+        length="8"
+    />
+    
+    
+    
+    <property
+        name="nrSmpGR"
+		type="java.lang.Integer"
+        column="NR_SMP_GR"
+        length="20"
+    />
+    
+    
+    <property
+        name="nrSmpAnoGR"
+		type="java.lang.Integer"
+        column="NR_SMP_ANO_GR"
+        length="4"
+    />
+    
+    <property column="DS_RETORNO_GR" length="1000" name="dsRetornoGR" type="varcharI18n" />
+     
+    
+    
+    
+    <property
+        name="dhGeracao"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_GERACAO"/><column name="DH_GERACAO_TZR"/></property>
+
+    <property column="TP_STATUS_SMP" length="1" name="tpStatusSmp">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_SOLIC_MONIT_PREVENTIVO</param>
+	    </type>
+    </property>
+    
+    <property column="TP_STATUS_SMP_GR" length="2" name="tpStatusSmpGR">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_SMP_GR</param>
+	    </type>
+    </property> 
+    
+    
+    <property
+        name="vlSmp"
+		type="java.math.BigDecimal"
+        column="VL_SMP"
+        not-null="false"
+        length="18"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ExigenciaSmp -->
+    <bag
+        name="exigenciaSmps"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.ExigenciaSmp</meta>
+ 	        <key>
+            <column name="ID_SOLIC_MONIT_PREVENTIVO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.ExigenciaSmp"
+        />
+    </bag>
+
+    <!-- bi-directional one-to-many association to SmpManifesto -->
+    <bag
+        name="smpManifestos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.SmpManifesto</meta>
+ 	        <key>
+            <column name="ID_SOLIC_MONIT_PREVENTIVO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sgr.model.SmpManifesto"
+        />
+    </bag>    
+    
+    <!-- bi-directional many-to-one association to ControleTrecho -->
+    <many-to-one
+        name="controleTrecho"
+        class="com.mercurio.lms.carregamento.model.ControleTrecho"
+        not-null="false"
+    >
+        <column name="ID_CONTROLE_TRECHO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporte -->
+    <many-to-one
+        name="meioTransporteByIdMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporte -->
+    <many-to-one
+        name="meioTransporteByIdMeioSemiReboque"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_MEIO_SEMI_REBOQUE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to GerenciadoraRisco -->
+    <many-to-one
+        name="gerenciadoraRisco"
+        class="com.mercurio.lms.sgr.model.GerenciadoraRisco"
+        not-null="true"
+    >
+        <column name="ID_GERENCIADORA_RISCO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Motorista -->
+    <many-to-one
+        name="motorista"
+        class="com.mercurio.lms.contratacaoveiculos.model.Motorista"
+        not-null="true"
+    >
+        <column name="ID_MOTORISTA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to MoedaPais -->
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="false"
+    >
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+
+	<!-- bi-directional one-to-many association to EventoSMP -->
+	<bag cascade="none" inverse="true" lazy="true" name="eventos">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.EventoSMP</meta>
+		<key>
+			<column name="ID_SOLIC_MONIT_PREVENTIVO" />
+		</key>
+		<one-to-many class="com.mercurio.lms.sgr.model.EventoSMP" />
+	</bag>
+
+</class>
+</hibernate-mapping>

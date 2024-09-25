@@ -1,0 +1,220 @@
+<style>
+	.ui-datepicker {
+		z-index: 1200 !important;
+	}
+</style>
+
+<div class="menu-top"></div>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form novalidate ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="store($event)">
+	
+		<div class="fixed-top">
+			<div class="content">				
+				<button type="submit" data-adsm-loading="salvando" class="btn btn-default btn-lg pull-right" id="store" permission="salvar">
+					{{'salvar' | translate }}
+				</button>
+				<button type="button" data-ng-click="removeDadosBancariosById()" ng-disabled="!dados.idContaBancaria" class="btn btn-default btn-lg pull-right" id="removeDadosBancariosById()" ng-disabled="dados.disabled" permission="excluir">
+					{{'excluir' |  translate }}
+				</button>			
+				<button type="button" data-ng-click="limparDados()" class="btn btn-default btn-lg pull-right" id="limpar">
+					{{'limpar' | translate }}
+				</button>		
+			</div>
+		</div>
+
+		<div class="alert-container" data-ng-show="popupAlerts.length">
+			<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+				<span data-ng-bind="alert.msg"></span>
+			</alert>
+		</div>
+
+		<div class="clearfix">		
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+					<div class="form-horizontal">					
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-3 control-label">{{'identificacao' | translate }}</label>
+									<div class="col-lg-8">
+										<div class="multi-input">
+											<div class="col-xs-4">
+												<input 
+													type="text" 
+													id="tpIdentificacao" 
+													class="form-control" 
+													ng-model="dados.tpIdentificacao" 
+													maxlength="20" 
+													readonly="readonly">			
+											</div>
+											<div class="col-xs-8">
+												<input 
+													type="text" 
+													id="nrIdentificacao" 
+													class="form-control" 
+													ng-model="dados.nrIdentificacao" 
+													maxlength="20" 
+													readonly="readonly">							
+											</div>					
+										</div>
+									</div>
+								</div>
+							</div>	
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">{{'nome' | translate }}</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="nmPessoa" ng-model="dados.nmPessoa" maxlength="50" readonly="readonly">
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<accordion close-others="false" id="accordionDadosBancarios">
+							<accordion-group is-open="isDadosBancariosOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isDadosBancariosOpen, 'glyphicon-chevron-right': !isDadosBancariosOpen}"></span>
+									{{'dadosBancarios' | translate}}
+								</accordion-heading>	
+														
+								<div class="row">								
+									<div class="col-sm-6">
+										<div class="form-group">								
+											<label class="col-lg-3 control-label">{{'banco' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">
+													<div class="col-xs-3">						
+														<input disabled class="form-control text-right" ng-model="dados.banco.nrBanco" id="banco.nrBanco">
+													</div>
+													<div class="col-xs-9">
+														<input lms-banco
+															ng-model="dados.banco" 
+															id="banco"
+															class="form-control"
+															ng-disabled="dados.disabled"
+															ng-change="changeBanco()"
+															required>																					
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+												
+									<div class="col-sm-6">
+										<div class="form-group">								
+											<label class="col-lg-3 control-label">{{'agencia' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">
+													<div class="col-xs-3">							
+														<input disabled class="form-control text-right" ng-model="dados.agenciaBancaria.nrAgenciaBancaria" id="agenciaBancaria.nrAgenciaBancaria">	
+													</div>
+													<div class="col-xs-9">
+														<input lms-agencia-bancaria="{ idBanco : dados.banco.idBanco }"
+															ng-model="dados.agenciaBancaria" 
+															id="agenciaBancaria"															
+															class="form-control"
+															ng-disabled="!dados.banco || dados.disabled"
+															required>
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>		
+								
+								<div class="row">							
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'numeroConta' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">
+													<div class="col-xs-8">
+														<input 
+															type="text" 
+															id="nrContaBancaria"
+															mask="number" 
+															class="form-control text-right" 
+															ng-model="dados.nrContaBancaria"
+															ng-disabled="dados.disabled" 
+															maxlength="15"															
+															required>		
+													</div>
+													<div class="col-xs-4">
+														<input 
+															type="text"
+															id="dvContaBancaria" 
+															class="form-control" 
+															ng-model="dados.dvContaBancaria"
+															ng-disabled="dados.disabled" 
+															maxlength="2"
+															required>							
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>	
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'tipoConta' | translate }}</label>
+											<div class="col-lg-5">												
+												<select 
+													adsm-domain="DM_TIPO_CONTA"
+													id="tpConta" 
+													ng-model="dados.tpConta"
+													ng-disabled="dados.disabled"
+													required>
+													<option value=""></option>
+												</select>																				
+											</div>
+										</div>
+									</div>
+								</div>		
+																
+							</accordion-group>
+						
+							<accordion-group is-open="isVigenciaOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isVigenciaOpen , 'glyphicon-chevron-right': !isVigenciaOpen}"></span>
+									{{'vigencia' | translate}}
+								</accordion-heading>	
+						
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtVigenciaInicial' | translate }}</label>
+											<div class="col-lg-5">
+													<input id="dtVigenciaInicial" 
+														adsm-date-picker 
+														ng-model="dados.dtVigenciaInicial" 
+														mask="date" 
+														class="form-control" 
+														data-end="dados.dtVigenciaFinal" 
+														ng-disabled="dados.disabled" 
+														required>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtVigenciaFinal' | translate }}</label>
+											<div class="col-lg-5">
+													<input id="dtVigenciaFinal" 
+														adsm-date-picker 
+														ng-model="dados.dtVigenciaFinal" 
+														mask="date" 
+														data-start="dados.dtVigenciaInicial" 
+														class="form-control">
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+						</accordion>
+						
+					</div>
+				</div>
+			</div>		
+		</div>
+	</form>
+</div>

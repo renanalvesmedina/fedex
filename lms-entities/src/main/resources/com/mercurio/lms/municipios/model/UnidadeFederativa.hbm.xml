@@ -1,0 +1,433 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+
+    http://boss.bekk.no/boss/middlegen/ 
+    http://www.hibernate.org/ 
+-->
+
+<class name="com.mercurio.lms.municipios.model.UnidadeFederativa" table="UNIDADE_FEDERATIVA">
+
+    <id name="idUnidadeFederativa" type="java.lang.Long" column="ID_UNIDADE_FEDERATIVA">
+        <generator class="sequence">
+            <param name="sequence">UNIDADE_FEDERATIVA_SQ</param>
+        </generator>
+    </id>
+
+    <property name="sgUnidadeFederativa" type="java.lang.String" column="SG_UNIDADE_FEDERATIVA" not-null="true" length="10"/>
+    <property name="nmUnidadeFederativa" type="java.lang.String" column="NM_UNIDADE_FEDERATIVA" not-null="true" length="60"/>
+    <property name="blIcmsPedagio" type="sim_nao" column="BL_ICMS_PEDAGIO" not-null="true" length="1"/>
+    <property name="blFronteiraRapida" type="sim_nao" column="BL_FRONTEIRA_RAPIDA" not-null="true" length="1"/>
+    <property name="blIncideIss" type="sim_nao" column="BL_INCIDE_ISS" not-null="true" length="1"/>
+    <property name="blCobraTas" type="sim_nao" column="BL_COBRA_TAS" not-null="false" length="1"/>
+    <property name="blCobraSuframa" type="sim_nao" column="BL_COBRA_SUFRAMA" not-null="false" length="1"/>
+    <property name="nrIbge" type="java.lang.Long" column="NR_IBGE" not-null="false" length="10"/>
+    <property name="nrPrazoCancCte" type="java.lang.Long" column="NR_PRAZO_CANC_CTE" not-null="false" length="10"/>
+
+ 	<property
+        name="tpSituacao"
+        column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+		<type name="domain" >
+                  <param name="domainName">DM_STATUS</param>
+		</type>
+    </property>
+    <!-- Associations -->
+  
+    <!-- uni-directional one-to-one association to RegiaoGeografica -->
+    <many-to-one name="regiaoGeografica" class="com.mercurio.lms.municipios.model.RegiaoGeografica">
+        <column name="ID_REGIAO_GEOGRAFICA"/>
+    </many-to-one>
+
+	<many-to-one name="unidadeFederativaSefazVirtual" class="com.mercurio.lms.municipios.model.UnidadeFederativa">
+        <column name="ID_UF_SVC"/>
+    </many-to-one>
+
+	<!-- ================================= LUIS FELIPE: ALTERCAO ID_MUNICIPIO -> ID_CAPITAL ============================================ -->
+
+	<!-- destino: municipio -->
+    <!-- bag 
+        name="municipio"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Municipio</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.Municipio"
+        />
+    </bag-->
+
+    <!-- uni-directional one-to-one association to Municipio -->
+    <many-to-one name="municipio" class="com.mercurio.lms.municipios.model.Municipio">
+        <column name="ID_CAPITAL"/>
+    </many-to-one>
+    <!-- uni-directional one-to-one association to Pais -->
+
+	<!-- ==================================================================================================================== -->
+
+    <many-to-one name="pais" class="com.mercurio.lms.municipios.model.Pais">
+        <column name="ID_PAIS"/>
+    </many-to-one>
+
+
+   <!-- bi-directional one-to-many association to RotaPreco -->
+    <bag
+        name="rotaPrecosByIdUfDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.RotaPreco</meta>
+ 	        <key>
+            <column name="ID_UF_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.RotaPreco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to RotaPreco -->
+    <bag
+        name="rotaPrecosByIdUfOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.RotaPreco</meta>
+ 	        <key>
+            <column name="ID_UF_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.RotaPreco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Simulacao -->
+    <bag
+        name="simulacoesByIdUfDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Simulacao</meta>
+ 	        <key>
+            <column name="ID_UF_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.Simulacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Simulacao -->
+    <bag
+        name="simulacoesByIdUfOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Simulacao</meta>
+ 	        <key>
+            <column name="ID_UF_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.Simulacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioRegionalCliente -->
+    <bag
+        name="municipioRegionalClientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.MunicipioRegionalCliente</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.MunicipioRegionalCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Rodovia -->
+    <bag
+        name="rodovias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Rodovia</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.Rodovia"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioFilialUfOrigem -->
+    <bag
+        name="municipioFilialUfOrigems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialUFOrigem</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MunicipioFilialUFOrigem"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ParametroCliente -->
+    <bag
+        name="parametroClientesByIdUfOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ParametroCliente</meta>
+ 	        <key>
+            <column name="ID_UF_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.ParametroCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ParametroCliente -->
+    <bag
+        name="parametroClientesByIdUfDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ParametroCliente</meta>
+ 	        <key>
+            <column name="ID_UF_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.ParametroCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to HorarioCorteCliente -->
+    <bag
+        name="horarioCorteClientes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.HorarioCorteCliente</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.HorarioCorteCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PrazoEntregaCliente -->
+    <bag
+        name="prazoEntregaClientesByIdUfOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PrazoEntregaCliente</meta>
+ 	        <key>
+            <column name="ID_UF_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.PrazoEntregaCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PrazoEntregaCliente -->
+    <bag
+        name="prazoEntregaClientesByIdUfDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PrazoEntregaCliente</meta>
+ 	        <key>
+            <column name="ID_UF_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.PrazoEntregaCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Feriado -->
+    <bag
+        name="feriados"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Feriado</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.Feriado"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to DescricaoTributacaoIcms -->
+    <bag
+        name="descricaoTributacaoIcms"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.DescricaoTributacaoIcms</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key> 
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.DescricaoTributacaoIcms"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ReferenciaFreteCarreteiro -->
+    <bag
+        name="referenciaFreteCarreteirosByIdUnidadeDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaFreteCarreteiro</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaFreteCarreteiro"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ReferenciaFreteCarreteiro -->
+    <bag
+        name="referenciaFreteCarreteirosByIdUnidadeFederativaOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaFreteCarreteiro</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.ReferenciaFreteCarreteiro"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PotencialComercialCliente -->
+    <bag
+        name="potencialComercialClientesByIdUfOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PotencialComercialCliente</meta>
+ 	        <key>
+            <column name="ID_UF_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.PotencialComercialCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PotencialComercialCliente -->
+    <bag
+        name="potencialComercialClientesByIdUfDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.PotencialComercialCliente</meta>
+ 	        <key>
+            <column name="ID_UF_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.PotencialComercialCliente"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to SubstAtendimentoFilial -->
+    <bag
+        name="substAtendimentoFiliais"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.SubstAtendimentoFilial</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.SubstAtendimentoFilial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to AliquotaIcms -->
+    <bag
+        name="aliquotasIcmsUFOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.AliquotaIcms</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.AliquotaIcms"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to AliquotaIcms -->
+    <bag
+        name="aliquotasIcmsUFDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.AliquotaIcms</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.AliquotaIcms"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to UfDispositivoLegal -->
+    <bag
+        name="ufDispositivoLegais"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.UfDispositivoLegal</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.UfDispositivoLegal"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Municipio -->
+    <bag
+        name="municipios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.Municipio</meta>
+ 	        <key>
+            <column name="ID_UNIDADE_FEDERATIVA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.Municipio"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

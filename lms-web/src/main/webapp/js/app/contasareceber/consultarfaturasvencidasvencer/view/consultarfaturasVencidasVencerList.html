@@ -1,0 +1,469 @@
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="limpar()"
+			class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate }}</button>
+		<button type="button" data-ng-click="exportCsv()"
+			data-adsm-loading="exportando"
+			class="btn btn-default btn-lg pull-right" id="exportar">
+			{{'exportarExcel' | translate }}</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading"
+			class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate }}</button>
+		
+	</div>
+
+	<accordion close-others="false" id="accordionContato"> <accordion-group
+		is-open="isFiltrosClienteOpen"> <accordion-heading>
+	<span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down': isFiltrosClienteOpen , 'glyphicon-chevron-right': !isFiltrosClienteOpen}"></span>
+	{{'filtrosCliente' | translate}} </accordion-heading>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="filialResponsavel"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-3">
+					<input lms-filial ng-model="filter.filialResponsavel"
+						id="filialResponsavel" class="form-control">
+				</div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control"
+						value="{{ filter.filialResponsavel.nmFilial }}"
+						id="filialResponsavel.nmFilial">
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="classificacaoCliente"
+			data-label-Size="3">
+			<select adsm-domain="DM_TP_CLIENTE_FINANCEIRO"
+				id="classificacaoCliente" ng-model="filter.classificacaoCliente">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="cobrancaCentralizada"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="cobrancaCentralizada"
+				ng-model="filter.cobrancaCentralizada">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label class="col-lg-3  control-label">{{'tipoCliente' |
+					translate}}</label>
+				<div class="col-lg-9">
+					<select adsm-domain="DM_TIPO_CLIENTE" id="tipoCliente"
+						ng-model="filter.tipoCliente">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoCobranca"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_COBRANCA" id="tipoCobranca"
+				ng-model="filter.tipoCobranca">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="clienteComPreFatura"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="clienteComPreFatura"
+				ng-model="filter.clienteComPreFatura">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4"
+			data-label="clienteEmailFaturamento" data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="clienteEmailFaturamento"
+				ng-model="filter.clienteEmailFaturamento">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="clienteEmailCobranca"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="clienteEmailCobranca"
+				ng-model="filter.clienteEmailCobranca">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-2  control-label">{{'devedoresListar' |
+					translate}}</label>
+				<div class="col-lg-9">
+					<input type="text" class="form-control"
+						ng-model="filter.devedoresListar" id="devedoresListar"
+						style="height: 50px">
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-2  control-label">{{'devedoresExcluir'
+					| translate}}</label>
+				<div class="col-lg-9">
+					<input type="text" class="form-control"
+						ng-model="filter.devedoresExcluir" id="devedoresExcluir"
+						style="height: 50px">
+				</div>
+			</div>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="isFiltrsoDocumentoOpen"> <accordion-heading>
+	<span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down': isFiltrsoDocumentoOpen , 'glyphicon-chevron-right': !isFiltrsoDocumentoOpen}"></span>
+	{{'filtrosDocumento' | translate}} </accordion-heading>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="servico"
+			data-label-Size="3">
+			<select adsm-chosen id="servico" ng-model="filter.idServico"
+				ng-options="data.idServico as data.dsServico.value for data in filter.servicos">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoDocumento"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_DOCUMENTO_SERVICO" id="tipoDocumento"
+				ng-model="filter.tipoDocumento">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoFrete"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_FRETE" id="tipoFrete"
+				ng-model="filter.tipoFrete">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="dataEmissao"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtVigenciaInicial" adsm-date-picker
+						ng-model="filter.dtVigenciaInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtVigenciaFinal" adsm-date-picker
+						ng-model="filter.dtVigenciaFinal" mask="date" class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoConhecimento"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_CONHECIMENTO" id="tipoConhecimento"
+				ng-model="filter.tipoConhecimento">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoCalculo"
+			data-label-Size="3">
+			<select adsm-domain="DM_TIPO_CALCULO_FRETE" id="tipoCalculo"
+				ng-model="filter.tipoCalculo">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	</accordion-group> <accordion-group is-open="isFiltrosFaturaOpen"> <accordion-heading>
+	<span class="glyphicon"
+		ng-class="{'glyphicon-chevron-down': isFiltrosFaturaOpen , 'glyphicon-chevron-right': !isFiltrosFaturaOpen}"></span>
+	{{'filtrosFaturas' | translate}} </accordion-heading>
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3  control-label">{{'regionalCobranca'
+					| translate}}</label>
+				<div class="col-lg-9">
+					<select adsm-chosen id="idRegional" ng-model="filter.idRegional"
+						required
+						ng-options="data.idRegional as data.siglaDescricao for data in filter.regionais"
+						ng-change="limparFilal()">
+						<option value="{{idRegional}}"></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataEmissaoFat"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtEmissaoFatInicial" adsm-date-picker
+						ng-model="filter.dtEmissaoFatInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtEmissaoFatFinal" adsm-date-picker
+						ng-model="filter.dtEmissaoFatFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="filialCobranca"
+			data-labelSize="3">
+			<div class="multi-input">
+
+				<div class="col-xs-3">
+					<input lms-filial ng-model="filter.idFilialCobranca"
+						class="form-control">
+				</div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control"
+						value="{{ filter.idFilialCobranca.nmFilial }}"
+						id="idFilialCobranca.nmFilial">
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataEmissaoBol"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtEmissaoBolInicial" adsm-date-picker
+						ng-model="filter.dtEmissaoBolInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtEmissaoBolFinal" adsm-date-picker
+						ng-model="filter.dtEmissaoBolFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="numeroFatura"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-5">
+					<input id="nrFaturaInicial" ng-model="filter.nrFaturaInicial"
+						mask="integer" class="form-control" />
+				</div>
+				<div class="col-xs-1">até</div>
+				<div class="col-xs-5">
+					<input id="nrFaturaFinal" ng-model="filter.nrFaturaFinal"
+						mask="integer" class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataVencimento"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtVencimentoInicial" adsm-date-picker
+						ng-model="filter.dtVencimentoInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtVencimentoFinal" adsm-date-picker
+						ng-model="filter.dtVencimentoFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="preFatura"
+			data-label-Size="6">
+			<input id="preFatura" ng-model="filter.preFatura"
+				class="form-control" />
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataNegSerasa"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtNegSerasaInicial" adsm-date-picker
+						ng-model="filter.dtNegSerasaInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtNegSerasaFinal" adsm-date-picker
+						ng-model="filter.dtNegSerasaFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="situacaoFatura"
+			data-label-Size="6">
+			<select adsm-domain="DM_STATUS_ROMANEIO" id="situacaoFatura"
+				ng-model="filter.situacaoFatura">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataExecSerasa"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtExecSerasaInicial" adsm-date-picker
+						ng-model="filter.dtExecSerasaInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtExecSerasaFinal" adsm-date-picker
+						ng-model="filter.dtExecSerasaFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="situacaoBoleto"
+			data-label-Size="6">
+			<select adsm-domain="DM_STATUS_BOLETO" id="situacaoBoleto"
+				ng-model="filter.situacaoBoleto">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataEnvio"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtEnvioInicial" adsm-date-picker
+						ng-model="filter.dtEnvioInicial" mask="date" class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtEnvioFinal" adsm-date-picker
+						ng-model="filter.dtEnvioFinal" mask="date" class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="modal"
+			data-label-Size="6">
+			<select adsm-domain="DM_MODAL" id="modal" ng-model="filter.modal">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataRecebimento"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtRecebimentoInicial" adsm-date-picker
+						ng-model="filter.dtRecebimentoInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtRecebimentoFinal" adsm-date-picker
+						ng-model="filter.dtRecebimentoFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="abrangencia"
+			data-label-Size="6">
+			<select adsm-domain="DM_ABRANGENCIA" id="modal"
+				ng-model="filter.abrangencia">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataDevolucao"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtDevolucaoInicial" adsm-date-picker
+						ng-model="filter.dtDevolucaoInicial" mask="date"
+						class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtDevolucaoFinal" adsm-date-picker
+						ng-model="filter.dtDevolucaoFinal" mask="date"
+						class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="situacaoAprovacao"
+			data-label-Size="6">
+			<select adsm-domain="DM_STATUS_WORKFLOW" id="situacaoAprovacao"
+				ng-model="filter.situacaoAprovacao">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataErro"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtErroInicial" adsm-date-picker
+						ng-model="filter.dtErroInicial" mask="date" class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtErroFinal" adsm-date-picker
+						ng-model="filter.dtErroFinal" mask="date" class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="comTratativa"
+			data-label-Size="3">
+			<select adsm-domain="DM_SIM_NAO" id="comTratativa"
+				ng-model="filter.comTratativa">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="dataLiquidacao"
+			data-labelSize="3">
+			<div class="multi-input">
+				<div class="col-xs-6">
+					<input id="dtLiquidacaoInicial" adsm-date-picker
+						ng-model="filter.dtLiquidacaoInicial" mask="date" class="form-control" />
+				</div>
+				<div class="col-xs-6">
+					<input id="dtLiquidacaoFinal" adsm-date-picker
+						ng-model="filter.dtLiquidacaoFinal" mask="date" class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+	</accordion-group> </accordion>
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="scroll-table">
+				<table adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					style="width: 100%">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+							<td column-title="'fatura' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.fatura}}</td>
+							<td column-title="'clienteDevedor' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.clienteDevedor}}</td>
+							<td column-title="'emissao' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.emissao}}</td>
+							<td column-title="'vencimento' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.vencimento}}</td>
+							<td column-title="'situacao' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.situacao}}</td>
+							<td column-title="'valorTotal' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.valorTotal}}</td>
+							<td column-title="'valorDesconto' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.valorDesconto}}</td>
+							<td column-title="'numeroBoleto' | translate"
+								style="min-width: 100px; max-width: 200px;">{{row.numeroBoleto}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</form>

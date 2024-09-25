@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.RotaIdaVolta" 
+    table="ROTA_IDA_VOLTA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRotaIdaVolta"
+        type="java.lang.Long"
+        column="ID_ROTA_IDA_VOLTA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ROTA_IDA_VOLTA_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="tpRotaIdaVolta"
+		    column="TP_ROTA_IDA_VOLTA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ROTA_IDA_VOLTA</param>
+	    </type>
+    </property>
+    <property
+        name="nrDistancia"
+			        type="java.lang.Integer"
+            column="NR_DISTANCIA"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="vlFreteKm"
+			        type="java.math.BigDecimal"
+            column="VL_FRETE_KM"
+        length="18"
+    />
+    <property
+        name="vlPremio"
+			        type="java.math.BigDecimal"
+            column="VL_PREMIO"
+        length="18"
+    />
+    <property
+        name="vlFreteCarreteiro"
+			        type="java.math.BigDecimal"
+            column="VL_FRETE_CARRETEIRO"
+        length="18"
+    />
+    <property
+        name="obItinerario"
+		type="java.lang.String"
+        column="OB_ITINERARIO"
+        length="500"
+    />
+    <property
+        name="obRotaIdaVolta"
+		type="java.lang.String"
+        column="OB_ROTA_IDA_VOLTA"
+        length="500"
+    />
+ 	<property
+        name="nrRota"
+		type="java.lang.Integer"
+        column="NR_ROTA"
+        length="4"
+    />
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Rota -->
+    <many-to-one
+        name="rota"
+        class="com.mercurio.lms.municipios.model.Rota"
+        not-null="true"
+    >
+        <column name="ID_ROTA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to CriterioAplicSimulacao -->
+    <bag
+        name="criterioAplicSimulacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.CriterioAplicSimulacao</meta>
+ 	        <key>
+            <column name="ID_ROTA_IDA_VOLTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.CriterioAplicSimulacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TipoMeioTranspRotaEvent -->
+    <bag
+        name="tipoMeioTranspRotaEvents"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TipoMeioTranspRotaEvent</meta>
+ 	        <key>
+            <column name="ID_ROTA_IDA_VOLTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.TipoMeioTranspRotaEvent"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to TrechoRotaIdaVolta -->
+    <bag
+        name="trechoRotaIdaVoltas"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.TrechoRotaIdaVolta</meta>
+ 	        <key>
+            <column name="ID_ROTA_IDA_VOLTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.TrechoRotaIdaVolta"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ControleCarga -->
+    <bag
+        name="controleCargas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.ControleCarga</meta>
+ 	        <key>
+            <column name="ID_ROTA_IDA_VOLTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.ControleCarga"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="true"
+    >
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to RotaViagem -->
+    <many-to-one
+        name="rotaViagem"
+        class="com.mercurio.lms.municipios.model.RotaViagem"
+        not-null="true"
+    >
+        <column name="ID_ROTA_VIAGEM" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

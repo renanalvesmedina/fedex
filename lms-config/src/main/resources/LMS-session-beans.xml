@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+
+<!--  Deve ser default-lazy-init="true" para 
+	impedir a carga da SessionFactory no inicio da aplicação.
+	Gera problemas no deploy automatizado no Oracle iAS.
+-->
+<beans default-lazy-init="true"> 
+
+	<bean id="lms.session.sessionContentLoaderService" 
+			class="com.mercurio.lms.configuracoes.model.service.SessionContentLoaderService" autowire="byType" />
+
+	<bean id="adsm.system.sessionContentLoaderListener" 
+			class="com.mercurio.lms.configuracoes.model.service.event.SessionContentLoaderAuthenticationListener">
+		<property name="sessionContentLoaderService">
+			<ref local="lms.session.sessionContentLoaderService"/>
+		</property>
+	</bean>
+
+	<!-- Distributed Parametro Geral Cache -->
+	<bean id="lms.parametroGeralCacheMBean" class="com.mercurio.lms.configuracoes.jmx.ParametroGeralCache" autowire="no"/>
+
+	<bean id="lms.imagemCacheMBean" class="com.mercurio.lms.configuracoes.jmx.ImagemCache" autowire="no"/>
+
+</beans>

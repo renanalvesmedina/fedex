@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tabelaprecos.model.TabelaPrecoParcela" 
+    table="TABELA_PRECO_PARCELA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTabelaPrecoParcela"
+        type="java.lang.Long"
+        column="ID_TABELA_PRECO_PARCELA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TABELA_PRECO_PARCELA_SQ</param>
+        </generator>
+    </id>
+
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ParcelaPreco -->
+    <many-to-one
+        name="parcelaPreco"
+        class="com.mercurio.lms.tabelaprecos.model.ParcelaPreco"
+        not-null="true"
+        fetch="join"
+    >
+        <column name="ID_PARCELA_PRECO" />
+    </many-to-one>
+   
+    <!-- bi-directional many-to-one association to TabelaPreco -->
+    <many-to-one
+        name="tabelaPreco"
+        class="com.mercurio.lms.tabelaprecos.model.TabelaPreco"
+        not-null="true"
+    >
+        <column name="ID_TABELA_PRECO" />
+    </many-to-one>
+    
+    <one-to-one name="generalidade" cascade="save-update,delete" />
+    <one-to-one name="valorTaxa" cascade="save-update,delete" />
+    <one-to-one name="valorServicoAdicional" cascade="save-update,delete" />
+   
+   <bag
+        name="precoFretes"
+        lazy="true"
+        inverse="true"
+		cascade="save-update,delete,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.PrecoFrete</meta>
+ 	        <key>
+            <column name="ID_TABELA_PRECO_PARCELA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.PrecoFrete"
+        />
+    </bag>
+    
+     <bag
+        name="faixaProgressivas"
+        lazy="true"
+        inverse="true"
+		cascade="save-update,delete,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tabelaprecos.model.FaixaProgessiva</meta>
+ 	        <key>
+            <column name="ID_TABELA_PRECO_PARCELA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tabelaprecos.model.FaixaProgressiva"
+        />
+    </bag>
+    
+</class>
+</hibernate-mapping>

@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.Transferencia" 
+    table="TRANSFERENCIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTransferencia"
+        type="java.lang.Long"
+        column="ID_TRANSFERENCIA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TRANSFERENCIA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrTransferencia"
+			        type="java.lang.Long"
+            column="NR_TRANSFERENCIA"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="dtEmissao"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpSituacaoTransferencia"
+		    column="TP_SITUACAO_TRANSFERENCIA"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_TRANSFERENCIA</param>
+	    </type>
+    </property>
+    <property
+        name="tpOrigem"
+		    column="TP_ORIGEM"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ORIGEM</param>
+	    </type>
+    </property>
+    <property
+        name="dtRecebimento"
+			        type="jtyearmonthday"
+            column="DT_RECEBIMENTO"
+        length="7"
+    />
+    <property
+        name="dhTransmissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_TRANSMISSAO"/><column name="DH_TRANSMISSAO_TZR"/></property>
+    
+    <property
+        name="blIndicadorImpressao"
+		type="sim_nao"
+        column="BL_INDICADOR_IMPRESSAO"
+        length="1"
+        not-null="true"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ItemTransferencia -->
+    <bag
+        name="itemTransferencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ItemTransferencia</meta>
+ 	        <key>
+            <column name="ID_TRANSFERENCIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ItemTransferencia"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

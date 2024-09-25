@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.portaria.model.OrdemSaida" 
+    table="ORDEM_SAIDA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idOrdemSaida"
+        type="java.lang.Long"
+        column="ID_ORDEM_SAIDA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ORDEM_SAIDA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhRegistro"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_REGISTRO"/><column name="DH_REGISTRO_TZR"/></property>
+    <property
+        name="obMotivo"
+			        type="java.lang.String"
+            column="OB_MOTIVO"
+        not-null="true"
+        length="500"
+    />
+    <property
+        name="dhChegada"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_CHEGADA"/><column name="DH_CHEGADA_TZR"/></property>
+    <property
+        name="dhSaida"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_SAIDA"/><column name="DH_SAIDA_TZR"/></property>
+    <property
+        name="blSemRetorno"
+		type="sim_nao"
+        column="BL_SEM_RETORNO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporteRodoviario -->
+    <many-to-one
+        name="meioTransporteRodoviarioByIdSemiReboque"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        not-null="true"
+    >
+        <column name="ID_SEMI_REBOQUE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporteRodoviario -->
+    <many-to-one
+        name="meioTransporteRodoviarioByIdMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Motorista -->
+    <many-to-one
+        name="motorista"
+        class="com.mercurio.lms.contratacaoveiculos.model.Motorista"
+        not-null="true"
+    >
+        <column name="ID_MOTORISTA" />
+    </many-to-one>   
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ControleQuilometragem -->
+    <bag
+        name="controleQuilometragems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.ControleQuilometragem</meta>
+ 	    <key>
+            <column name="ID_ORDEM_SAIDA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.ControleQuilometragem"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

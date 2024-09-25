@@ -1,0 +1,274 @@
+<style type="text/css">
+.scroll-table .adsm-table tbody td {
+	min-width: inherit;
+	max-width: inherit;
+}
+</style>
+<form class="form-horizontal content-padding" data-ng-submit="store()">
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="controleCarga" data-labelSize="3" data-multiSize="4">
+			<input class="form-control" disabled id="sgFilial" value="{{ data.sgFilial }}" />
+			<input class="form-control" disabled id="nrControleCarga" value="{{ data.nrControleCarga | lpad : 8 }}" />
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="geracao" data-labelSize="3">
+			<input class="form-control" disabled id="dhGeracao" value="{{ data.dhGeracao | dateTimeZone }}" />
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="tipo" data-labelSize="3">
+			<input class="form-control" disabled id="tpControleCarga" value="{{ data.tpControleCarga }}" />
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="rota" data-labelSize="3">
+			<input class="form-control" disabled id="dsRota" ng-model="data.dsRota" />
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="meioTransporte" data-labelSize="3" data-multiSize="6">
+			<input class="form-control" disabled id="meioTransporteNrFrota" ng-model="data.meioTransporteNrFrota" />
+			<input class="form-control" disabled id="meioTransporteNrIdentificador" ng-model="data.meioTransporteNrIdentificador" />
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="tipoRota" data-labelSize="3">
+			<input class="form-control" disabled id="tpRota" ng-model="data.tpRota" />
+		</div>
+		<div adsm-add-field data-boxSize="6" data-label="semiReboque" data-labelSize="3" data-multiSize="6">
+			<input class="form-control" disabled id="semiReboqueNrFrota" ng-model="data.semiReboqueNrFrota" />
+			<input class="form-control" disabled id="semiReboqueNrIdentificador" ng-model="data.semiReboqueNrIdentificador" />
+		</div>
+	</div>
+
+	<div class="nav-content">
+		<div adsm-sub-tab>
+			<div adsm-tab-panel="documentos" heading="{{ 'documentos' | translate }}">
+				<div class="scroll-table">
+					<table class="adsm-table adsm-table-hover table table-condensed">
+						<thead>
+							<tr>
+								<th>{{ 'abrangencia' | translate }}</th>
+								<th>{{ 'tipoOperacao' | translate }}</th>
+								<th>{{ 'naturezaProduto' | translate }}</th>
+								<th colspan="4">{{ 'origem' | translate }}</th>
+								<th colspan="4">{{ 'destino' | translate }}</th>
+								<th colspan="2">{{ 'remetente' | translate }}</th>
+								<th colspan="2">{{ 'destinatario' | translate }}</th>
+								<th>{{ 'valorMercadoria' | translate }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="row in data.plano.documentos">
+								<td>{{ ({ "N" : "nacional", "I" : "internacional" }[row.tpAbrangencia]) | translate }}</td>
+								<td>{{ ({ "C" : "coletaEntrega", "V" : "viagem" }[row.tpOperacao]) | translate }}</td>
+								<td>{{ row.dsNaturezaProduto }}</td>
+								<td>{{ row.nmMunicipioOrigem }}</td>
+								<td>{{ row.nmPaisOrigem }}</td>
+								<td>{{ row.sgUnidadeFederativaOrigem }}</td>
+								<td>{{ row.sgFilialOrigem }}</td>
+								<td>{{ row.nmMunicipioDestino }}</td>
+								<td>{{ row.nmPaisDestino }}</td>
+								<td>{{ row.sgUnidadeFederativaDestino }}</td>
+								<td>{{ row.sgFilialDestino }}</td>
+								<td>{{ row.nrIdentificacaoRemetente }}</td>
+								<td>{{ row.nmPessoaRemetente }}</td>
+								<td>{{ row.nrIdentificacaoDestinatario }}</td>
+								<td>{{ row.nmPessoaDestinatario }}</td>
+								<td align="right">{{ row.vlMercadoria | currency }}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div adsm-tab-panel="aa" heading="{{ 'aa' | translate }}">
+				<div adsm-sub-tab>
+					<div adsm-tab-panel="aaa" heading="{{ 'aaa' | translate }}">
+						{{ data.plano | json }}
+					</div>
+					<div adsm-tab-panel="bbb" heading="{{ 'bbb' | translate }}">
+					</div>
+				</div>
+			</div>
+			<div adsm-tab-panel="bb" heading="{{ 'bb' | translate }}">
+				<div adsm-sub-tab>
+					<div adsm-tab-panel="aaa" heading="{{ 'aaa' | translate }}">
+					</div>
+					<div adsm-tab-panel="bbb" heading="{{ 'bbb' | translate }}">
+					</div>
+				</div>
+			</div>
+			<div adsm-tab-panel="mensagens" heading="{{ 'mensagens' | translate }}">
+				<accordion>
+					<accordion-group ng-if="data.plano.mensagensEnquadramento">
+						<accordion-heading>
+							{{ 'mensagensEnquadramento' | translate }}
+							<p class="label-info">
+								<span>
+									{{ data.plano.mensagensEnquadramento.length }}
+									{{ 'mensagens' | translate }}
+								</span>
+							</p>
+						</accordion-heading>
+						<div class="scroll-table">
+							<table class="adsm-table adsm-table-hover table table-condensed">
+								<thead>
+									<tr>
+										<th>{{ 'mensagem' | translate }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="row in data.plano.mensagensEnquadramento">
+										<td>{{ row }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</accordion-group>
+					<accordion-group ng-if="data.plano.mensagensWorkflowRegras">
+						<accordion-heading>
+							{{ 'mensagensWorkflowRegras' | translate }}
+							<p class="label-info">
+								<span>
+									{{ data.plano.mensagensWorkflowRegras.length }}
+									{{ 'mensagens' | translate }}
+								</span>
+							</p>
+						</accordion-heading>
+						<div class="scroll-table">
+							<table class="adsm-table adsm-table-hover table table-condensed">
+								<thead>
+									<tr>
+										<th>{{ 'mensagem' | translate }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="row in data.plano.mensagensWorkflowRegras">
+										<td>{{ row }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</accordion-group>
+					<accordion-group ng-if="data.plano.mensagensWorkflowExigencias">
+						<accordion-heading>
+							{{ 'mensagensWorkflowExigencias' | translate }}
+							<p class="label-info">
+								<span>
+									{{ data.plano.mensagensWorkflowExigencias.length }}
+									{{ 'mensagens' | translate }}
+								</span>
+							</p>
+						</accordion-heading>
+						<div class="scroll-table">
+							<table class="adsm-table adsm-table-hover table table-condensed">
+								<thead>
+									<tr>
+										<th>{{ 'mensagem' | translate }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="row in data.plano.mensagensWorkflowExigencias">
+										<td>{{ row }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</accordion-group>
+				</accordion>
+			</div>
+			<div adsm-tab-panel="cronometro" heading="{{ 'desempenho' | translate }}">
+				<div class="scroll-table">
+					<table class="adsm-table adsm-table-hover table table-condensed">
+						<thead>
+							<tr>
+								<th>{{ 'tarefa' | translate }}</th>
+								<th>{{ 'tempo' | translate }}</th>
+								<th>{{ 'percentual' | translate }}</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="row in data.plano.cronometro.taskInfo">
+								<td>{{ 'tarefa-' + row.taskName | translate }}</td>
+								<td align="right">{{ row.timeSeconds | number : 3 }}s</td>
+								<td align="right">{{ (row.timeMillis / data.plano.cronometro.totalTimeMillis) * 100 || 0 | number : 1 }}%</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>{{ 'total' | translate }}</th>
+								<th style="text-align: right">{{ data.plano.cronometro.totalTimeMillis / 1000 | number : 3 }}s</th>
+								<th style="text-align: right">100.0%</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<!-- 
+			cronometro": { "running": false, "taskCount": 6, "totalTimeMillis": 689, "taskInfo": [ 
+			{ "taskName": "parametros", "timeMillis": 205, "timeSeconds": 0.205 }, { "taskName": "documentos", "timeMillis": 25, "timeSeconds": 0.025 }, { "taskName": "regras", "timeMillis": 365, "timeSeconds": 0.365 }, { "taskName": "enquadramento", "timeMillis": 46, "timeSeconds": 0.046 }, { "taskName": "mensagens", "timeMillis": 0, "timeSeconds": 0 }, { "taskName": "exigencias", "timeMillis": 48, "timeSeconds": 0.048 } ], "lastTaskTimeMillis": 48, "totalTimeSeconds": 0.689 }
+			
+			
+			PARAMETROS
+	private boolean blVerificacaoGeral;
+	private boolean blRealizaBloqueios;
+
+	private Long idMoedaDestino;
+	private Long idPaisDestino;
+	private YearMonthDay dataConversao;
+
+	private boolean blPermitePGRDuplicado;
+	private boolean blValidaMaximoCarregamento;
+	private boolean blValidaCargaExclusivaCliente;
+	private boolean blRequerLiberacaoCemop;
+	private boolean blValidaNaturezaImpedida;
+	private boolean blValidaExigenciasMonitoramento;
+	private boolean blValidaExigenciasMotorista;
+	private boolean blValidaExigenciasVeiculo; 
+	
+	private boolean blGerarWorkflowRegras;
+	private boolean blGerarWorkflowExigencias;
+	private boolean blGerarEnquadramentos;
+			 -->
+			<!-- 
+	private Collection<DoctoServicoDTO> documentos;
+	private Collection<DoctoServicoDTO> naoEncontrados;
+	private Collection<DoctoServicoDTO> duplicados;
+	private Collection<EnquadramentoRegra> faixaInexistente;
+
+	private Collection<EnquadramentoRegra> regrasCliente;
+	private Collection<EnquadramentoRegra> regrasGeral;
+
+	private Map<EnquadramentoRegra, Collection<DoctoServicoDTO>> documentosRegra;
+	private Map<EnquadramentoRegra, BigDecimal> totaisRegra;
+	private Map<Long, BigDecimal> totaisNaturezaProduto;
+	private Map<String, BigDecimal> totaisTpOperacao;
+
+	private Collection<EnquadramentoRegraDTO> enquadramentos;
+
+	private Collection<EnquadramentoRegra> limiteApolice;
+	private Collection<EnquadramentoRegra> cargaExclusiva;
+	private Collection<EnquadramentoRegra> liberacaoCemop;
+	private Map<EnquadramentoRegra, Collection<NaturezaProduto>> naturezasImpedidas;
+
+	private Map<EnquadramentoRegra, Collection<ExigenciaGerRiscoDTO>> exigenciasRegra;
+	private Map<TipoExigenciaGerRisco, Collection<ExigenciaGerRiscoDTO>> exigenciasTipo;
+	private Map<ExigenciaGerRisco, Collection<ExigenciaGerRiscoDTO>> exigenciasGrupo;
+	private Collection<ExigenciaGerRiscoDTO> exigencias;
+
+	private Collection<ExigenciaGerRiscoDTO> exigenciasVioladas;
+			 -->
+			<!-- 
+			 -->
+			<!-- 
+			 -->
+			<!-- 
+			 -->
+			<!-- 
+			 -->
+			<!--
+			MENSAGENS 
+	private Collection<String> mensagensEnquadramento;
+	private Collection<String> mensagensWorkflowRegras;
+	private Collection<String> mensagensWorkflowExigencias;
+			 -->
+			<!-- 
+			DESEMPENHO
+	private StopWatch cronometro;
+			 -->
+		</div>
+	</div>
+</form>

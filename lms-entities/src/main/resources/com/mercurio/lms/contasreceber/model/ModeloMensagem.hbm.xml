@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+	<!-- Created by the Middlegen Hibernate plugin 2.1 for ADSM http://boss.bekk.no/boss/middlegen/ 
+		http://www.hibernate.org/ -->
+
+	<class name="com.mercurio.lms.contasreceber.model.ModeloMensagem"
+		table="MODELO_MENSAGEM">
+
+		<id name="idModeloMensagem" type="java.lang.Long" column="ID_MODELO_MENSAGEM">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">MODELO_MENSAGEM_SQ</param>
+			</generator>
+		</id>
+		<many-to-one name="usuario" entity-name="usuario"
+			not-null="true">
+			<column name="ID_USUARIO" />
+		</many-to-one>
+
+		<property name="dsModeloMensagem" type="java.lang.String"
+			column="DS_MODELO_MENSAGEM" not-null="true" unique="true" length="100" />
+
+		<property name="tpModeloMensagem" column="TP_MODELO_MENSAGEM"
+			not-null="true" length="1">
+			<type
+				name="com.mercurio.adsm.core.model.hibernate.DomainCompositeUserType">
+				<param name="domainName">DM_TP_MODELO_MENSAGEM</param>
+			</type>
+		</property>
+
+		<property name="dcModeloAssunto" column="DC_MODELO_ASSUNTO"
+			type="com.mercurio.adsm.core.model.hibernate.CLobUserType" not-null="true" />
+
+		<property name="dcModeloCorpo" column="DC_MODELO_CORPO"
+			not-null="true" type="com.mercurio.adsm.core.model.hibernate.CLobUserType" />
+
+		<property name="dtVigenciaInicial" type="jtyearmonthday"
+			column="DT_VIGENCIA_INICIAL" not-null="true" length="7" />
+		<property name="dtVigenciaFinal" type="jtyearmonthday"
+			column="DT_VIGENCIA_FINAL" not-null="false" length="7" />
+
+		<property name="dhAlteracao" type="jtdatetimetzr" not-null="true"
+			length="7">
+			<column name="DH_ALTERACAO" />
+			<column name="DH_ALTERACAO_TZR" />
+		</property>
+		
+		<!-- bi-directional one-to-many association to Desconto -->
+		<bag cascade="none" inverse="true" lazy="true" name="dadosModeloMensagem">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.DadoModeloMensagem</meta>
+			<key>
+				<column name="ID_MODELO_MENSAGEM" />
+			</key>
+			<one-to-many class="com.mercurio.lms.contasreceber.model.DadoModeloMensagem" />
+		</bag>
+	</class>
+
+</hibernate-mapping>

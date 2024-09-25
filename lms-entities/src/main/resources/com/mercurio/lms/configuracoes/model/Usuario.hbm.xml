@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+	<!-- 
+		Created by the Middlegen Hibernate plugin 2.1 for ADSM
+		
+		http://boss.bekk.no/boss/middlegen/
+		http://www.hibernate.org/
+	-->
+
+	<class name="com.mercurio.lms.configuracoes.model.Usuario"
+		entity-name="usuario"
+		table="USUARIO">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+
+		<id name="idUsuario" type="java.lang.Long"
+			column="ID_USUARIO">
+			<meta attribute="use-in-equals">true</meta>
+
+			<generator class="foreign">
+				<param name="property">autoridade</param>
+			</generator>
+		</id>
+
+        <property name="login" type="java.lang.String"
+			column="LOGIN" not-null="true" unique="true" length="60" />
+
+		<property name="loginIdFedex" type="java.lang.String"
+		    column="LOGIN_ID_FEDEX" not-null="true" unique="true" length="60" />
+
+		<property name="nrMatricula" type="java.lang.String"
+			column="NR_MATRICULA" not-null="false" unique="true" length="16" />
+
+		<property name="blIrrestritoCliente" type="sim_nao"
+			column="BL_IRRESTRITO_CLIENTE" not-null="true" length="1">
+		</property>
+		
+		<property name="blAdminFilial" type="sim_nao"
+			column="BL_ADMIN_FILIAL" not-null="false" length="1">
+		</property>
+				
+		<property name="blTermoComp" type="sim_nao"
+			column="BL_TERMO_COMP" not-null="false" length="1">
+		</property>
+
+		<property name="dsEmail" type="java.lang.String"
+			column="DS_EMAIL" not-null="false" length="60" />
+
+		<property name="tpCategoriaUsuario" column="TP_CATEGORIA_USUARIO" not-null="true" length="1" >
+			<type name="com.mercurio.adsm.core.model.hibernate.DomainCompositeUserType">
+	        	<param name="domainName">DM_CATEGORIA_USUARIO</param>
+		    </type>
+		</property>
+			
+		<property name="nmUsuario" type="java.lang.String"
+				column="NM_USUARIO" not-null="true" unique="true" length="60" />
+
+		<property name="dsSenha" type="java.lang.String"
+			column="DS_SENHA" not-null="true" unique="false" length="20" />
+
+		<property name="locale" type="locale" column="LOCALE"
+			not-null="true" />
+
+	    <property name="blAdminCliente" type="sim_nao"
+			column="BL_ADMIN_CLIENTE" not-null="false" length="1">
+		</property>
+		
+		<!-- Associations -->
+		<many-to-one
+	        name="filial"
+	        class="com.mercurio.lms.municipios.model.Filial"
+	        not-null="false"
+	    	>
+	        <column name="ID_FILIAL_ADMIN" />
+	    </many-to-one>
+    		
+		<one-to-one name="autoridade"
+			class="com.mercurio.adsm.framework.model.pojo.Autoridade"
+			constrained="true" />
+
+		<one-to-one name="vfuncionario"
+			class="com.mercurio.lms.configuracoes.model.Funcionario"
+			property-ref="usuario" />   
+
+		<bag name="empresaUsuario" lazy="true" inverse="true"
+			cascade="all">
+			<key>
+				<column name="ID_USUARIO" />
+			</key>
+			<one-to-many
+				class="com.mercurio.lms.configuracoes.model.EmpresaUsuario" />
+		</bag>
+
+		<many-to-one name="empresaPadrao"
+			class="com.mercurio.lms.municipios.model.Empresa" not-null="false"
+			insert="false" update="false">
+			<column name="ID_EMPRESA_PADRAO" />
+		</many-to-one>
+	    
+		<many-to-one
+	        name="cliente"
+    	    class="com.mercurio.lms.vendas.model.Cliente"
+        	not-null="false"
+        	lazy="false"
+		    >
+        	<column name="ID_CLIENTE_USUARIO" />
+	    </many-to-one>
+
+		<bag name="clienteUsuario" lazy="true" inverse="true"
+			cascade="all">
+			<key>
+				<column name="ID_USUARIO" />
+			</key>
+			<one-to-many
+				class="com.mercurio.lms.configuracoes.model.ClienteUsuario" />
+		</bag>
+
+	</class>
+	
+</hibernate-mapping>

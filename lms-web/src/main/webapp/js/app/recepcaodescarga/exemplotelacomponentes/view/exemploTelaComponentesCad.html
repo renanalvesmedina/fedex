@@ -1,0 +1,238 @@
+<style type="text/css">
+	#listOptionsTelefone .options {
+		margin-left: -13px;
+	}
+
+	.include-separator {
+		padding-top: 15px;
+		border-top: 1px solid #F2F2F2;
+	}
+</style>
+
+<form class="form-horizontal content-padding" data-ng-submit="store()">
+
+	<div class="fixed-top">
+		<div ng-include src="contextPath+'js/app/common/view/templates/form-buttons-cad.html'"></div>
+	</div>
+
+	<accordion close-others="false" ng-init="accordionOpen = {datas:true, domain: true}">
+
+		<accordion-group heading="Datas" is-open="accordionOpen.datas">
+
+			<div class="row">
+				<div adsm-add-field data-label="data" data-boxSize="6" >
+					<input type="text" adsm-date-picker mask="date"
+							ng-model="data.data" id="data"
+							ng-required="true"/>
+				</div>
+			</div>
+
+			<div class="row">
+				<div adsm-add-field data-label="dataHora" data-boxSize="6" >
+					<input type="text" adsm-date-time
+							ng-model="data.dataHora" id="dataHora"
+							ng-required="true"/>
+				</div>
+			</div>
+
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.suggest">
+
+			<accordion-heading>
+				<span class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': accordionOpen.suggest, 'glyphicon-chevron-right': !accordionOpen.suggest}"></span>
+				Suggest
+			</accordion-heading>
+
+			<div class="row">
+				<div adsm-add-field data-label="pais" data-boxSize="6" data-labelSize="4">
+					<input
+						lms-pais
+						type="text"
+						ng-model="data.pais"
+						id="pais"
+						class="form-control"
+						ng-change="changePais()">
+				</div>
+
+				<div adsm-add-field data-label="unidadeFederativa" data-boxSize="6" data-labelSize="4">
+					<input
+						lms-unidade-federativa="{ idPais : data.pais.idPais }"
+						type="text"
+						ng-model="data.unidadeFederativa"
+						id="uf"
+						class="form-control"
+						ng-disabled="!data.pais.idPais"
+						ng-required="data.pais.idPais">
+				</div>
+			</div>
+
+			<div class="row include-separator" style="margin-top: 10px;">
+				<div adsm-add-field data-label="empresa" data-boxSize="12" data-labelSize="2" multisize="4,8">
+
+					<input
+						lms-empresa
+						type="text"
+						ng-model="data.empresa.nrIdentificacao"
+						id="empresa"
+						class="form-control"
+						ng-disabled="true">
+
+					<input
+						lms-empresa
+						type="text"
+						ng-model="data.empresa"
+						id="empresa"
+						class="form-control">
+
+				</div>
+			</div>
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.domain" heading="Domain">
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="situacao" data-labelSize="4">
+					<select
+						adsm-domain="DM_STATUS"
+						id="situacao"
+						ng-model="data.situacao"
+						required>
+						<option value=""></option>
+					</select>
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="mes" data-labelSize="4">
+					<select
+						data-adsm-domain="DM_MES"
+						id="mes"
+						ng-model="data.mes"
+						filter="['4','6','9','11']">
+						<option value=""></option>
+					</select>
+				</div>
+
+			</div>
+
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.chosen" heading="Chosen">
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="empresa" data-labelSize="4">
+					<select
+						data-adsm-chosen
+						id="empresa"
+						data-ng-options="empresa as empresa.nmPessoa for empresa in listaEmpresas track by empresa.idEmpresa"
+						data-ng-model="data.empresaFromChosen">
+						<option value=""></option>
+					</select>
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="tipoServico" data-labelSize="4">
+					<select
+						lms-tipo-servico
+						id="tipoServico"
+						data-ng-model="data.tipoServico">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.email" heading="E-mail e ElementChanged">
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="email" data-labelSize="4">
+					<input
+						type="email"
+						data-ng-model="data.email"
+						id="email">
+				</div>
+
+				<div adsm-add-field data-boxSize="6" data-label="descricao" data-labelSize="4">
+					<input
+						type="text"
+						data-ng-model="data.descricao"
+						id="descricao"
+						class="adsm-element-changed">
+				</div>
+			</div>
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.pessoaMask" heading="M&aacute;scara">
+			<div class="row">
+				<div adsm-add-field data-boxSize="6" data-label="cpf" data-labelSize="4">
+					<input class="form-control" id="pessoaMaskCpf" ng-model="data.nrIdentificacao" data-pessoa-mask="'cpf'" />
+				</div>
+				<div adsm-add-field data-boxSize="6" data-label="cnpj" data-labelSize="4">
+					<input class="form-control" id="pessoaMaskCpf" ng-model="data.nrIdentificacaoCnpj" data-pessoa-mask="'cnpj'" adsm-custom-validation="validateCnpj"/>
+				</div>
+			</div>
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.numeric" heading="Num&eacute;rico">
+			<div class="row">
+				<div adsm-add-field  data-label="valor" data-labelSize="4">
+					<input type="text" ng-model="data.valor" data-numeric data-moeda />
+				</div>
+				<div adsm-add-field data-label="cubagem" data-labelSize="4">
+					<input type="text" ng-model="data.cubagem" data-numeric data-volume />
+				</div>
+				<div adsm-add-field data-label="peso" data-labelSize="4">
+					<input type="text" ng-model="data.peso" data-numeric data-peso />
+				</div>
+			</div>
+		</accordion-group>
+
+		<accordion-group is-open="accordionOpen.listOptions" heading="ListOptions">
+			<div class="row">
+				<div adsm-add-field data-label="veiculo" data-boxSize="12" data-labelSize="2" multisize="4,3,5">
+
+					<div id="list-options-message-wrapper">
+						<div adsm-list-options
+						 	ng-model="listOptionsVeiculos"
+						 	equals="veiculo"
+						 	view="veiculo">
+
+							<input type="text" ng-model="veiculo"/>
+						</div>
+					</div>
+
+					<div></div>
+
+					<div><pre>{{listOptionsVeiculos | json}}</pre></div>
+				</div>
+			</div>
+
+			<div class="row include-separator">
+				<div adsm-add-field data-label="telefone" data-boxSize="12" data-labelSize="2" multisize="6,1,5">
+					<div id="list-options-message-wrapper">
+						<div adsm-list-options
+						 	ng-model="listOptionsTelefones"
+						 	equals="telefone.numero"
+						 	not-null="telefone"
+						 	blank-token="-"
+						 	view="telefone|translate,': ',telefone.numero,' ',ramal|translate,': ',nrRamal"
+						 	id="listOptionsTelefone">
+
+							<input type="text" id="nrRamal" ng-model="nrRamal" class="form-control" placeholder="ramal" numeric="{maxLength: 5}">
+
+							<select	adsm-chosen
+								ng-model="telefone"
+								ng-options="data as data.numero for data in telefones track by data.idTelefoneEndereco"
+								id="optionsTelefone">
+								<option value=""></option>
+							</select>
+						</div>
+					</div>
+
+					<div></div>
+
+					<div><pre>{{listOptionsTelefones | json}}</pre></div>
+				</div>
+			</div>
+
+
+		</accordion-group>
+
+	</accordion>
+
+</form>

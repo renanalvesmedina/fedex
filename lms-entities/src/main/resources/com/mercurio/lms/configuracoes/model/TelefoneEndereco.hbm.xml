@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.TelefoneEndereco" 
+    table="TELEFONE_ENDERECO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idTelefoneEndereco"
+        type="java.lang.Long"
+        column="ID_TELEFONE_ENDERECO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TELEFONE_ENDERECO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpTelefone"
+		    column="TP_TELEFONE"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_TELEFONE</param>
+	    </type>
+    </property>
+    <property
+        name="tpUso"
+		    column="TP_USO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_USO_TELEFONE</param>
+	    </type>
+    </property>
+    <property
+        name="nrDdd"
+			        type="java.lang.String"
+            column="NR_DDD"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="nrTelefone"
+			        type="java.lang.String"
+            column="NR_TELEFONE"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="nrDdi"
+			        type="java.lang.String"
+            column="NR_DDI"
+        length="5"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to EnderecoPessoa -->
+    <many-to-one
+        name="enderecoPessoa"
+        class="com.mercurio.lms.configuracoes.model.EnderecoPessoa"
+        not-null="false"
+    >
+        <column name="ID_ENDERECO_PESSOA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to TelefoneContato -->
+    <bag
+        name="telefoneContatos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.TelefoneContato</meta>
+ 	        <key>
+            <column name="ID_TELEFONE_ENDERECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.TelefoneContato"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true"
+    >
+        <column name="ID_PESSOA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

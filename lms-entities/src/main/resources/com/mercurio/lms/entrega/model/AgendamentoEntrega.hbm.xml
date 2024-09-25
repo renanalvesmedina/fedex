@@ -1,0 +1,246 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.entrega.model.AgendamentoEntrega" 
+    table="AGENDAMENTO_ENTREGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idAgendamentoEntrega"
+        type="java.lang.Long"
+        column="ID_AGENDAMENTO_ENTREGA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">AGENDAMENTO_ENTREGA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpAgendamento"
+		    column="TP_AGENDAMENTO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_AGENDAMENTO</param>
+	    </type>
+    </property>
+    <property
+        name="dhContato"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_CONTATO"/><column name="DH_CONTATO_TZR"/></property>
+    <property
+        name="tpSituacaoAgendamento"
+		    column="TP_SITUACAO_AGENDAMENTO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SITUACAO_AGENDA</param>
+	    </type>
+    </property>
+    <property
+        name="nmContato"
+		type="java.lang.String"
+        column="NM_CONTATO"
+        length="60"
+    />
+    <property
+        name="nrTelefone"
+			        type="java.lang.String"
+            column="NR_TELEFONE"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="blCartao"
+		type="sim_nao"
+        column="BL_CARTAO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="dtAgendamento"
+		type="jtyearmonthday"
+        column="DT_AGENDAMENTO"
+        length="7"
+    />
+    <property
+        name="hrPreferenciaInicial"
+			        type="jttimeofday"
+            column="HR_PREFERENCIA_INICIAL"
+        length="7"
+    />
+    <property
+        name="hrPreferenciaFinal"
+			        type="jttimeofday"
+            column="HR_PREFERENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="nrDdd"
+			        type="java.lang.String"
+            column="NR_DDD"
+        length="5"
+    />
+    <property
+        name="nrRamal"
+			        type="java.lang.String"
+            column="NR_RAMAL"
+        length="10"
+    />
+    <property
+        name="dhCancelamento"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_CANCELAMENTO"/><column name="DH_CANCELAMENTO_TZR"/></property>
+    <property
+        name="obAgendamentoEntrega"
+			        type="java.lang.String"
+            column="OB_AGENDAMENTO_ENTREGA"
+        length="500"
+    />
+
+    <property
+        name="obCancelamento"
+			        type="java.lang.String"
+            column="OB_CANCELAMENTO"
+        length="500"
+    />
+
+    <property
+        name="obTentativa"
+			        type="java.lang.String"
+            column="OB_TENTATIVA"
+        length="500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to MotivoAgendamento -->
+    <many-to-one
+        name="motivoAgendamentoByIdMotivoCancelamento"
+        class="com.mercurio.lms.entrega.model.MotivoAgendamento"
+        not-null="true"
+    >
+        <column name="ID_MOTIVO_CANCELAMENTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MotivoAgendamento -->
+    <many-to-one
+        name="motivoAgendamentoByIdMotivoReagendamento"
+        class="com.mercurio.lms.entrega.model.MotivoAgendamento"
+        not-null="true"
+    >
+        <column name="ID_MOTIVO_REAGENDAMENTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuarioCriacao"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_CRIACAO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdUsuarioCancelamento"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_CANCELAMENTO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to AgendamentoDoctoServico -->
+    <bag
+        name="agendamentoDoctoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.AgendamentoDoctoServico</meta>
+ 	        <key>
+            <column name="ID_AGENDAMENTO_ENTREGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.entrega.model.AgendamentoDoctoServico"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Turno -->
+    <many-to-one
+        name="turno"
+        class="com.mercurio.lms.entrega.model.Turno"
+        not-null="true"
+    >
+        <column name="ID_TURNO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+    <many-to-one
+        name="reagendamento"
+        class="com.mercurio.lms.entrega.model.AgendamentoEntrega"
+        not-null="false"
+    >
+        <column name="ID_REAGENDAMENTO" />
+    </many-to-one>
+    
+    <many-to-one
+        name="agendamentoEntregaOriginal"
+        class="com.mercurio.lms.entrega.model.AgendamentoEntrega"
+        not-null="false"
+    >
+        <column name="ID_AGENDAMENTO_ENTREGA_ORIG" />
+    </many-to-one>
+    
+    <property
+        name="dhFechamento"
+			        type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_FECHAMENTO"/><column name="DH_FECHAMENTO_TZR"/></property>
+    
+    <property
+        name="dhEnvio"
+			        type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_ENVIO"/><column name="DH_ENVIO_TZR"/></property>
+    
+    <property
+        name="dsEmailTomador"
+			        type="java.lang.String"
+            column="DS_EMAIL_TOMADOR"
+        length="60"
+    />
+    
+    <property
+        name="dsEmailDestinatario"
+			        type="java.lang.String"
+            column="DS_EMAIL_DESTINATARIO"
+        length="60"
+    />
+    
+</class>
+</hibernate-mapping>

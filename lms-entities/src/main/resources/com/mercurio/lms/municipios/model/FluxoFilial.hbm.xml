@@ -1,0 +1,235 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.FluxoFilial" 
+    table="FLUXO_FILIAL"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idFluxoFilial"
+        type="java.lang.Long"
+        column="ID_FLUXO_FILIAL"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">FLUXO_FILIAL_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrDistancia"
+			        type="java.lang.Integer"
+            column="NR_DISTANCIA"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="nrPrazo"
+			        type="java.lang.Integer"
+            column="NR_PRAZO"
+        not-null="true"
+        length="8"
+    />
+	<property
+        name="nrPrazoTotal"
+			        type="java.lang.Integer"
+            column="NR_PRAZO_TOTAL"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="dsFluxoFilial"
+			        type="java.lang.String"
+            column="DS_FLUXO_FILIAL"
+        not-null="true"
+        length="250"
+    />
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrGrauDificuldade"
+			        type="java.lang.Integer"
+            column="NR_GRAU_DIFICULDADE"
+        length="6"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="blDomingo"
+			        type="sim_nao"
+            column="BL_DOMINGO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blSegunda"
+			        type="sim_nao"
+            column="BL_SEGUNDA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blTerca"
+			        type="sim_nao"
+            column="BL_TERCA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blQuarta"
+			        type="sim_nao"
+            column="BL_QUARTA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blQuinta"
+			        type="sim_nao"
+            column="BL_QUINTA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blSexta"
+			        type="sim_nao"
+            column="BL_SEXTA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blSabado"
+			        type="sim_nao"
+            column="BL_SABADO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blPorto"
+			        type="sim_nao"
+            column="BL_PORTO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Servico -->
+    <many-to-one
+        name="servico"
+        class="com.mercurio.lms.configuracoes.model.Servico"
+        not-null="false"
+    >
+        <column name="ID_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialReembarcadora"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_REEMBARCADORA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialParceira"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="false"
+    >
+        <column name="ID_FILIAL_PARCEIRA" />
+    </many-to-one>
+    
+    <property
+        name="blFluxoSubcontratacao"
+			        type="sim_nao"
+            column="BL_FLUXO_SUBCONTRATACAO"
+        not-null="false"
+        length="1"
+    ></property>
+
+    <many-to-one
+        name="empresaSubcontratada"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="false"
+    >
+        <column name="ID_EMPRESA_SUBCONTRATADA" />
+    </many-to-one>
+    
+
+    <bag
+        name="doctoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.DoctoServico</meta>
+ 	        <key>
+            <column name="ID_FLUXO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.DoctoServico"
+        />
+    </bag>
+    
+    <bag
+        name="ordemFilialFluxos"
+        lazy="true"
+        inverse="true"
+		cascade="all-delete-orphan"
+		order-by="NR_ORDEM"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.OrdemFilialFluxo</meta>
+ 	        <key>
+            <column name="ID_FLUXO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.OrdemFilialFluxo"
+        />
+    </bag>
+    
+</class>
+</hibernate-mapping>

@@ -1,0 +1,344 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.MunicipioFilial" 
+    table="MUNICIPIO_FILIAL"
+>
+
+    <id
+        name="idMunicipioFilial"
+        type="java.lang.Long"
+        column="ID_MUNICIPIO_FILIAL"
+    >
+        <generator class="sequence">
+            <param name="sequence">MUNICIPIO_FILIAL_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrDistanciaAsfalto"
+        type="java.lang.Integer"
+        column="NR_DISTANCIA_ASFALTO"
+        not-null="true"
+        length="4"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="nrDistanciaChao"
+        type="java.lang.Integer"
+        column="NR_DISTANCIA_CHAO"
+        not-null="true"
+        length="4"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="nrGrauDificuldade"
+        type="java.lang.Integer"
+        column="NR_GRAU_DIFICULDADE"
+        length="6"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="blRecebeColetaEventual"
+        type="sim_nao"
+        column="BL_RECEBE_COLETA_EVENTUAL" 
+        not-null="true"
+        length="1"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="blDificuldadeEntrega"
+        type="sim_nao"
+        column="BL_DIFICULDADE_ENTREGA"
+        not-null="true"
+        length="1"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="blPadraoMcd"
+        type="sim_nao"
+        column="BL_PADRAO_MCD"
+        not-null="true"
+        length="1"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+     <property
+        name="blRestricaoAtendimento"
+        type="sim_nao"
+        column="BL_RESTRICAO_ATENDIMENTO"
+        not-null="true"
+        length="1"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="blRestricaoTransporte"
+        type="sim_nao"
+        column="BL_RESTRICAO_TRANSPORTE"
+        not-null="true"
+        length="1"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+        type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true" 
+        length="7"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="dtVigenciaFinal"
+        type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="nmMunicipioAlternativo"
+        type="java.lang.String"
+        column="NM_MUNICIPIO_ALTERNATIVO"
+        length="60"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+ 
+    <!-- Associations -->
+ 
+    <!-- uni-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- uni-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+   <!-- bi-directional one-to-many association to McdMunicipioFilial -->
+    <bag
+        name="mcdMunicipioFiliaisByIdMunicipioFilialOrigem"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.McdMunicipioFilial</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL_ORIGEM" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.McdMunicipioFilial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to McdMunicipioFilial -->
+    <bag
+        name="mcdMunicipioFiliaisByIdMunicipioFilialDestino"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.McdMunicipioFilial</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL_DESTINO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.McdMunicipioFilial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to HistoricoTrocaFilial -->
+    <bag
+        name="historicoTrocaFiliaisByIdMunicipioFilial"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.HistoricoTrocaFilial</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.HistoricoTrocaFilial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to HistoricoTrocaFilial -->
+    <bag
+        name="historicoTrocaFiliaisByIdMunicipioFilialTroca"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.HistoricoTrocaFilial</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL_TROCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.HistoricoTrocaFilial"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioFilialIntervCep -->
+    <bag
+        name="municipioFilialIntervCeps"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialIntervCep</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MunicipioFilialIntervCep"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PostoPassagemMunicipio -->
+    <bag
+        name="postoPassagemMunicipios"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.PostoPassagemMunicipio</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.PostoPassagemMunicipio"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioFilialCliOrigem -->
+    <bag
+        name="municipioFilialCliOrigems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialCliOrigem</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MunicipioFilialCliOrigem"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioFilialUfOrigem -->
+    <bag
+        name="municipioFilialUfOrigems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialUFOrigem</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MunicipioFilialUFOrigem"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioFilialSegmento -->
+    <bag
+        name="municipioFilialSegmentos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialSegmento</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MunicipioFilialSegmento"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to OperacaoServicoLocaliza -->
+    <bag
+        name="operacaoServicoLocalizas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.OperacaoServicoLocaliza</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.OperacaoServicoLocaliza"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MunicipioFilialFilOrigem -->
+    <bag
+        name="municipioFilialFilOrigems"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialFilOrigem</meta>
+ 	        <key>
+            <column name="ID_MUNICIPIO_FILIAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.MunicipioFilialFilOrigem"
+        />
+    </bag>
+
+</class>
+<query name="com.mercurio.lms.municipios.model.MunicipioFilial.findFilialByIdMunicipioNrCep">
+<![CDATA[
+	select new Map(f.idFilial as idFilial, f.sgFilial as sgFilial) 
+		from com.mercurio.lms.municipios.model.MunicipioFilial as mf left join mf.municipio as m
+			left join mf.filial as f
+			left join mf.municipioFilialIntervCeps as mfic
+		where m.id = :idMunicipio and
+		((mfic.nrCepInicial <= :nrCep or mfic.nrCepInicial is null)
+			and (mfic.nrCepFinal >= :nrCep or mfic.nrCepFinal is null)) and
+		((mfic.dtVigenciaInicial is null or mfic.dtVigenciaInicial <= current_date()) 
+			and (mfic.dtVigenciaFinal is null or mfic.dtVigenciaFinal >= current_date())) and
+		(mf.dtVigenciaInicial <= current_date() 
+			and (mf.dtVigenciaFinal is null or mf.dtVigenciaFinal >= current_date()))
+			
+]]></query>
+
+<query name="com.mercurio.lms.municipios.model.MunicipioFilial.findFilialDadosByIdMunicipioNrCep">
+<![CDATA[
+	select new Map(f.idFilial as idFilial, f.sgFilial as sgFilial, p.idPessoa as idPessoa, p.nmPessoa as nmPessoa) 
+		from com.mercurio.lms.municipios.model.MunicipioFilial as mf left join mf.municipio as m
+			left join mf.filial as f
+			left join f.pessoa as p
+			left join mf.municipioFilialIntervCeps as mfic
+		where m.id = :idMunicipio and
+		((mfic.nrCepInicial <= :nrCep or mfic.nrCepInicial is null)
+			and (mfic.nrCepFinal >= :nrCep or mfic.nrCepFinal is null)) and
+		((mfic.dtVigenciaInicial is null or mfic.dtVigenciaInicial <= current_date()) 
+			and (mfic.dtVigenciaFinal is null or mfic.dtVigenciaFinal >= current_date())) and
+		(mf.dtVigenciaInicial <= current_date() 
+			and (mf.dtVigenciaFinal is null or mf.dtVigenciaFinal >= current_date()))
+			
+]]></query>
+
+</hibernate-mapping>

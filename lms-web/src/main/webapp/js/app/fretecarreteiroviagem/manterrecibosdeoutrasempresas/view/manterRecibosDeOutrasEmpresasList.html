@@ -1,0 +1,167 @@
+<form novalidate ng-class="{submitted: submitted}" class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearFilter()" class="btn btn-default btn-lg pull-right" id="limpar">{{'limpar' | translate }}</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">{{'consultar' |
+			translate }}</button>
+	</div>
+
+	<div class="row">
+		<!-- Data Emissão do Recibo  -->
+		<div class="col-sm-8">
+			<div class="form-group">
+				<label for="periodoInicial" class="col-lg-3 control-label"> {{'dataEmissaoRecibo' | translate}} </label>
+				<div class="col-lg-8">
+					<div class="multi-input">
+						<div class="col-xs-5">
+								<input id="periodoInicial" adsm-date-picker ng-model="filter.dtEmissaoReciboInicial" mask="date" class="form-control"
+									data-end="filter.dtEmissaoReciboFinal" data-maxInterval="60">
+						</div>
+						<div class="col-xs-5">
+								<input id="periodoFinal" adsm-date-picker ng-model="filter.dtEmissaoReciboFinal" mask="date" class="form-control"
+									data-start="filter.dtEmissaoReciboInicial" data-maxInterval="60">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Fim Data Emissão do Recibo  -->
+	</div>
+
+	<div class="row">
+		<!-- Sugest de Proprietário  -->
+		<div class="col-sm-8">
+			<div class="form-group">
+				<label for="proprietario" class="col-lg-3 control-label">{{'proprietario' | translate}}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input type="text" disabled class="form-control" value="{{ filter.proprietario.nrIdentificacao }}"
+								id="proprietario.nrIdentificacao">
+						</div>
+						<div class="col-xs-9">
+							<input lms-proprietario-cpf ng-model="filter.proprietario" id="proprietario" class="form-control">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Fim Sugest de Proprietário  -->
+	</div>
+
+	<div class="row">
+
+		<!-- Sugest de Filial  -->
+		<div class="col-sm-8">
+			<div class="form-group">
+				<label for="filial" class="col-lg-3 control-label">{{'filial' | translate}}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input lms-filial ng-model="filter.filial" id="filial" class="form-control">
+						</div>
+						<div class="col-xs-9">
+							<input type="text" disabled class="form-control" value="{{ filter.filial.nmFilial }}" id="filial.nmFilial">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Fim Sugest de Filial  -->
+	</div>
+
+	<div class="row">
+		<!-- Input de Empresa -->
+		<div class="col-sm-8">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'nomeEmpregador' | translate }}</label>
+				<div class="col-lg-9">
+					<input type="text" class="form-control" id="dsEmpresa" ng-model="filter.dsEmpresa" maxlength="100">
+				</div>
+			</div>
+		</div>
+		<!-- Fim Input de Empresa -->
+	</div>
+
+	<div class="row">
+		<!-- Identificador Empregador -->
+		<div class="col-sm-8">
+			<div class="form-group">
+				<label class="col-lg-3 control-label"> {{'identificadorEmpregador' | translate }} </label>
+				<div class="col-lg-9">
+				<div class="multi-input">
+							<div class="col-xs-3">
+								<select data-lms-tipo-identificacao-cnpj-cpf
+								id="tpIdentificacaoEmpregador"
+								ng-model="filter.tipoIdentificadorEmpregador">
+									<option value=""></option>
+								</select>
+							</div>
+
+							<div class="col-xs-9">
+								<input
+								type="text"
+								id="nrIdentificacao"
+								class="form-control"
+								ng-model="filter.nrEmpregador"
+								maxlength="20"							
+								data-pessoa-mask="filter.tipoIdentificadorEmpregador.dsIdentificador" 															
+								>
+							</div>
+						</div>
+				
+				</div>
+			</div>
+		</div>
+		<!-- Fim Identificador Empregador -->
+	</div>
+
+	<div class="row">
+		<!-- Input de Recibo -->
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-4 control-label">{{'numeroRecibo' | translate }}</label>
+				<div class="col-lg-6">
+					<input type="text" class="form-control" id="nrRecibo" ng-model="filter.nrRecibo" maxlength="10">
+				</div>				
+			</div>
+		</div>
+		<!-- Fim Input de Recibo -->
+	
+		<!-- Input Valor INSS -->
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'valorINSS' | translate }}</label>
+				<div class="col-lg-6">
+					<input type="text" class="form-control" id="vlInss" ng-model="filter.vlInss" data-numeric data-moeda>
+				</div>
+			</div>
+		</div>
+		<!-- Fim Input Valor INSS -->
+
+	</div>
+
+	<!-- Grid -->
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams" class="table adsm-table-hover table-condensed table-clickable adsm-table" style="width: 100%"
+					show-checkboxes="true" data-remove-service="removeByIds()">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+							<td column-title="proprietario" sortable="'proprietario.nrIdentificacao'" >
+								{{row.proprietario.nrIdentificacao}} {{row.proprietario.nmPessoa}}</td>
+							<td column-title="dataEmissaoRecibo" sortable="'dtEmissaoRecibo'" >{{row.dtEmissaoRecibo}}</td>
+							<td column-title="filial" sortable="'filial.nmFilial'" >{{row.filial.nmFilial}}</td>
+							<td column-title="numeroRecibo" sortable="'nrRecibo'" >{{row.nrRecibo}}</td>
+							<td column-title="valorINSS" sortable="'vlInss'" >{{row.vlInss | number:2}}</td>
+							<td column-title="vlRemuneracao" sortable="'vlRemuneracao'" >{{row.vlRemuneracao | number:2}}</td>
+							<td column-title="identificadorEmpregador" sortable="'tpIdentificacaoEmpregador.tpIdentificacaoEmpregador'" >{{row.tpIdentificacaoEmpregador.tpIdentificacaoEmpregador }}</td>
+							<td column-title="cpfCnpj" sortable="'nrIdentificacaoEmpregador'" >{{row.nrIdentificacaoEmpregador }}</td>
+							<td column-title="razaoSocial" sortable="'dsEmpregador'" >{{row.dsEmpregador }}</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</form>
+

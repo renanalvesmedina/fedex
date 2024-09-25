@@ -1,0 +1,253 @@
+<style>
+
+.modal-parcelas-aereo .modal-dialog{
+	width: 520px;
+}
+
+.row-disabled{
+	color:grey;
+	font-style:italic;
+}
+</style>
+
+
+<form name="formParam"  class="form-horizontal content-padding">
+
+	<div class="fixed-top">
+		<button type="button" class="btn btn-default btn-lg pull-right" id="salvar" permission="salvar" ng-disabled="btnSalvarDisabled" ng-click="salvar()">
+			{{'salvar' |  translate }}
+		</button>
+		<button type="button" class="btn btn-default btn-lg pull-right" id="gerarDestinos" permission="gerar" ng-click="gerarTodosDestinos(true)" 
+			>
+			{{'gerarDestinos' |  translate }}
+		</button>
+	</div>
+
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="numeroProposta" data-labelSize="6" data-fieldSize="6">
+            <input type="text" disabled ng-model="data.nrSimulacao">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="cliente" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-cliente
+				ng-model="data.cliente"
+				id="cliente"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.cliente.nmPessoa">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="divisaoCliente" data-labelSize="4" data-fieldSize="8">
+            <input type="text"
+					id="divisaoCliente"
+					ng-model="data.divisaoCliente.nmDivisaoCliente"
+					disabled>
+			</input>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="tabelaPrecos" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-tabela-preco="{apenasVigentes:'false'}"
+				ng-model="data.tabelaPreco"
+				id="tabelaPreco"
+				class="form-control"
+				disabled>
+           <input type="text" disabled ng-model="data.tabelaPreco.descricao">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="servico" data-labelSize="4" data-fieldSize="8">
+            <input type="text"
+					id="servico"
+					ng-model="data.servico.nomeServico"
+					disabled>
+			</input>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="origem" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-aeroporto
+				ng-model="data.aeroportoReferencia"	
+				id="aeroportoReferencia"
+				ng-blur="changeAeroportoReferencia()"
+				ng-disabled="data.idProposta"
+				class="form-control">
+       		<input type="text" disabled ng-model="data.aeroportoReferencia.nmAeroporto">
+		</div>
+		
+		<div adsm-add-field data-boxSize="4" data-label="tipoGeracao" data-labelSize="4" data-fieldSize="8">
+
+			<input type="text"
+				id="tipoGeracao"
+				ng-model="data.tpGeracaoProposta.descriptionAsString"
+				disabled>
+			</select>
+		</div>
+		
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="geraExpedicao" data-labelSize="3">
+			<input type="checkbox"  ng-model="data.blFreteExpedido" ng-click="geraDestinos()">
+		</div>
+	
+		<div adsm-add-field data-boxSize="4" data-label="geraRecepcao" data-labelSize="4">
+			<input type="checkbox"  ng-model="data.blFreteRecebido" ng-click="geraOrigens()">
+		</div>
+	</div>
+
+
+	<accordion>
+		<accordion-group ng-show="data.blFreteExpedido" is-open="accordionDestinosIsOpen">
+			<accordion-heading>
+				<span>
+					<input type="checkbox" ng-model="data.marcarTodosDestinos" ng-click="clickMarcarTodosDestinos($event)">
+				</span>
+				{{'destinos' | translate}}
+			</accordion-heading>
+			
+			<div class="row">
+				<div adsm-add-field data-boxSize="4" data-label="regiao" data-labelSize="2" data-fieldSize="6">
+		            <select
+							adsm-chosen
+							id="regiaoDestino"
+							ng-model="data.filterDestino.regiao"
+							ng-options="r as r.dsRegiao for r in regioes">
+							<option value=""></option>
+					</select>
+				</div>
+			</div>
+		
+			<accordion>
+				<accordion-group ng-repeat="destino in data.destinosProposta | filter:data.filterDestino:destinoFilter" ng-click="generateParcelasDestino(destino)" >
+		
+					<accordion-heading>
+						<span>
+							<input type="checkbox" ng-model="destino.blGeraDestinoProposta" ng-click="clickBlGeraDestinoProposta(destino, $event)">
+						</span>
+						{{destino.dsDestino}}
+					</accordion-heading>
+		
+					<table class="table adsm-table-hover table-condensed adsm-table table-clickable">
+						<thead>
+							<tr>
+								<th><input ng-model="parcelaFilter.dsParcela" class="form-control adsm-table-inline-filter"></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+		
+							<tr>
+								<th>
+									{{'parcela' | translate }}
+								</th>
+		
+								<th>{{'valorOriginal' | translate }}</th>
+		
+								<th>{{'valor' | translate }}</th>
+		
+								<th>{{'indicador' | translate }}</th>
+		
+								<th>{{'percentual' | translate }}</th>
+							</tr>
+						</thead>
+		
+						<tbody>
+							<tr ng-repeat="parcela in destino.parcelas | filter:parcelaFilter:strict"
+								ng-click="openModalParcela(parcela, destino)"
+								ng-class="{ 'row-disabled' : !destino.blGeraDestinoProposta }"
+								ng-disabled="!destino.blGeraDestinoProposta">
+								<td inline-property-filter="parcela.dsParcela">{{parcela.dsParcela}}</td>
+								<td >{{parcela.vlOriginal | number: 2}}</td>
+								<td >{{parcela.vlCalculado | number: 2}}</td>
+								<td >{{parcela.tpIndicador.descriptionAsString}}</td>
+								<td >{{parcela.vlPercentual | number: 2}}%</td>
+							</tr>
+						</tbody>
+					</table>
+				</accordion-group>
+			</accordion>
+		</accordion-group>
+		
+		<accordion-group ng-show="data.blFreteRecebido" is-open="accordionOrigensIsOpen">
+			<accordion-heading>
+				<span>
+					<input type="checkbox" ng-model="data.marcarTodasOrigens" ng-click="clickMarcarTodasOrigens($event)">
+				</span>
+				{{'origens' | translate}}
+			</accordion-heading>
+			
+			<div class="row">
+			
+				<div adsm-add-field data-boxSize="4" data-label="regiao" data-labelSize="2" data-fieldSize="6">
+		            <select
+							adsm-chosen
+							id="regiaoOrigem"
+							ng-model="data.filterOrigem.regiao"
+							ng-options="r as r.dsRegiao for r in regioes">
+							<option value=""></option>
+					</select>
+				</div>
+			</div>
+		
+			<accordion>
+				<accordion-group ng-repeat="destino in data.origensProposta | filter:data.filterOrigem:destinoFilter" ng-click="generateParcelasDestino(destino)" >
+		
+					<accordion-heading>
+						<span>
+							<input type="checkbox" ng-model="destino.blGeraDestinoProposta" ng-click="clickBlGeraDestinoProposta(destino, $event)">
+						</span>
+						{{destino.dsDestino}}
+					</accordion-heading>
+		
+					<table class="table adsm-table-hover table-condensed adsm-table table-clickable">
+						<thead>
+							<tr>
+								<th><input ng-model="parcelaFilter.dsParcela" class="form-control adsm-table-inline-filter"></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+							</tr>
+		
+							<tr>
+								<th>
+									{{'parcela' | translate }}
+								</th>
+		
+								<th>{{'valorOriginal' | translate }}</th>
+		
+								<th>{{'valor' | translate }}</th>
+		
+								<th>{{'indicador' | translate }}</th>
+		
+								<th>{{'percentual' | translate }}</th>
+							</tr>
+						</thead>
+		
+						<tbody>
+							<tr ng-repeat="parcela in destino.parcelas | filter:parcelaFilter:strict"
+								ng-click="openModalParcela(parcela, destino)"
+								ng-class="{ 'row-disabled' : !destino.blGeraDestinoProposta }"
+								ng-disabled="!destino.blGeraDestinoProposta">
+								<td inline-property-filter="parcela.dsParcela">{{parcela.dsParcela}}</td>
+								<td >{{parcela.vlOriginal | number: 2}}</td>
+								<td >{{parcela.vlCalculado | number: 2}}</td>
+								<td >{{parcela.tpIndicador.descriptionAsString}}</td>
+								<td >{{parcela.vlPercentual | number: 2}}%</td>
+							</tr>
+						</tbody>
+					</table>
+				</accordion-group>
+			</accordion>
+		</accordion-group>
+		
+	</accordion>
+
+</form>

@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.portaria.model.Terminal" 
+    table="TERMINAL" 
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idTerminal"
+        type="java.lang.Long"
+        column="ID_TERMINAL"
+    >
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>
+
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrAreaTotal"
+			        type="java.math.BigDecimal"
+            column="NR_AREA_TOTAL"
+        length="18"
+    />
+    <property
+        name="nrAreaArmazenagem"
+			        type="java.math.BigDecimal"
+            column="NR_AREA_ARMAZENAGEM"
+        length="18"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="obTerminal"
+			        type="java.lang.String"
+            column="OB_TERMINAL"
+        length="500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    <!-- Associations -->
+  
+    <one-to-one name="pessoa" constrained="true"/>
+    
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to Doca -->
+    <bag
+        name="docas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.Doca</meta>
+ 	        <key>
+            <column name="ID_TERMINAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.Doca"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Modulo -->
+    <bag
+        name="modulos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.Modulo</meta>
+ 	        <key>
+            <column name="ID_TERMINAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.Modulo"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Portaria -->
+    <bag
+        name="portarias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.Portaria</meta>
+ 	        <key>
+            <column name="ID_TERMINAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.Portaria"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

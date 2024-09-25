@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.portaria.model.RegistroAuditoria" 
+    table="REGISTRO_AUDITORIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRegistroAuditoria"
+        type="java.lang.Long"
+        column="ID_REGISTRO_AUDITORIA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">REGISTRO_AUDITORIA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhRegistroAuditoria"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_REGISTRO_AUDITORIA"/><column name="DH_REGISTRO_AUDITORIA_TZR"/></property>
+    <property
+        name="nrRegistroAuditoria"
+			        type="java.lang.Integer"
+            column="NR_REGISTRO_AUDITORIA"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="tpResultado"
+		    column="TP_RESULTADO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_RESULTADO_AUDITORIA</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="obComentarios"
+			        type="java.lang.String"
+            column="OB_COMENTARIOS"
+        not-null="true"
+        length="500"
+    />
+    <property
+        name="dhLiberacao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_LIBERACAO"/><column name="DH_LIBERACAO_TZR"/></property>
+    <property
+        name="dhEmissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+    <property
+        name="obMotivoLiberacao"
+			        type="java.lang.String"
+            column="OB_MOTIVO_LIBERACAO"
+        length="500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    
+    
+    <!-- bi-directional many-to-one association to Usuario (liberação)-->
+    <many-to-one
+        name="usuarioLiberacao"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO_LIBERACAO" />
+    </many-to-one>
+    
+    
+    <!-- bi-directional many-to-one association to MeioTransporteRodoviario -->
+    <many-to-one
+        name="meioTransporteRodoviario"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporte (SemiReboque) -->
+    <many-to-one
+        name="semiReboque"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporteRodoviario"
+        not-null="false"
+    >
+        <column name="ID_SEMI_REBOQUE" />
+    </many-to-one>
+    
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA" />
+        
+    </many-to-one>    
+    
+    <many-to-one
+        name="equipeOperacao"
+        class="com.mercurio.lms.carregamento.model.EquipeOperacao"
+        not-null="true"
+    >
+        <column name="ID_EQUIPE_OPERACAO" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to NaoConformidadeAuditoria -->
+    <bag
+        name="naoConformidadeAuditorias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.NaoConformidadeAuditoria</meta>
+ 	        <key>
+            <column name="ID_REGISTRO_AUDITORIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.NaoConformidadeAuditoria"
+        />
+    </bag>
+    
+    <bag
+        name="lacresRegistroAuditoria"
+        lazy="true"
+        inverse="true"
+		cascade="save-update"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.LacreRegistroAuditoria</meta>
+ 	        <key>
+            <column name="ID_REGISTRO_AUDITORIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.LacreRegistroAuditoria"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to EquipeAuditoria -->
+    <bag
+        name="equipeAuditorias"
+        lazy="true"
+        inverse="true"
+		cascade="save-update"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.EquipeAuditoria</meta>
+ 	        <key>
+            <column name="ID_REGISTRO_AUDITORIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.EquipeAuditoria"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

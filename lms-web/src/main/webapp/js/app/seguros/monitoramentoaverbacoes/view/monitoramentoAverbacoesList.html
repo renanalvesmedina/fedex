@@ -1,0 +1,138 @@
+<style type="text/css">
+
+    #tb-averbacoes thead th:nth-child(6), #tb-averbacoes thead th:nth-child(2) {
+        width: 100px;
+    }
+
+    #tb-averbacoes tbody tr td {
+        white-space: nowrap;
+        text-overflow: unset;
+        font-size: 12px;
+    }
+
+    #nrConhecimento {
+        padding-left: 2px;
+    }
+</style>
+
+<form class="form-horizontal content-padding" ng-submit="consultarExportar()">
+    <div class="fixed-top"> 
+        <button type="button" class="btn btn-default btn-lg pull-right" data-ng-click="clearFilter()"
+                id="limpar">
+            {{'limpar'|  translate }}
+        </button>
+        <button type="submit" data-ng-click="filter.acao = 'C'" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate }}
+		</button>
+        <button type="button" class="btn btn-default btn-lg pull-right"
+                id="reenviar" data-ng-click="reenviar()" data-ng-disabled="(!naoAverbado) || listTableParams.list.length == 0">
+            {{'reenviar2'|  translate }}
+        </button>
+
+        <button type="submit" data-ng-click="filter.acao = 'E'" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">
+			{{'exportarExcel' | translate }}
+		</button>
+    </div>
+    
+    <div class="row">
+        <div adsm-add-field data-boxSize="6" data-label="filial" data-labelSize="4" data-multiSize="2,10">
+            <input lms-filial class="form-control" id="filial.sgFilial" ng-model="filter.filial" required>
+            <input type="text" class="form-control" id="filial.nmFilial" ng-model="filter.filial.nmFilial" disabled>
+        </div>
+
+        <div adsm-add-field data-boxSize="6" data-label="cliente" data-labelSize="2" data-multiSize="4,8">
+            <input lms-cliente class="form-control" id="cliente" ng-model="filter.cliente">
+            <input type="text" class="form-control" ng-model="filter.cliente.nmPessoa" disabled>
+        </div>
+    </div>
+
+    <div class="row">
+        <div adsm-add-field data-boxSize="6" data-label="periodo" data-labelSize="4" data-multiSize="6">
+
+            <input id="periodoEmissaoInicial"
+                   adsm-date-picker
+                   ng-model="filter.dtAverbacaoInicial"
+                   mask="date"
+                   class="form-control"
+                   data-mininterval="0"
+                   data-maxinterval="4"
+                   data-end="filter.dtAverbacaoFinal"
+                   ng-required="true">
+
+            <input id="periodoEmissaoFinal"
+                   adsm-date-picker
+                   ng-model="filter.dtAverbacaoFinal"
+                   mask="date"
+                   class="form-control"
+                   data-mininterval="0"
+                   data-maxinterval="4"
+                   data-start="filter.dtAverbacaoInicial"
+                   ng-required="true">
+        </div>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="averbado" class="col-md-2 control-label">{{'averbado'| translate}}</label>
+                <div class="col-md-3">
+                    <select
+                        id="averbado"
+                        adsm-domain="SIMNAO"
+                        ng-model="filter.averbado">
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="tipoMonitoriamentoAverbacao" class="col-md-4 control-label">{{'tipoMonitoriamentoAverbacao'| translate}}</label>
+                <div class="col-md-3">
+                    <select
+                        adsm-domain="DM_TIPO_MONITORAMENTO_AVERBACAO"
+                        ng-model="filter.tipoMonitoriamentoAverbacao"
+                        ng-init="options[1].value">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="nrConhecimento" class="col-md-3 col-lg-3 col-sm-4" style="padding-top: 4px;" >{{'conhecimento'| translate}}</label>
+
+                <div class="col-md-3">
+                    <input id="nrConhecimento" ng-model="filter.nrConhecimento" class="col-md-12 col-lg-12 col-sm-12 form-control" data-numeric="{maxLength: '10'}" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <p>&nbsp;</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <table id='tb-averbacoes' adsm-table="listTableParams" data-show-checkboxes="naoAverbado">
+                <tbody>
+                    <tr data-ng-repeat="row in page">
+                        <td column-title="tipo" class="text-center">{{row.tipoMonitoramentoAverbacao}}</td>
+                        <td column-title="documentoDeServico" class="text-center">{{row.tpDoctoServico}} {{row.sgFilial}} {{row.nrDoctoServico}}</td>
+                        <td column-title="cliente" class="text-center">{{row.nmCliente}}</td>
+                        <td column-title="situacaoDocumento" class="text-center">{{row.tpSituacaoDocumento}}</td>
+                        <td column-title="dtAverbacao" class="text-center">{{row.dtAverbacao}}</td>
+                        <td column-title="nrAverbacao" class="text-center">{{row.nrAverbacao}}</td>
+                        <td column-title="averbado" class="text-center">{{row.averbado| customBoolean | translate}}</td>
+                        <td column-title="retornoAverbacao" class="text-center">
+                            <span data-toggle="tooltip" title="{{row.dsRetorno}}">{{row.dsRetorno}}</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</form> 

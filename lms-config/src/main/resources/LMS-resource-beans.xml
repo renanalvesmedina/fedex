@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "spring-beans.dtd">
+
+<!--  Deve ser default-lazy-init="true" para 
+	impedir a carga da SessionFactory no inicio da aplicação.
+	Gera problemas no deploy automatizado no Oracle iAS.
+-->
+<beans default-lazy-init="true"> 
+
+	<bean id="adsmConnectionInit.clientInfo" 
+			class="com.mercurio.lms.util.session.LMSConnectionInfo"/>
+
+	<bean id="adsmConnectionInit.customConnectionSessionConfigs"
+			class="org.springframework.beans.factory.config.ListFactoryBean">
+		<property name="sourceList">
+			<list>
+				<bean class="com.mercurio.lms.util.session.BatchConnectionSessionConfig"/>
+		    </list>
+		</property>
+	</bean>
+	
+	<bean id="adsm.hibernate.connectionProviderClass" class="org.springframework.beans.factory.config.TypedStringValue">
+		<constructor-arg index="0" value="com.mercurio.lms.configuracoes.model.service.LmsConnectionProvider" />
+		<constructor-arg index="1" value="java.lang.String" />
+	</bean>
+	
+</beans>

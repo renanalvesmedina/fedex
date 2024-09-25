@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.expedicao.model.InformacaoDocServico" 
+	table="INFORMACAO_DOC_SERVICO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idInformacaoDocServico"
+		type="java.lang.Long"
+		column="ID_INFORMACAO_DOC_SERVICO"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">INFORMACAO_DOC_SERVICO_SQ</param>
+		</generator>
+	</id>
+	<version name="versao" column="NR_VERSAO"/>
+	<property
+		name="nrTamanho"
+		type="java.lang.Short"
+		column="NR_TAMANHO"
+		not-null="false"
+		length="3"
+	/>
+	<property
+		name="dsCampo"
+		type="java.lang.String"
+		column="DS_CAMPO"
+		not-null="true"
+		unique="true"
+		length="60"
+	/>
+	<property
+		name="blImprimeConhecimento"
+		type="sim_nao"
+		column="BL_IMPRIME_CONHECIMENTO"
+		not-null="true"
+		length="1"
+	>
+	</property>
+	<property
+		name="tpCampo"
+		column="TP_CAMPO"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_TIPO_CAMPO</param>
+		</type>
+	</property>
+	<property
+		name="tpSituacao"
+		column="TP_SITUACAO"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+	<property
+		name="nrDecimais"
+		type="java.lang.Short"
+		column="NR_DECIMAIS"
+		length="3"
+	/>
+	<property
+		name="blOpcional"
+		type="sim_nao"
+		column="BL_OPCIONAL"
+		length="1"
+	>
+	</property>
+	<property
+		name="dsFormatacao"
+		type="java.lang.String"
+		column="DS_FORMATACAO"
+		length="60"
+	/>
+	<property
+		name="blIndicadorNotaFiscal"
+		type="sim_nao"
+		column="BL_INDICADOR_NOTA_FISCAL"
+		length="1"
+	>
+	</property>
+
+	<!-- Associations -->
+
+	<!-- bi-directional one-to-many association to DominioAgrupamento -->
+	<bag
+		name="dominioAgrupamentos"
+		lazy="true"
+		inverse="true"
+		cascade="all"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DominioAgrupamento</meta>
+		<key>
+			<column name="ID_INFORMACAO_DOC_SERVICO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.vendas.model.DominioAgrupamento"
+		/>
+	</bag>
+	<!-- bi-directional one-to-many association to DadosComplemento -->
+	<bag
+		name="dadosComplementos"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.DadosComplemento</meta>
+		<key>
+			<column name="ID_INFORMACAO_DOC_SERVICO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.expedicao.model.DadosComplemento"
+		/>
+	</bag>
+	<!-- bi-directional many-to-one association to TipoRegistroComplemento -->
+	<many-to-one
+		name="tipoRegistroComplemento"
+		class="com.mercurio.lms.expedicao.model.TipoRegistroComplemento"
+		not-null="true"
+	>
+		<column name="ID_TIPO_REGISTRO_COMPLEMENTO" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

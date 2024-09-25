@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.workflow.model.Acao" 
+    table="ACAO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idAcao"
+        type="java.lang.Long"
+        column="ID_ACAO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ACAO_SQ</param>
+        </generator>
+    </id>
+    
+    <property
+        name="nrOrdemAprovacao"
+			        type="java.lang.Byte"
+            column="NR_ORDEM_APROVACAO"
+        not-null="true"
+        length="2"
+    />    
+    <property
+        name="dhInclusao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+    <property
+        name="tpSituacaoAcao"
+		    column="TP_SITUACAO_ACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_ACAO_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="blLiberada"
+			        type="sim_nao"
+            column="BL_LIBERADA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="obAcao"
+			        type="java.lang.String"
+            column="OB_ACAO"
+        not-null="false"
+        length="500"
+    />
+    <property
+        name="dhLiberacao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_LIBERACAO"/><column name="DH_LIBERACAO_TZR"/></property>
+    <property
+        name="dhAcao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_ACAO"/><column name="DH_ACAO_TZR"/></property>    
+    
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+		entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to SubstitutoFaltaAcao -->
+    <bag
+        name="substitutoFaltaAcoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.SubstitutoFaltaAcao</meta>
+ 	        <key>
+            <column name="ID_ACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.workflow.model.SubstitutoFaltaAcao"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Pendencia -->
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="true"
+    >
+        <column name="ID_PENDENCIA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Integrante -->
+    <many-to-one
+        name="integrante"
+        class="com.mercurio.lms.workflow.model.Integrante"
+        not-null="true"
+    >
+        <column name="ID_INTEGRANTE" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

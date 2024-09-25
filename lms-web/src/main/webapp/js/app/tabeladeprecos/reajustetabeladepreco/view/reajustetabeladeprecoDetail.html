@@ -1,0 +1,220 @@
+<form class="form-horizontal content-padding" data-ng-submit="store()">
+
+	<div class="fixed-top">
+		<div class="content">
+
+			<button type="button" data-ng-click="clearData()" class="btn btn-default btn-lg pull-right" id="limparDados"  ng-disabled="data.efetivado">
+				{{'limpar' |  translate }}
+			</button>
+			
+			<button type="button" data-ng-click="removeById()" data-adsm-loading="excluindo" ng-disabled="!data.id || data.efetivado"  class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir">
+				{{'excluir' |  translate }}
+			</button>
+			
+			<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="data.efetivado">
+				{{'salvar' |  translate }}
+			</button>
+			
+			<button type="button" data-ng-click="executarReajuste()" class="btn btn-default btn-lg pull-right" id="efetivar" ng-disabled="!data.id || data.efetivado">
+				{{'executarReajuste' |  translate }}
+			</button>
+			
+		</div>
+	</div>
+	
+	<input type="hidden"  name="filial"    class="form-control" ng-model="data.idFilial"  />
+	<input type="hidden" name="idTabBase" class="form-control" ng-model="data.idTabelaBase" />
+
+	<div class="row">
+	
+		<div class="col-sm-6">
+			
+			<div class="row">
+			
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label class="col-lg-3 control-label">{{'tabelaBase' |  translate }}</label>
+						<div class="col-lg-9">
+							<input lms-tabela-base type="text" class="form-control" id="tabelaBase"  ng-model="data.tabelaBase" required ng-disabled="data.id" maxlength="10" />
+						</div>
+					</div>
+				</div>
+			</div>	
+			
+			<div class="row"> 
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-6 control-label">{{'tipoTabela' |  translate }}</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" ng-model="data.tipo" required maxlength="10" ng-disabled="data.id" />
+						</div>
+					</div>
+				</div>				
+			
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-5 control-label">{{'nroReajuste' |  translate }}</label>
+						<div class="col-lg-7">
+							<input type="text" class="form-control" ng-model="data.nrReajusteFilial"  disabled />
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="row">
+				
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-6 control-label">{{'versao' |  translate }}</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" ng-model="data.versao" required ng-disabled="data.id" data-numeric="{mDec: '0', vMax: '999999'}" />
+						</div>
+					</div>
+				</div>	
+			
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-5 control-label">{{'dataGeracao' |  translate }}</label>
+						<div class="col-lg-7">
+								<input id="dtGeracao" adsm-date-picker ng-model="data.dtGeracao" mask="date" class="form-control" disabled />
+						</div>
+					</div>
+				</div>
+				
+			</div>	
+			
+			<div class="row">
+			
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-6 control-label">{{'subtipoTab' |  translate }}</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" ng-model="data.subTipo" required maxlength="10" ng-disabled="data.id" />
+						</div>
+					</div>
+				</div>	
+				
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-5 control-label">{{'fecharVigenciaTabelaBase' |  translate }}</label>
+						<div class="col-lg-7">
+							<input type="checkbox" ng-model="data.fechaVigenciaTabelaBase"/>
+						</div>
+					</div>
+				</div>	
+				
+			</div>	
+			
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-6 control-label">{{'reajusteGeral' |  translate }}</label>
+						<div class="col-lg-6">
+							<input type="text" class="form-control" ng-model="data.percentualReajusteGeral" required data-numeric="{mDec: '2', vMax: '99'}" data-percentual ng-disabled="data.efetivado"/>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-5 control-label">{{'inicioVigenciaAutomatico' |  translate }}</label>
+						<div class="col-lg-7">
+								<input id="dtAgendamento" adsm-date-picker ng-model="data.dtAgendamento" mask="date" class="form-control"  ng-disabled="data.efetivado"/>
+						</div>
+					</div>
+				</div>	
+				
+			</div>	
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label for="vigencia" class="col-lg-3 control-label">{{'vigencia' | translate}}</label>
+						<div class="col-lg-9">
+						
+							<div class="multi-input">
+								<div class="col-xs-6">
+										<input id="dtVigenciaInicial" adsm-date-picker ng-model="data.dtVigenciaInicial" mask="date" class="form-control" required  ng-disabled="data.efetivado"/>
+								</div>
+								
+								<div class="col-xs-6">
+										<input id="dtVigenciaFinal" adsm-date-picker ng-model="data.dtVigenciaFinal" mask="date" class="form-control"  ng-disabled="data.efetivado" />
+								</div>
+								
+							</div>
+							
+						</div>
+					</div>	
+				</div>
+			</div>	
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label class="col-lg-3 control-label">{{'funcionario' |  translate }}</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" ng-model="data.usuario" disabled />
+						</div>
+					</div>
+				</div>	
+			</div>	
+			
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-6 control-label">{{'dataExecucao' |  translate }}</label>
+						<div class="col-lg-6">
+								<input id="dtEfetivacao" adsm-date-picker ng-model="data.dtEfetivacao" mask="date" class="form-control" disabled />
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-5 control-label">{{'Executada' |  translate }}</label>
+						<div class="col-lg-7">
+							<input type="checkbox" id="checkedEfetivacao" ng-model="data.efetivado" disabled />
+						</div>
+					</div>
+				</div>	
+				
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group">
+						<label class="col-lg-3 control-label">{{'descricao' |  translate }}</label>
+						<div class="col-lg-9">
+							<input type="text" class="form-control" ng-model="data.descricao" id="descricao" required/>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	
+		<div class="col-sm-6">
+			<table class="table adsm-table-hover table-condensed table-clickable adsm-table" style="width: 95%; ">
+				<thead>
+					<tr>
+						<th> {{'todos' |  translate }} <input type="checkbox" id="checkedAll" ng-click="selectAllParcelas()"  ng-disabled="data.efetivado" />   </th>
+						<th> {{'parcelas' |  translate }} </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="item in data.listParcelas">	
+						<td align="center"> <input type="checkbox" id="item.id" ng-checked="isCheckboxSelected(item)" ng-click="toggleCheckboxParcela(item.id)"  ng-disabled="data.efetivado">  </td>
+						<td > <p ng-bind-html="item.desc"> </p> </td>									
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+
+		
+		
+		
+	</div>
+	
+</form>

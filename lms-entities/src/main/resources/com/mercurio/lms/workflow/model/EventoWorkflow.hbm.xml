@@ -1,0 +1,140 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.workflow.model.EventoWorkflow" 
+    table="EVENTO_WORKFLOW"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id name="idEventoWorkflow" column="ID_EVENTO_WORKFLOW">
+        <generator class="foreign">
+            <param name="property">tipoEvento</param>
+        </generator>        
+    </id>
+
+    <property
+        name="hrAcaoAutomatica"
+			        type="jttimeofday"
+            column="HR_ACAO_AUTOMATICA"
+        not-null="true"
+        length="7"
+    />
+    
+	<property
+        name="tpAcaoAutomatica"
+		    column="TP_ACAO_AUTOMATICA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ACAO_AUTOMATICA_WORKFLOW</param>
+	    </type>
+    </property>
+	<property
+        name="tpAlerta"
+		    column="TP_ALERTA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ALERTA_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="blRequerAprovacao"
+			        type="sim_nao"
+            column="BL_REQUER_APROVACAO"
+        not-null="true"
+        length="1"
+    />
+	<property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property
+        name="nmClasseVisualizacao"
+			        type="java.lang.String"
+            column="NM_CLASSE_VISUALIZACAO"
+        length="500"
+    />
+    <property
+        name="nmClasseAcao"
+			        type="java.lang.String"
+            column="NM_CLASSE_ACAO"
+        length="500"
+    />
+    <property
+        name="nmChaveTitulo"
+			        type="java.lang.String"
+            column="NM_CHAVE_TITULO"
+        length="100"
+    />
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to TipoEvento -->
+    <one-to-one
+        name="tipoEvento"
+        class="com.mercurio.lms.workflow.model.TipoEvento"
+        outer-join="auto"
+        constrained="true"
+    />
+    <!-- bi-directional one-to-many association to Ocorrencia -->
+    <bag
+        name="ocorrencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.Ocorrencia</meta>
+ 	        <key>
+            <column name="ID_EVENTO_WORKFLOW" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.workflow.model.Ocorrencia"
+        />
+    </bag>
+    
+            <bag
+        name="emailEventoUsuario"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.workflow.model.EmailEventoUsuario</meta>
+ 	        <key>
+            <column name="ID_EVENTO_WORKFLOW" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.workflow.model.EmailEventoUsuario"
+        />
+    </bag>
+    
+    
+    <!-- bi-directional many-to-one association to Comite -->
+    <many-to-one
+        name="comite"
+        class="com.mercurio.lms.workflow.model.Comite"
+        not-null="true"
+    >
+        <column name="ID_COMITE" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

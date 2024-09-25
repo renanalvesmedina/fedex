@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tributos.model.IssMunicipioServico" 
+    table="ISS_MUNICIPIO_SERVICO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idIssMunicipioServico"
+        type="java.lang.Long"
+        column="ID_ISS_MUNICIPIO_SERVICO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ISS_MUNICIPIO_SERVICO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="ddRecolhimento"
+			type="java.lang.Byte"
+            column="DD_RECOLHIMENTO"
+        length="2"
+    />
+    <property
+        name="tpFormaPagamento"
+		    column="TP_FORMA_PAGAMENTO"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_FORMA_PGTO_ISS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ServicoMunicipio -->
+    <many-to-one
+        name="servicoMunicipio"
+        class="com.mercurio.lms.tributos.model.ServicoMunicipio"
+        not-null="false"
+        outer-join="true"
+    >
+        <column name="ID_SERVICO_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to AliquotaIssMunicipioServ -->
+    <bag
+        name="aliquotaIssMunicipioServs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.AliquotaIssMunicipioServ</meta>
+ 	        <key>
+            <column name="ID_ISS_MUNICIPIO_SERVICO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.AliquotaIssMunicipioServ"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to ServicoTributo -->
+    <many-to-one
+        name="servicoTributo"
+        class="com.mercurio.lms.tributos.model.ServicoTributo"
+        not-null="false"
+        outer-join="true"
+    >
+        <column name="ID_SERVICO_TRIBUTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ServicoAdicional -->
+    <many-to-one
+        name="servicoAdicional"
+        class="com.mercurio.lms.configuracoes.model.ServicoAdicional"
+        not-null="false"
+        outer-join="true"
+    >
+        <column name="ID_SERVICO_ADICIONAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

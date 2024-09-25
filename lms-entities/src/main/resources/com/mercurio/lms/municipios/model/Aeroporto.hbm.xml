@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+<!--
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.municipios.model.Aeroporto" 
+	table="AEROPORTO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id name="idAeroporto" column="ID_AEROPORTO">
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="foreign">
+			<param name="property">pessoa</param>
+		</generator>
+	</id>
+
+	<property
+		name="sgAeroporto"
+		type="java.lang.String"
+		column="SG_AEROPORTO"
+		not-null="true"
+		unique="true"
+		length="3"
+	/>
+	<property
+		name="cdCidade"
+		type="java.lang.String"
+		column="CD_CIDADE"
+		not-null="true"
+		length="3"
+	/>
+	<property
+		name="tpSituacao"
+		column="TP_SITUACAO"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain" >
+			<param name="domainName">DM_STATUS</param>
+		</type>
+	</property>
+
+	<property name="blTaxaTerrestreObrigatoria" type="sim_nao" column="BL_TAXA_TERRESTRE_OBRIGATORIA" not-null="true" length="1"/>
+
+	<!-- Associations -->
+  
+	<!-- one-to-one association to Pessoa -->
+	<one-to-one
+		name="pessoa"
+		class="com.mercurio.lms.configuracoes.model.Pessoa"
+		constrained="true"
+	/>
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filial"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="false"
+		outer-join="true"
+	>
+		<column name="ID_FILIAL_RESPONSAVEL" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

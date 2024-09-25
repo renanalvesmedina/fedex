@@ -1,0 +1,116 @@
+/*
+ * This class was automatically generated with 
+ * <a href="http://www.castor.org">Castor 1.3.3</a>, using an XML
+ * Schema.
+ * $Id$
+ */
+
+package com.mercurio.lms.mdfe.model.v300;
+
+/**
+ *  Informações da localização do
+ *  carregamento do MDF-e de carga lotação 
+ * 
+ * @version $Revision$ $Date$
+ */
+@SuppressWarnings("serial")
+public class InfLocalCarrega implements java.io.Serializable {
+
+    /**
+     * CEP onde foi carregado o MDF-e 
+     */
+    private java.lang.String CEP;
+    
+    public InfLocalCarrega() {
+        super();
+    }
+
+    /**
+     * Returns the value of field 'CEP'. The field 'CEP' has
+     * the following description: CEP onde foi carregado o MDF-e 
+     * 
+     * @return the value of field 'CEP'.
+     */
+    public java.lang.String getCEP() {
+        return this.CEP;
+    }
+    
+    /**
+     * Method isValid.
+     * 
+     * @return true if this object is valid according to the schema
+     */
+    public boolean isValid() {
+        try {
+            validate();
+        } catch (org.exolab.castor.xml.ValidationException vex) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 
+     * 
+     * @param out
+     * @throws org.exolab.castor.xml.MarshalException if object is
+     * null or if any SAXException is thrown during marshaling
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     */
+    public void marshal(final java.io.Writer out) throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException {
+        org.exolab.castor.xml.Marshaller.marshal(this, out);
+    }
+
+    /**
+     * 
+     * 
+     * @param handler
+     * @throws java.io.IOException if an IOException occurs during
+     * marshaling
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     * @throws org.exolab.castor.xml.MarshalException if object is
+     * null or if any SAXException is thrown during marshaling
+     */
+    public void marshal(final org.xml.sax.ContentHandler handler) throws java.io.IOException, org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException {
+        org.exolab.castor.xml.Marshaller.marshal(this, handler);
+    }
+
+    /**
+     * Sets the value of field 'CEP'. The field 'CEP' has the
+     * following description: CEP onde foi carregado o MDF-e 
+     * 
+     * @param CEP the value of field 'CEP'.
+     */
+    public void setCEP(final java.lang.String CEP) {
+        this.CEP = CEP;
+    }
+
+    /**
+     * Method unmarshal.
+     * 
+     * @param reader
+     * @throws org.exolab.castor.xml.MarshalException if object is
+     * null or if any SAXException is thrown during marshaling
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     * @return the unmarshaled
+     * com.mercurio.lms.mdfe.model.v300.InfLocalCarrega
+     */
+    public static com.mercurio.lms.mdfe.model.v300.InfLocalCarrega unmarshal(final java.io.Reader reader) throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException {
+        return (com.mercurio.lms.mdfe.model.v300.InfLocalCarrega) org.exolab.castor.xml.Unmarshaller.unmarshal(com.mercurio.lms.mdfe.model.v300.InfLocalCarrega.class, reader);
+    }
+
+    /**
+     * 
+     * 
+     * @throws org.exolab.castor.xml.ValidationException if this
+     * object is an invalid instance according to the schema
+     */
+    public void validate() throws org.exolab.castor.xml.ValidationException {
+        org.exolab.castor.xml.Validator validator = new org.exolab.castor.xml.Validator();
+        validator.validate(this);
+    }
+
+}

@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.PermissoEmpresaPais" 
+    table="PERMISSO_EMPRESA_PAIS"
+	lazy="false"
+>
+
+    <id
+        name="idPermissoEmpresaPais"
+        type="java.lang.Long"
+        column="ID_PERMISSO_EMPRESA_PAIS"
+    >
+        <generator class="sequence">
+            <param name="sequence">PERMISSO_EMPRESA_PAIS_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrPermisso"
+        type="java.lang.Integer"
+        column="NR_PERMISSO"
+        not-null="true"
+        length="5"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="nrPermissoMic"
+        type="java.lang.String"
+        column="NR_PERMISSO_MIC"
+        not-null="true"
+        length="30"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+        type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+    <property
+        name="dtVigenciaFinal"
+        type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    >
+        <meta attribute="use-in-tostring">true</meta>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Pais -->
+    <many-to-one
+        name="paisByIdPaisOrigem"
+        class="com.mercurio.lms.municipios.model.Pais"
+        not-null="true"
+    >
+        <column name="ID_PAIS_ORIGEM" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pais -->
+    <many-to-one
+        name="paisByIdPaisDestino"
+        class="com.mercurio.lms.municipios.model.Pais"
+        not-null="true"
+    >
+        <column name="ID_PAIS_DESTINO" />
+    </many-to-one>
+   <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one
+        name="empresa"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA" />
+    </many-to-one>
+ 	<!-- bi-directional one-to-many association to CtoInternacional -->
+    <bag
+        name="ctoInternacionais"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.CtoInternacional</meta>
+ 	        <key>
+            <column name="ID_PERMISSO_EMPRESA_PAIS" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.CtoInternacional"
+        />
+    </bag>
+
+</class>
+</hibernate-mapping>

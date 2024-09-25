@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.vendas.model.EventoPce" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="EVENTO_PCE">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_EVENTO_PCE" name="idEventoPce" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EVENTO_PCE_SQ</param>
+        </generator>
+    </id>
+    <property column="DS_EVENTO_PCE_I" length="500" name="dsEventoPce" not-null="true" type="varcharI18n"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+	<property column="CD_EVENTO_PCE" length="10" name="cdEventoPce" not-null="true" type="java.lang.Long"/>
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ProcessoPce -->
+    <many-to-one class="com.mercurio.lms.vendas.model.ProcessoPce" name="processoPce" not-null="true">
+        <column name="ID_PROCESSO_PCE"/>
+    </many-to-one>
+    <!-- bi-directional one-to-many association to OcorrenciaPce -->
+    <bag cascade="none" inverse="true" lazy="true" name="ocorrenciaPces">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.OcorrenciaPce</meta>
+ 	        <key>
+            <column name="ID_EVENTO_PCE"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.OcorrenciaPce"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

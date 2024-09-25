@@ -1,0 +1,738 @@
+<style>
+	.glyphicon-open {
+		color: #D3D3DA !important;
+		font-size: 16px;
+	}
+	
+	.text-bold {
+		font-weight: bold;
+	}
+</style>
+
+<div class="menu-top" ng-hide="data.workflow">
+	<button id="btBloqueio" type="button" ng-hide="data.workflow || !data.idProprietario" ng-disabled="data.btSalvar" ng-click="openBloqueio($event)">{{data.btSituacaoBloqueioLabel}}</button>
+	<button id="btInscricaoEstadual" type="button" adsm-legacy ng-hide="data.workflow || !data.idProprietario" ng-disabled="data.btInscricaoEstadual" ng-click="openInscricaoEstadual($event)">{{'inscricoesEstaduais' | translate}}</button>
+	<button id="btConsultarBloqueioLiberacao" type="button" adsm-legacy ng-hide="data.workflow || !data.idProprietario" ng-disabled="data.btConsultarBloqueioLiberacao" ng-click="openConsultarBloqueioLiberacao($event)">{{'consultarBloqueioLiberacao' | translate}}</button>
+	<button id="btMeioTransporte" type="button" adsm-legacy ng-hide="data.workflow || !data.idProprietario" ng-disabled="data.btMeioTransporte" ng-click="openMeioTransporte($event)">{{'meiosTransporte' | translate}}</button>	
+</div>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form novalidate ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="store($event)">
+		<div class="fixed-top">
+			<div class="content">
+				<button type="button" data-ng-click="limparDados()" class="btn btn-default btn-lg pull-right" id="limpar" ng-disabled="data.workflow || data.btLimpar">
+					{{'limpar' | translate }}
+				</button>
+				<button type="button" data-ng-click="removeProprietarioById()" ng-disabled="data.workflow || !data.idProprietario || data.bloqueiaAcoes" class="btn btn-default btn-lg pull-right" id="removeProprietarioById" permission="excluir">
+					{{'excluir' |  translate }}
+				</button>	
+				<button type="submit" data-adsm-loading="salvando" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="data.workflow || data.btSalvar || data.bloqueiaAcoes">
+					{{'salvar' | translate }}
+				</button>
+			</div>
+		</div>
+				
+		<div class="clearfix">		
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+					<div class="form-horizontal">						
+						<div class="row">
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label for="filial" class="col-lg-4 control-label">{{'filial' | translate}}</label>
+									<div class="col-lg-8">
+										<div class="multi-input">
+										    <div class="col-xs-3">
+										    	<input
+													lms-filial
+													ng-model="data.filial" 
+													id="filial"
+													class="form-control"
+													ng-disabled="!data.isMatriz"
+													required>
+									    	</div>
+										    <div class="col-xs-9">
+												<input type="text" disabled class="form-control" value="{{ data.filial.nmFilial }}" id="filial.nmFilial">
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label for="modal" class="col-lg-5 control-label">{{'tipoPessoa' | translate}}</label>
+									<div class="col-lg-5">
+										<select 
+											adsm-domain="DM_TIPO_PESSOA"
+											id="tpPessoa" 
+											ng-model="data.tpPessoa"
+											ng-disabled="data.idProprietario"
+											ng-change="tpPessoaChange();"
+											required>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label class="col-lg-4 control-label">{{'identificacao' | translate }}</label>
+									<div class="col-lg-8">
+										<div class="multi-input">
+											<div class="col-xs-5">
+												<select 
+													adsm-domain="DM_TIPO_IDENTIFICACAO"
+													id="tpIdentificacao"
+													ng-model="data.tpIdentificacao"
+													filter="tpIdentificacaoFilter"
+													ng-change="tpIdentificacaoChange();"													
+													ng-disabled="!data.tpPessoa || data.idProprietario"
+													required="true">
+													<option value=""></option>
+												</select>
+											</div>
+											
+											<div class="col-xs-7">
+												<input 
+													type="text" 
+													id="nrIdentificacao" 
+													class="form-control" 
+													ng-model="data.nrIdentificacao" 
+													maxlength="20"
+													ng-blur="validateIdentificacao();" 
+													data-pessoa-mask="data.tpIdentificacao.value"
+													ng-disabled="!data.tpIdentificacao || data.idProprietario"
+													required>							
+											</div>					
+										</div>
+									</div>
+								</div>
+							</div>	
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-8">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">{{'nome' | translate }}</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="nmPessoa" ng-model="data.nmPessoa" maxlength="50" required>
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-4">
+								<div class="form-group">
+									<label for="modal" class="col-lg-4 control-label">{{'tipoProprietario' | translate}}</label>
+									<div class="col-lg-5">
+										<select 
+											adsm-domain="DM_TIPO_PROPRIETARIO"
+											id="tpProprietario" 
+											ng-model="data.tpProprietario"
+											ng-change="tpProprietarioChange();"
+											required>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>		
+										
+						<accordion close-others="false" id="accordionOutrasInformacoes">
+							<accordion-group is-open="isOutrasInformacoesOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOutrasInformacoesOpen, 'glyphicon-chevron-right': !isOutrasInformacoesOpen}"></span>
+									{{'outrasInformacoes' | translate}}
+								</accordion-heading>	
+								
+								<div class="row">	
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="modal" class="col-lg-4 control-label">{{'tipoOperacao' | translate}}</label>
+											<div class="col-lg-6">
+												<select 
+													adsm-domain="DM_TIPO_OPERACAO_PROPRIETARIO"
+													id="tpOperacao" 
+													ng-model="data.tpOperacao"
+													required>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+														
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="modal" class="col-lg-5 control-label">{{'situacao' | translate}}</label>
+											<div class="col-lg-5">
+												<select 
+													adsm-domain="DM_STATUS_PESSOA"
+													id="tpSituacao" 
+													ng-model="data.tpSituacao"
+													ng-disabled="data.geraWorkflow || !data.idPessoa || !data.tpProprietario"
+													required>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="modal" class="col-lg-5 control-label">{{'cooperado' | translate}}</label>
+											<div class="col-lg-6">
+												<select 
+													adsm-domain="DM_SIM_NAO"
+													id="blCooperado" 
+													ng-model="data.blCooperado"
+													required>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">							
+									<div class="col-sm-8">
+										<div class="form-group">											
+											<label class="col-lg-2 control-label">{{'email' | translate }}</label>
+											<div class="col-lg-9">
+												<input type="email" id="dsEmail" class="form-control" ng-model="data.dsEmail" maxlength="60">							
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="modal" class="col-lg-5 control-label">{{'naoAtualizaDbi' | translate}}</label>
+											<div class="col-lg-6">
+												<select 
+													adsm-domain="DM_SIM_NAO"
+													id="blNaoAtualizaDbi" 
+													ng-model="data.blNaoAtualizaDbi"
+													required>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+										
+									</div>
+								</div>
+								
+								<div class="row">	
+									<div class="col-sm-4">
+										<div class="form-group">											
+											<label class="col-lg-4 control-label">{{'antt' | translate }}</label>
+											<div class="col-lg-8">
+												<input type="text" 
+													id="nrAntt" 
+													class="form-control text-right" 
+													ng-model="data.nrAntt"
+													mask="integer" 
+													maxlength="17" 
+													ng-required="data.tpIdentificacao.value == 'CPF' || data.tpIdentificacao.value == 'CNPJ'">							
+											</div>
+										</div>
+									</div>
+										
+									<div class="col-sm-4"></div>
+									
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label for="modal" class="col-lg-5 control-label">{{'rotaFixa' | translate}}</label>
+											<div class="col-lg-6">
+												<select 
+													adsm-domain="DM_SIM_NAO"
+													id="blRotaFixa" 
+													ng-model="data.blRotaFixa">
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>							
+								</div>	
+							</accordion-group>
+					
+							<accordion-group is-open="isESocial">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isESocial, 'glyphicon-chevron-right': !isESocial}"></span>
+									{{'eSocial' | translate}}
+								</accordion-heading> 
+								
+								<div class="row">									
+									<div class="col-sm-4">										
+										<div class="form-group">
+											<label for="modal" class="col-lg-4 control-label">{{'sgMei' | translate}}</label>
+											<div class="col-lg-6">
+												<select 
+													adsm-domain="DM_SIM_NAO"
+													id="blMei" 
+													ng-model="data.blMei"
+													ng-disabled="!data.isESocial"
+													ng-required="data.isESocial"
+													ng-change="blMeiChange()">
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>				
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'nmMei' | translate }}</label>
+											<div class="col-lg-9">
+												<input type="text" 
+													class="form-control" 
+													id="nmMei" 
+													ng-model="data.esocial.nmMei" 
+													maxlength="60" 
+													ng-required="data.isMei"
+													ng-disabled="!data.isMei">
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'cpfMei' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" 
+													class="form-control" 
+													id="nrIdentificacaoMei" 
+													ng-model="data.esocial.nrIdentificacaoMei"
+													data-pessoa-mask="'cpf'"
+													maxlength="20" 
+													ng-blur="validateCpfMei()"
+													ng-required="data.isMei"
+													ng-disabled="!data.isMei">
+											</div>
+										</div>
+									</div>
+								</div>																								
+							</accordion-group>
+					
+							<accordion-group is-open="isInformacoesDocumentosOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesDocumentosOpen, 'glyphicon-chevron-right': !isInformacoesDocumentosOpen}"></span>
+									{{'informacoesDocumentos' | translate}}
+								</accordion-heading>
+												
+								<div class="row">
+									<div class="col-sm-4">
+										<div class="form-group">											
+											<label class="col-lg-4 control-label">{{'numeroPis' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" 
+													id="nrPis" 
+													ng-model="data.esocial.nrPis" 
+													maxlength="11"
+													data-pessoa-mask="'pis'"
+													ng-blur="nrPisChange()"
+													ng-required="data.isDocumentos"
+													class="form-control text-right">
+											</div>
+										</div>
+									</div>
+																
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-6 control-label">{{'numeroDependentes' | translate }}</label>
+											<div class="col-lg-4">
+												<input type="text" 
+													id="nrDependentes" 
+													class="form-control text-right" 
+													ng-model="data.esocial.nrDependentes" 
+													numeric="{vMin: '0', maxLength: '2'}"
+													ng-required="data.isDocumentos">							
+											</div> 
+										</div>
+									</div>	
+									
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dataNascimento' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" 
+													class="form-control" 
+													id="dtNascimento" 
+													ng-model="data.esocial.dtNascimento" 
+													adsm-date-picker
+													mask="date"
+													ng-required="data.isDocumentos">
+																							
+											</div>
+										</div>
+									</div>						
+								</div>	
+								
+								<div class="row">
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'rg' | translate }}</label>
+											<div class="col-lg-8">
+												<input type="text" 
+													class="form-control text-right" 
+													id="rg" 
+													ng-model="data.esocial.nrRg" 
+													maxlength="20" 
+													mask="integer"
+													ng-required="data.isDocumentos">
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-6 control-label">{{'orgaoExpedidor' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" 
+													class="form-control" 
+													id="dsOrgaoEmissorRg" 
+													ng-model="data.esocial.dsOrgaoEmissorRg"
+													maxlength="10" 
+													ng-required="data.isDocumentos">
+											</div>
+										</div>
+									</div>
+																		
+									<div class="col-sm-4">
+										<div class="form-group">								
+											<label class="col-lg-5 control-label">{{'ufExpedicao' | translate }}</label>
+											<div class="col-lg-7">
+												<div class="multi-input">
+													<div class="col-xs-3">						
+														<input disabled class="form-control" ng-model="data.esocial.ufExpedicaoRg.sgUnidadeFederativa" id="ufExpedicao.sgUnidadeFederativa">
+													</div>
+													<div class="col-xs-9">
+														<input lms-unidade-federativa="{ idPais : data.pais.idPais }"
+															type="text"
+															ng-model="data.esocial.ufExpedicaoRg" 
+															id="ufExpedicaoRg"
+															class="form-control"
+															ng-required="data.isDocumentos">																				
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtExpedicao' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" 
+													class="form-control" 
+													id="dtEmissaoRg" 
+													ng-model="data.esocial.dtEmissaoRg" 
+													adsm-date-picker
+													mask="date"
+													ng-required="data.isDocumentos">
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-4">	
+										<div class="form-group">
+											<label class="col-lg-6 control-label">{{'inscMunicipal' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" 
+													class="form-control" 
+													id="nrInscricaoMunicipal" 
+													ng-model="data.esocial.nrInscricaoMunicipal"
+													maxlength="15" 
+													">
+											</div>
+										</div>
+									</div>
+								</div>								
+							</accordion-group>
+						
+							<accordion-group is-open="isTelefonePrincipalOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isTelefonePrincipalOpen, 'glyphicon-chevron-right': !isTelefonePrincipalOpen}"></span>
+									{{'telefonePrincipal' | translate}}
+								</accordion-heading>
+											
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label for="modal" class="col-lg-4 control-label">{{'tipoTelefone' | translate}}</label>
+											<div class="col-lg-5">
+												<select 
+													adsm-domain="DM_TIPO_TELEFONE"
+													id="tpTelefone" 
+													ng-model="data.tpTelefone"
+													required>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label for="modal" class="col-lg-4 control-label">{{'usoTelefone' | translate}}</label>
+											<div class="col-lg-5">
+												<select 
+													adsm-domain="DM_USO_TELEFONE"
+													id="tpUso" 
+													ng-model="data.tpUso"
+													required>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>
+							
+								<div class="row">								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'ddi' | translate }}</label>
+											<div class="col-lg-3">
+												<input type="text" ng-model="data.nrDdi" id="nrDdi" class="form-control" maxlength="5">							
+											</div>
+										</div>
+									</div>					
+								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'numero' | translate }}</label>
+											<div class="col-lg-7">
+												<div class="multi-input">
+													<div class="col-xs-4">
+														<input type="text" ng-model="data.nrDdd" id="nrDdd" class="form-control" maxlength="5" required>				
+													</div>
+													<div class="col-xs-7">
+														<input type="text" id="nrTelefone" class="form-control" ng-model="data.nrTelefone" maxlength="10" required> 							
+													</div>					
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+					
+							<accordion-group is-open="isInformacoesPagamento">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesPagamento, 'glyphicon-chevron-right': !isInformacoesPagamento}"></span>
+									{{'informacoesDoPagamento' | translate}}
+								</accordion-heading>
+						
+								<div class="row">							
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label for="modal" class="col-lg-4 control-label">{{'periodoPagamento' | translate}}</label>
+											<div class="col-lg-5">
+												<select 
+													adsm-domain="DM_PERIODO_PAGAMENTO_PROPRIETARIO"
+													id="tpPeriodoPagto" 
+													ng-model="data.tpPeriodoPagto">
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label for="modal" class="col-lg-4 control-label">{{'diaPagamentoSemanal' | translate}}</label>
+											<div class="col-lg-5">
+												<select 
+													adsm-chosen
+													id="diaSemana"
+													ng-model="data.diaSemana"
+													ng-options="data.value as data.dia for data in proprietario.pagamentoSemanal track by data.value">
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>	
+							</accordion-group>
+					
+							<accordion-group is-open="isVigenciaOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isVigenciaOpen , 'glyphicon-chevron-right': !isVigenciaOpen}"></span>
+									{{'vigencia' | translate}}
+								</accordion-heading>	
+						
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtVigenciaInicial' | translate }}</label>
+											<div class="col-lg-5">
+												<input id="dtVigenciaInicial" 
+													adsm-date-picker 
+													ng-model="data.dtVigenciaInicial" 
+													mask="date" 
+													class="form-control" 
+													ng-disabled="data.idProprietario && data.dtVigenciaInicial" 
+													data-end="data.dtVigenciaFinal"
+													min="proprietario.dtAtual"
+													required>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'dtVigenciaFinal' | translate }}</label>
+											<div class="col-lg-5">
+												<input id="dtVigenciaFinal" 
+													adsm-date-picker 
+													ng-model="data.dtVigenciaFinal"
+													mask="date"
+													ng-disabled="!data.isMatriz"
+													class="form-control"
+													data-start="data.dtVigenciaInicial"
+													min="proprietario.dtAtual">
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+					
+							<accordion-group is-open="isInformacoesOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInformacoesOpen, 'glyphicon-chevron-right': !isInformacoesOpen}"></span>
+									{{'informacoes' | translate}}
+								</accordion-heading>
+							 	
+							 	<div class="row">
+							 		<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'situacaoBloqueio' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" readonly="readonly" id="tpSituacaoBloqueio" class="form-control" ng-model="data.tpSituacaoBloqueioDesc">							
+											</div>
+										</div>
+									</div>
+																		
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'situacaoPendencia' | translate }}</label>
+											<div class="col-lg-5">
+												<input type="text" class="form-control" id="dsPendencia" ng-model="data.dsPendencia" disabled="true">
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">						
+									<div adsm-add-field data-boxSize="6" data-label="alteradoPor" data-labelSize="4" data-multiSize="4,8">
+										<input
+											type="text"
+											ng-model="data.usuarioAlteracao"
+											lms-usuario-lms
+											disabled="true"
+											class="form-control">
+							
+										<input
+											type="text"
+											ng-model="data.usuarioAlteracao.nmUsuario"
+											class="form-control"
+											disabled="true">
+									</div>
+									
+									<div class="col-sm-6">
+										<div class="form-group">											
+											<label class="col-lg-4 control-label">{{'dataAtualizacao' | translate }}</label>
+											<div class="col-lg-5">
+												<input id="dtAtualizacao" ng-model="data.dtAtualizacao" class="form-control" mask="date" adsm-date-picker readonly="readonly">							
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+						</accordion>						
+					</div>
+				</div>
+				
+				<div adsm-tab-panel="anexos" heading="{{'anexos' | translate}}" event="loadAbaAnexos()">
+					<div class="row">
+						<div class="col-sm-12" ng-hide="data.workflow">
+							<div class="form-group">
+								<label class="col-lg-2 control-label">{{'descricao' | translate }}</label>
+								<div class="col-lg-9" style="height: 35px;">
+									<input class="form-control" ng-model="proprietario.descricao" id="descAnexo" maxlength="250" ng-change="changeDescricao()">	
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row" ng-hide="data.workflow">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-lg-2 control-label">{{'arquivo' | translate }}</label>
+								<div class="col-lg-8">
+									<div data-adsm-file-upload="fileUploadParams"></div>
+								</div>
+								<div class="col-lg-1">
+									<button type="button" data-ng-click="addFile();" class="btn btn-default btn-lg pull-right" id="upload">
+										{{'adicionar' | translate }}
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+										
+					<div class="row" ng-hide="data.workflow">
+						<div class="col-sm-12">
+							<div class="grid-btn-container">
+								<button type="button" 
+									data-ng-click="removeAnexosByIds()" 
+									class="btn btn-default btn-lg" 
+									id="excluir" 
+									data-adsm-loading="excluindo" 
+									data-ng-disabled="data.workflow">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				
+						<table adsm-table="anexosTableParams"
+							data-adsm-table-internal-loading="true" 
+							class="table table-condensed adsm-table"							
+							data-show-checkboxes="!data.workflow"
+							style="width: 100%">
+							<tbody>
+								<tr ng-repeat="row in page" ng-class="{'text-bold' : !row.idAnexoProprietario}">	
+									<td column-title="descricao"
+										ng-attr-title="{{row.dsAnexo}}" 
+										style="min-width: 100px; max-width: 250px;">
+										{{ row.dsAnexo }}
+									</td>
+									<td column-title="nomeArquivo"
+										ng-attr-title="{{row.nmArquivo}}" 
+										>
+										{{ row.nmArquivo }}
+									</td>
+									<td column-title="usuario"
+										style="min-width: 100px; max-width: 150px;">
+										{{ row.nmUsuario }}
+									</td>
+									<td column-title="dataCriacao"
+										style="min-width: 100px; max-width: 100px;"
+										align="center">
+										{{ row.dhCriacao | dateTimeZone }}
+									</td>					
+									<td column-title="download"
+										style="min-width: 30px; max-width: 30px;"
+										align="center">
+										<span ng-if="row.idAnexoProprietario"
+											data-adsm-loading="downloading"
+											data-ng-click="downloadFile(row.idAnexoProprietario)" 
+											class="glyphicon glyphicon-save"/>
+										<span ng-if="!row.idAnexoProprietario"
+											class="glyphicon glyphicon-open"
+											title="{{'aguardandoEnvio' | translate}}"/>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+				</div>
+			</div>		
+		</div>
+	</form>
+</div>

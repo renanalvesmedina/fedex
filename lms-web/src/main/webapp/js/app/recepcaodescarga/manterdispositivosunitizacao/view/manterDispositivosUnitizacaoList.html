@@ -1,0 +1,96 @@
+<form class="form-horizontal content-padding" data-ng-submit="consultarExportar()">
+
+	<div class="fixed-top">
+			<button type="button" data-ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="limpar">
+				{{'limpar' | translate }}
+			</button>
+			<button type="submit" data-ng-click="filter.acao = 'E'" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">
+				{{'exportarExcel' | translate }}
+			</button>
+			<button type="submit" data-ng-click="filter.acao = 'C'" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+				{{'consultar' | translate }}
+			</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8"	data-label="empresa" data-labelSize="3" data-fieldSize="9">
+			<input lms-empresa type="text" ng-model="filter.empresa" id="empresa">
+		</div>
+
+		<div adsm-add-field data-label="tipoDispositivo" data-labelSize="6" data-boxSize="4">
+			<select
+				adsm-chosen
+				id="tipoDispositivoUnitizacao"
+				ng-options="data as data.dsTipoDispositivoUnitizacao for data in tiposDispositivoUnitizacao track by data.idTipoDispositivoUnitizacao"
+				ng-model="filter.tipoDispositivoUnitizacao"
+				required>
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="numeroIdentificacao" data-labelSize="6"  data-multiSize="3">
+			<input type="text" disabled value="{{ filter.tipoDispositivoUnitizacao.tpNrIdentificacao }}" id="tpNrIdentificacao">
+			<input type="text"  ng-model="filter.nrIdentificacao" maxlength="10">
+		</div>
+
+		<div adsm-add-field data-label="situacao" data-labelSize="6" data-fieldSize="6">
+			<select
+				adsm-domain="DM_STATUS"
+				id="tpSituacao"
+				ng-model="filter.tpSituacao">
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4"	data-label="dispositivo" data-labelSize="6" data-fieldSize="6">
+			<input type="checkbox" ng-model="filter.dispositivoVazio">
+		</div>
+	</div>
+	<div class="row">
+	
+	<div adsm-add-field data-boxSize="4" data-label="filialLocalizacao" data-labelSize="6" data-multiSize="3">
+			<input lms-filial ng-model="filter.filial" id="filial" class="form-control">
+			<input type="text" class="form-control" id="filial.nmFilial" value="{{ filter.filial.nmFilial }}" readonly="readonly">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams"
+					show-checkboxes="true"
+					data-remove-service="removeByIds()">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+							<td column-title="tipoDispositivo"
+								sortable="tipoDispositivoUnitizacao.dsTipoDispositivoUnitizacao"
+								inline-property-filter="tipoDispositivoUnitizacao.dsTipoDispositivoUnitizacao"
+								style="min-width: 140px; max-width: 400px;">{{row.tipoDispositivoUnitizacao.dsTipoDispositivoUnitizacao}}</td>
+							<td column-title="numeroIdentificacao"
+								sortable="'nrIdentificacao'"
+								inline-property-filter="nrIdentificacao"
+								>{{row.nrIdentificacao}}</td>
+							<td column-title="empresa" sortable="empresa.nmPessoa"
+								inline-property-filter="empresa.nmPessoa"
+								>{{row.empresa.nmPessoa}}</td>
+							<td column-title="situacao" sortable="tpSituacao.descriptionAsString"
+								inline-property-filter="tpSituacao.descriptionAsString"
+								>{{row.tpSituacao.descriptionAsString}}</td>
+							<td column-title="totalVolumes" sortable="'qtVolumes'"
+								inline-property-filter="qtVolumes"
+								>{{row.qtVolumes}}</td>
+							<td column-title="totalDispositivos"
+								inline-property-filter="qtDispositivos"
+								sortable="'qtDispositivos'"
+								>{{row.qtDispositivos}}</td>
+							<td column-title="localizacaoDispositivo"
+								inline-property-filter="sgFilialLocalizacaoMercadoria"
+								sortable="sgFilialLocalizacaoMercadoria"
+								>{{row.sgFilialLocalizacaoMercadoria}}</td>
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+</form>
+

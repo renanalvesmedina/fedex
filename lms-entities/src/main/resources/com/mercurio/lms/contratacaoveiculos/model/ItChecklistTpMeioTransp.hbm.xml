@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contratacaoveiculos.model.ItChecklistTpMeioTransp" 
+    table="IT_CHECKLIST_TP_MEIO_TRANSP"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idItChecklistTpMeioTransp"
+        type="java.lang.Long"
+        column="ID_IT_CHECKLIST_TP_MEIO_TRANSP"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">IT_CHECKLIST_TP_MEIO_TRANSP_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpItChecklistTpMeioTransp"
+		    column="TP_IT_CHECKLIST_TP_MEIO_TRANSP"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ITEM_CHECK_LIST_VEICULO</param>
+	    </type>
+    </property>
+    <property
+        name="blObrigatorioAprovacao"
+		type="sim_nao"
+        column="BL_OBRIGATORIO_APROVACAO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to TipoMeioTransporte -->
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_TIPO_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to RespostaChecklist -->
+    <bag
+        name="respostaChecklists"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contratacaoveiculos.model.RespostaChecklist</meta>
+ 	        <key>
+            <column name="ID_IT_CHECKLIST_TP_MEIO_TRANSP" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contratacaoveiculos.model.RespostaChecklist"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to ItemCheckList -->
+    <many-to-one
+        name="itemCheckList"
+        class="com.mercurio.lms.contratacaoveiculos.model.ItemCheckList"
+        not-null="true"
+    >
+        <column name="ID_ITEM_CHECK_LIST" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

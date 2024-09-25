@@ -1,0 +1,272 @@
+<form novalidate ng-class="{submitted: submitted}" class="form-horizontal content-padding" ng-submit="consultar()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate }}
+		</button>
+		<button type="button" data-ng-click="exportCsv()" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">
+			{{'exportarExcel' | translate }}
+		</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' | translate }}
+		</button>
+	</div>
+	
+	<div class="form-horizontal">
+		<div class="row">
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="filial" class="col-lg-4 control-label">{{'filial' | translate}}</label>
+					<div class="col-lg-8">
+						<div class="multi-input">
+						    <div class="col-xs-3">
+						    	<input
+									lms-filial
+									ng-model="filter.filial" 
+									id="filial"
+									class="form-control">
+					    	</div>
+						    <div class="col-xs-9">
+								<input type="text" disabled class="form-control" value="{{ filter.filial.nmFilial }}" id="filial.nmFilial">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="modal" class="col-lg-6 control-label">{{'tipoProprietario' | translate}}</label>
+					<div class="col-lg-6">
+						<select 
+							adsm-domain="DM_TIPO_PROPRIETARIO"
+							id="tpProprietario" 
+							ng-model="filter.tpProprietario">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label for="modal" class="col-lg-6 control-label">{{'tipoPessoa' | translate}}</label>
+					<div class="col-lg-6">
+						<select 
+							adsm-domain="DM_TIPO_PESSOA"
+							id="tpPessoa"
+							ng-model="filter.tpPessoa">
+							<option value=""></option>
+						</select>
+					</div>
+				</div>
+			</div>		
+		</div>
+		
+		<div class="row">						
+			<div class="col-sm-4">
+				<div class="form-group">
+					<label class="col-lg-4 control-label">{{'identificacao' | translate }}</label>
+					<div class="col-lg-8">
+						<div class="multi-input">
+							<div class="col-xs-5">
+								<select 
+									adsm-domain="DM_TIPO_IDENTIFICACAO"
+									id="tpIdentificacao"
+									ng-model="filter.tpIdentificacao">
+									<option value=""></option>	
+								</select>				
+							</div>
+							<div class="col-xs-7">
+								<input 
+									type="text" 
+									id="nrIdentificacao" 
+									class="form-control" 
+									ng-model="filter.nrIdentificacao" 
+									maxlength="20"
+									data-pessoa-mask="filter.tpIdentificacao.value">							
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="col-sm-8">
+				<div class="form-group">
+					<label class="col-lg-3 control-label">{{'nome' | translate }}</label>
+					<div class="col-lg-9">
+						<input type="text" class="form-control" id="nmPessoa" ng-model="filter.nmPessoa" maxlength="50">
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<accordion close-others="false">
+			<accordion-group is-open="isFiltroBasicoOpen">
+				<accordion-heading>
+					<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isFiltroBasicoOpen, 'glyphicon-chevron-right': !isFiltroBasicoOpen}"></span>
+					{{'criteriosComplementares' | translate}}
+				</accordion-heading>
+	
+				<div class="form-horizontal">				
+					<div class="row">			
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="modal" class="col-lg-4 control-label">{{'periodoPagamento' | translate}}</label>
+								<div class="col-lg-5">
+									<select 
+										adsm-domain="DM_PERIODO_PAGAMENTO_PROPRIETARIO"
+										id="tpPeriodoPagto" 
+										ng-model="filter.tpPeriodoPagto">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>							
+						</div>	
+						
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="modal" class="col-lg-4 control-label">{{'diaPagamentoSemanal' | translate}}</label>
+								<div class="col-lg-5">
+									<select 
+										adsm-chosen
+										id="diaSemana"
+										ng-model="filter.diaSemana"
+										ng-options="data.value as data.dia for data in proprietario.pagamentoSemanal">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>							
+						</div>	
+					</div>
+					
+					<div class="row">	
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="modal" class="col-lg-4 control-label">{{'situacao' | translate}}</label>
+								<div class="col-lg-5">
+									<select 
+										adsm-domain="DM_STATUS_PESSOA"
+										id="tpSituacao" 
+										ng-model="filter.tpSituacao">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+				
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="dtAtualizacaoInicial" class="col-lg-4 control-label">{{'periodoAtualizacao' | translate}}</label>
+								<div class="col-lg-7">
+									<div class="row">
+										<div class="col-sm-6">
+											<input id="dtAtualizacaoInicial" adsm-date-picker ng-model="filter.dtAtualizacaoIni" mask="date" class="form-control" data-end="filter.dtAtualizacaoFim">
+										</div>
+										<div class="col-sm-6">
+											<input id="dtAtualizacaoFinal" adsm-date-picker ng-model="filter.dtAtualizacaoFim" mask="date" class="form-control" data-start="filter.dtAtualizacaoIni">
+										</div>
+									</div>
+								</div>
+							</div>						
+						</div>	
+					</div>
+				</div>
+			</accordion-group>
+		
+			<accordion-group is-open="isESocialFiltrosOpen">
+				<accordion-heading>
+					<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isESocialFiltrosOpen, 'glyphicon-chevron-right': !isESocialFiltrosOpen}"></span>
+					{{'eSocial' | translate}}
+				</accordion-heading>
+	
+				<div class="form-horizontal">				
+					<div class="row">
+						<div class="col-sm-4">	
+							<div class="form-group">
+								<label class="col-lg-4 control-label">{{'rg' | translate }}</label>
+								<div class="col-lg-8">
+									<input type="text" class="form-control" id="rg" ng-model="filter.nrRg" maxlength="20" mask="integer">
+								</div>
+							</div>
+						</div>
+						
+					
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="modal" class="col-lg-5 control-label">{{'sgMei' | translate}}</label>
+								<div class="col-lg-7">
+									<select 
+										adsm-domain="DM_SIM_NAO"
+										id="tpMei" 
+										ng-model="filter.blMei">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-4">
+							<div class="form-group">
+								<label for="modal" class="col-lg-5 control-label">{{'cooperado' | translate}}</label>
+								<div class="col-lg-7">
+									<select 
+										adsm-domain="DM_SIM_NAO"
+										id="blCooperado" 
+										ng-model="filter.blCooperado">
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</accordion-group>
+		</accordion>	
+	</div>
+		
+	<div class="row">
+		<div class="col-sm-12">
+				<table adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					show-checkboxes="true"
+					data-remove-service="removeProprietariosByIds()"
+					style="width: 100%">
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="abreDetalhe(row)">
+							<td column-title="sigla" style="min-width: 30px; max-width: 60px;">
+								{{row.filial_sgFilial}}
+							</td>
+							<td column-title="filial" style="min-width: 120px; max-width: 160px;">
+								{{row.filial_pessoa_nmFantasia}}
+							</td>							
+							<td align="center" column-title="tipo" style="min-width: 30px; max-width: 60px;">
+								{{row.pessoa_tpIdentificacao.description.value}}																		
+							</td>
+							<td column-title="identificacao" style="min-width: 100px; max-width: 140px;">								
+								{{row.nrIdentificacao_formatado}}																		
+							</td>
+							<td column-title="nome" style="min-width: 150px; max-width: 350px;">
+								{{row.pessoa_nmPessoa}}			
+							</td>
+							<td align="center" column-title="situacao" style="min-width: 80px; max-width: 100px;">
+								{{row.tpSituacao.description.value}}			
+							</td>														
+							<td column-title="periodo" style="min-width: 100px; max-width: 120px;">
+								{{row.tpPeriodoPagto.description.value}}
+							</td>
+							<td column-title="diaPagamentoSemanal" >
+								{{row.diaSemana.description.value}}
+							</td>
+							<td align="center" column-title="sgMei" style="min-width: 30px; max-width: 60px;">
+								{{row.blMei.description.value}}
+							</td>	
+							<td align="center" column-title="cooperado" style="min-width: 30px; max-width: 60px;">
+								{{row.blCooperado.description.value}}
+							</td>							
+						</tr>
+					</tbody>
+				</table>
+		</div>
+	</div>
+
+</form>

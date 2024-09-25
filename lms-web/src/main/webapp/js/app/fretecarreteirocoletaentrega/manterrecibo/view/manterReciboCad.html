@@ -1,0 +1,557 @@
+<style>
+	.glyphicon-open {
+		color: #D3D3DA !important;
+		font-size: 16px;
+	}
+	
+	.text-bold {
+		font-weight: bold;
+	}
+</style>
+
+<div class="menu-top" ng-hide="dados.workflow">
+	<button id="btOcorrencias" type="button" ng-disabled="dados.btOcorrencias" adsm-legacy ng-click="openOcorrencias($event)">{{'ocorrencias' | translate}}</button>	
+	<button id="btNotasCreditos" type="button" ng-disabled="dados.btNotasCreditos" adsm-legacy ng-click="openNotasCreditos($event)">{{'notasCredito' | translate}}</button>
+	<button id="btRim" type="button" ng-disabled="dados.btRim" ng-click="openRim()">{{'rim' | translate}}</button>
+	<button id="btEmitir" data-adsm-loading="emitindoRecibo" type="button" ng-disabled="dados.btEmitir" ng-click="emitirRecibo($event)">
+		<span class="glyphicon glyphicon-print"></span>
+		{{'emitir' | translate}}</button>		
+</div>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form novalidate ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="store($event)">
+		<div class="fixed-top">
+			<div class="content">				
+				<button type="submit" data-adsm-loading="salvando" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="dados.btSalvar">
+					{{'salvar' | translate }}
+				</button>
+				<button type="button" data-ng-click="cancelarRecibo()" data-adsm-loading="cancelando" class="btn btn-default btn-lg pull-right" id="cancelar" ng-disabled="dados.btCancelar">
+					{{'cancelar' | translate }}
+				</button>
+			</div>
+		</div>
+
+		<div class="clearfix">		
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+					<div class="form-horizontal">
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-5 control-label">{{'filial' | translate }}</label>
+									<div class="col-lg-7">
+										<div class="multi-input">
+											<div class="col-xs-3">
+												<input type="text" readonly="readonly" id="sgFilial" class="form-control" ng-model="dados.filialEmissao.sgFilial">						
+											</div>
+											<div class="col-xs-9">
+												<input type="text" readonly="readonly" id="nmFantasiaFilial" class="form-control" ng-model="dados.filialEmissao.nmFilial">							
+											</div>					
+										</div>
+									</div>
+								</div>
+							</div>
+						
+							<div class="col-sm-6">
+								<div class="form-group">
+								
+									<label class="col-lg-5 control-label">{{'numero' | translate }}</label>
+									<div class="col-lg-7">
+										<input type="text" readonly="readonly" id="nrReciboFreteCarreteiro" class="form-control" ng-model="dados.nrReciboFreteCarreteiro">							
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">	
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-5 control-label">{{'situacao' | translate }}</label>
+									<div class="col-lg-7">
+										<select 
+											adsm-domain="DM_STATUS_RECIBO_PAGAMENTO_FRETE_CARRETE"
+											id="tpSituacaoRecibo" 
+											ng-model="dados.tpSituacaoRecibo"
+											ng-disabled="dados.btSituacao">
+											<option value=""></option>
+										</select>
+									</div>									
+								</div>
+							</div>
+							
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-5 control-label">{{'situacaoPendencia' | translate }}</label>
+									<div class="col-lg-7">
+										<input type="text" readonly="readonly" id="tpSituacaoReciboDesc" class="form-control" ng-model="dados.tpSituacaoPendenciaDesc.value">							
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-5 control-label">{{'notaFiscalCarreteiro' | translate }}</label>
+									<div class="col-lg-7">
+										<input type="text" ng-model="dados.nrNfCarreteiro" id="nrNfCarreteiro" class="form-control" ng-disabled="dados.txtNrNfCarreteiro" maxlength="15">								
+									</div>
+								</div>
+							</div>
+							
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-5 control-label">{{'relacaoPagamento' | translate }}</label>
+									<div class="col-lg-7">
+										<input type="text" readonly="readonly" id="nrRelacaoPagamento" class="form-control" ng-model="dados.nrRelacaoPagamento">								
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-5 control-label">{{'observacao' | translate }}</label>
+									<div class="col-lg-7">						
+										<textarea rows="2" maxlength="450" ng-model="dados.obReciboFreteCarreteiro" id="obReciboFreteCarreteiro" class="form-control" ng-disabled="dados.txtObservacao" style="resize: none;"></textarea>															
+									</div>
+								</div>
+							</div>
+						</div>
+							
+						<accordion close-others="false" id="accordionDatas">
+							<accordion-group is-open="isDatasOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isDatasOpen, 'glyphicon-chevron-right': !isDatasOpen}"></span>
+									{{'datas' | translate}}
+								</accordion-heading>
+						
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dataAprovacaoFinal' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="dhEmissao" class="form-control disabled" value="{{ dados.dhEmissao | dateTimeZone }}">								
+											</div>
+										</div>
+									</div>
+							
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dataContabilizacao' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="dtContabilizacao" class="form-control disabled" value="{{ dados.dtContabilizacao | dateTimeZone }}">								
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dataPagamentoReal' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="dtPagtoReal" class="form-control disabled" value="{{ dados.dtPagtoReal | dateTimeZone }}">								
+											</div>
+										</div>
+									</div>
+								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dtGeracaoPreFatura' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="dhGeracaoMovimento" class="form-control disabled" value="{{ dados.dhGeracaoMovimento | dateTimeZone }}">								
+											</div>
+										</div>
+									</div>
+								</div>
+						
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dataPagamentoProgramada' | translate }}</label>
+											<div class="col-lg-7">
+													<input id="dtSugeridaPagto" adsm-date-picker ng-model="dados.dtProgramadaPagto" mask="date" class="form-control" ng-disabled="dados.dtProgramadaPagtoC">													
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'dtEnvioJde' | translate }}</label>
+											<div class="col-lg-7">
+													<input id="dhEnvioJde" readonly="readonly"  value="{{ dados.dhEnvioJde | dateTimeZone }}" mask="date" class="form-control">													
+											</div>
+										</div>
+									</div>
+									
+								</div>		
+							</accordion-group>
+					
+							<accordion-group is-open="isProprietarioOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isProprietarioOpen, 'glyphicon-chevron-right': !isProprietarioOpen}"></span>
+									{{'proprietario' | translate}}
+								</accordion-heading>
+						
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="form-group">
+											<label class="col-lg-2 control-label">{{'proprietario' | translate }}</label>
+											<div class="col-lg-6">
+												<div class="multi-input">					
+													<div class="col-xs-4">
+														<input type="text" readonly="readonly" id="nrIdentificacaoProprietarioFormatado" class="form-control" ng-model="dados.nrIdentificacaoProprietarioFormatado">													
+													</div>
+													<div class="col-xs-8">
+														<input type="text" readonly="readonly" id="nmPessoaProprietario" class="form-control" ng-model="dados.nmPessoaProprietario">							
+													</div>
+												</div>	
+											</div>																	
+										</div>
+									</div>
+								</div>
+						
+								<div class="row">
+									<div class="col-sm-12">
+										<div class="form-group">
+											<label class="col-lg-2 control-label">{{'beneficiario' | translate }}</label>
+											<div class="col-lg-6">
+												<div class="multi-input">							
+													<div class="col-xs-4">
+														<input type="text" readonly="readonly" id="nrIdentificacaoBeneficiarioFormatado" class="form-control" ng-model="dados.nrIdentificacaoBeneficiarioFormatado">
+													</div>
+													<div class="col-xs-8">
+														<input type="text" readonly="readonly" id="nmPessoaBeneficiario" class="form-control" ng-model="dados.nmPessoaBeneficiario">							
+													</div>
+												</div>						
+											</div>	
+										</div>
+									</div>				
+								</div>
+										
+								<div class="row">
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-6 control-label">{{'banco' | translate }}</label>
+											<div class="col-lg-6">
+												<input type="text" readonly="readonly" id="nrBanco" class="form-control" ng-model="dados.nrBanco">							
+											</div>
+										</div>
+									</div>
+								
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'agencia' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">										
+													<div class="col-xs-9">
+														<input type="text" readonly="readonly" id="nrAgenciaBancaria" class="form-control" ng-model="dados.nrAgenciaBancaria">
+													</div>
+													<div class="col-xs-3">
+														<input type="text" readonly="readonly" id="nrAgenciaBancaria" class="form-control" ng-model="dados.nrDigito ">													
+													</div>	
+												</div>
+											</div>						
+										</div>
+									</div>
+								
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'conta' | translate }}</label>
+											<div class="col-lg-9">
+												<div class="multi-input">								
+													<div class="col-xs-9">
+														<input type="text" readonly="readonly" id="nrContaBancaria" class="form-control" ng-model="dados.nrContaBancaria">
+													</div>
+													<div class="col-xs-3">
+														<input type="text" readonly="readonly" id="nrContaBancaria" class="form-control" ng-model="dados.dvContaBancaria">														
+													</div>	
+												</div>
+											</div>						
+										</div>
+									</div>
+								</div>
+										
+								<div class="row">
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-6 control-label">{{'meioTransporte' | translate }}</label>
+											<div class="col-lg-6">
+												<div class="multi-input">								
+													<div class="col-xs-6">
+														<input type="text" readonly="readonly" id="nrFrota" class="form-control" ng-model="dados.nrFrota">
+													</div>
+													<div class="col-xs-6">
+														<input type="text" readonly="readonly" id="nrFrota" class="form-control" ng-model="dados.nrIdentificador">							
+													</div>
+												</div>
+											</div>							
+										</div>
+									</div>
+								
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'marca' | translate }}</label>
+											<div class="col-lg-9">
+												<input type="text" readonly="readonly" ng-model="dados.dsMarcaMeioTransporte" id="dsMarcaMeioTransporte" class="form-control">							
+											</div>
+										</div>
+									</div>					
+								
+									<div class="col-sm-4">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'modelo' | translate }}</label>
+											<div class="col-lg-9">
+												<input type="text" readonly="readonly" ng-model="dados.dsModeloMeioTransporte" id="dsModeloMeioTransporte" class="form-control">							
+											</div>
+										</div>
+									</div>
+								</div>		
+							</accordion-group>
+						
+							<accordion-group is-open="isInssOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isInssOpen, 'glyphicon-chevron-right': !isInssOpen}"></span>
+									{{'inss' | translate}}
+								</accordion-heading>
+							 	
+							 	<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'salarioContribuicao' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="siglaSimboloMoeda" class="form-control text-right" value="{{ dados.vlSalarioContribuicao | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorOutrasFontes' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlOutrasFontes" class="form-control disabled text-right" value="{{ dados.vlOutrasFontes | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'percentualAliquotaINSS' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="pcAliquotaInss" class="form-control disabled" value="{{ dados.pcAliquotaInss | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorApuradoINSS' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlApuradoInss" class="form-control disabled text-right" value="{{ dados.vlApuradoInss | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								</div>				
+							</accordion-group>
+			
+							<accordion-group is-open="isOutrosImpostosOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isOutrosImpostosOpen, 'glyphicon-chevron-right': !isOutrosImpostosOpen}"></span>
+									{{'outrosImpostos' | translate}}
+								</accordion-heading>
+							 	
+							 	<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'percentualAliquotaISSQN' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="pcAliquotaIssqn" class="form-control disabled" value="{{ dados.pcAliquotaIssqn | number:2 }}">							
+											</div>
+										</div>
+									</div>
+				
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorISSQN' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlIssqn" class="form-control disabled text-right" value="{{ dados.vlIssqn | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'percentualAliquotaIRRF' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="pcAliquotaIrrf" class="form-control disabled" value="{{ dados.pcAliquotaIrrf | number:2 }}">							
+											</div>
+										</div>
+									</div>
+				
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorIRRF' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlIrrf" class="form-control disabled text-right" value="{{ dados.vlIrrf | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								</div>				
+							</accordion-group>
+						
+							<accordion-group is-open="isValoresOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isValoresOpen, 'glyphicon-chevron-right': !isValoresOpen}"></span>
+									{{'valores' | translate}}
+								</accordion-heading>
+							 	
+							 	<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorBruto' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlBruto" class="form-control disabled text-right" value="{{ dados.vlBruto | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorDesconto' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlDesconto" class="form-control disabled text-right" value="{{ dados.vlDesconto | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorPostoPassagem' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlPostoPassagem" class="form-control disabled text-right" value="{{ dados.vlPostoPassagem }}">							
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'cartaoValePedagio' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="nrCartao" class="form-control disabled" value="{{ dados.nrCartao }}">							
+											</div>
+										</div>
+									</div>										
+								</div>
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'valorLiquido' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="vlLiquido" class="form-control disabled text-right" value="{{ dados.vlLiquido | number:2 }}">							
+											</div>
+										</div>
+									</div>
+								</div>				
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-5 control-label">{{'moeda' | translate }}</label>
+											<div class="col-lg-7">
+												<input type="text" readonly="readonly" id="siglaSimboloMoeda" class="form-control" ng-model="dados.siglaSimboloMoeda">								
+											</div>
+										</div>
+									</div>
+								</div>				
+							</accordion-group>
+						</accordion>
+					</div>
+				</div>
+				
+				<div adsm-tab-panel="anexos" heading="{{'anexos' | translate}}" event="loadAbaAnexos()">
+				
+					<div class="row" ng-hide="dados.btAnexar">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-lg-2 control-label">{{'descricao' | translate }}</label>
+								<div class="col-lg-9" style="height: 35px;">
+									<input class="form-control" ng-model="recibo.descricao" id="descAnexo" maxlength="250" ng-change="changeDescricao()">	
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="row" ng-hide="dados.btAnexar">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label class="col-lg-2 control-label">{{'arquivo' | translate }}</label>
+								<div class="col-lg-8">
+									<div data-adsm-file-upload="fileUploadParams"></div>
+								</div>
+								<div class="col-lg-1">
+									<button type="button" data-ng-click="addFile();" class="btn btn-default btn-lg pull-right" id="upload">
+										{{'adicionar' | translate }}
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+										
+					<div class="row" ng-hide="dados.btAnexar">
+						<div class="col-sm-12">
+							<div class="grid-btn-container">
+								<button type="button" 
+									data-ng-click="removeAnexosByIds()" 
+									class="btn btn-default btn-lg" 
+									id="excluir" 
+									data-adsm-loading="excluindo" 
+									data-ng-disabled="dados.btAnexar">
+									<span class="glyphicon glyphicon-trash"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+				
+						<table adsm-table="anexosTableParams"
+							data-adsm-table-internal-loading="true" 
+							class="table table-condensed adsm-table"							
+							data-show-checkboxes="!dados.btAnexar"
+							style="width: 100%">
+							<tbody>
+								<tr ng-repeat="row in page" ng-class="{'text-bold' : !row.idAnexoReciboFc}">	
+									<td column-title="descricao"
+										ng-attr-title="{{row.descAnexo}}" 
+										style="min-width: 100px; max-width: 250px;">
+										{{ row.descAnexo }}
+									</td>
+									<td column-title="nomeArquivo"
+										ng-attr-title="{{row.nmArquivo}}"
+										>
+										{{ row.nmArquivo }}
+									</td>
+									<td column-title="usuario" style="min-width: 100px; max-width: 150px;">
+										{{ row.nmUsuario }}
+									</td>
+									<td column-title="dataCriacao" style="min-width: 100px; max-width: 100px;" align="center">
+										{{ row.dhCriacao | dateTimeZone }}
+									</td>					
+									<td column-title="download" style="min-width: 30px; max-width: 30px;" align="center">
+										<span ng-if="row.idAnexoReciboFc" data-adsm-loading="downloading" data-ng-click="downloadFile(row.idAnexoReciboFc)" class="glyphicon glyphicon-save"/>
+										<span ng-if="!row.idAnexoReciboFc" class="glyphicon glyphicon-open" title="{{'aguardandoEnvio' | translate}}"/>							
+									</td>
+								</tr>
+							</tbody>
+						</table>
+				</div>
+			</div>		
+		</div>
+	</form>
+</div>

@@ -1,0 +1,275 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.Redeco" 
+    table="REDECO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRedeco"
+        type="java.lang.Long"
+        column="ID_REDECO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">REDECO_SQ</param>
+        </generator>
+    </id>
+
+	<version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrRedeco"
+			        type="java.lang.Long"
+            column="NR_REDECO"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="vlDiferencaCambialCotacao"
+			        type="java.math.BigDecimal"
+            column="VL_DIFERENCA_CAMBIAL_COTACAO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dtEmissao"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpSituacaoRedeco"
+		    column="TP_SITUACAO_REDECO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_REDECO</param>
+	    </type>
+    </property>
+    <property
+        name="tpFinalidade"
+		    column="TP_FINALIDADE"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_FINALIDADE_REDECO</param>
+	    </type>
+    </property>
+    <property
+        name="tpAbrangencia"
+		    column="TP_ABRANGENCIA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ABRANGENCIA</param>
+	    </type>
+    </property>    
+    <property
+        name="nmResponsavelCobranca"
+			        type="java.lang.String"
+            column="NM_RESPONSAVEL_COBRANCA"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpRecebimento"
+		    column="TP_RECEBIMENTO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_RECEBIMENTO</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacaoWorkflow"
+		    column="TP_SITUACAO_WORKFLOW"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    <property
+        name="blDigitacaoConcluida"
+		    column="BL_DIGITACAO_CONCLUIDA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_SIM_NAO</param>
+	    </type>
+    </property>
+    <property
+        name="dtLiquidacao"
+			        type="jtyearmonthday"
+            column="DT_LIQUIDACAO"
+        length="7"
+    />
+    <property
+        name="dtRecebimento"
+			        type="jtyearmonthday"
+            column="DT_RECEBIMENTO"
+        length="7"
+    />
+    <property
+        name="dhTransmissao"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_TRANSMISSAO"/><column name="DH_TRANSMISSAO_TZR"/></property>
+    <property
+        name="obRedeco"
+			        type="java.lang.String"
+            column="OB_REDECO"
+        length="60"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to EmpresaCobranca -->
+    <many-to-one
+        name="empresaCobranca"
+        class="com.mercurio.lms.configuracoes.model.EmpresaCobranca"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA_COBRANCA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to RepositorioItemRedeco -->
+    <bag
+        name="repositorioItemRedecos"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.RepositorioItemRedeco</meta>
+ 	        <key>
+            <column name="ID_REDECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.RepositorioItemRedeco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to RelacaoCobranca -->
+    <bag
+        name="relacaoCobrancas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.RelacaoCobranca</meta>
+ 	        <key>
+            <column name="ID_REDECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.RelacaoCobranca"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ItemRedeco -->
+    <bag
+        name="itemRedecos"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ItemRedeco</meta>
+ 	        <key>
+            <column name="ID_REDECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ItemRedeco"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ReciboDesconto -->
+    <bag
+        name="reciboDescontos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ReciboDesconto</meta>
+ 	        <key>
+            <column name="ID_REDECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ReciboDesconto"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to LoteCheque -->
+    <bag
+        name="loteCheques"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.LoteCheque</meta>
+ 	        <key>
+            <column name="ID_REDECO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.LoteCheque"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Pendencia -->
+    <many-to-one
+        name="pendenciaDesconto"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA_DESCONTO" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Pendencia -->
+    <many-to-one
+        name="pendenciaLucrosPerdas"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA_LUCROS_PERDAS" />
+    </many-to-one>   
+    
+    <!-- bi-directional many-to-one association to Pendencia -->
+    <many-to-one
+        name="pendenciaRecebimento"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="false"
+    >
+        <column name="ID_PENDENCIA_RECEBIMENTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>             
+</class>
+</hibernate-mapping>

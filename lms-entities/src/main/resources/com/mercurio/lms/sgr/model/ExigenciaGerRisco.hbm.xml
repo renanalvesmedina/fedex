@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.mercurio.lms.sgr.model.ExigenciaGerRisco" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="EXIGENCIA_GER_RISCO">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+		<cache usage="read-write" />
+
+		<id column="ID_EXIGENCIA_GER_RISCO" name="idExigenciaGerRisco" type="java.lang.Long">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">EXIGENCIA_GER_RISCO_SQ</param>
+			</generator>
+		</id>
+
+		<property column="NR_NIVEL" length="2" name="nrNivel" not-null="true" type="java.lang.Long" />
+		<property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+			<type name="domain">
+				<param name="domainName">DM_STATUS</param>
+			</type>
+		</property>
+		<property column="DS_RESUMIDA_I" length="500" name="dsResumida" not-null="true" type="varcharI18n" unique="true" />
+		<property column="DS_COMPLETA_I" length="500" name="dsCompleta" type="varcharI18n" />
+		<property column="TP_CRITERIO_AGRUPAMENTO" length="2" name="tpCriterioAgrupamento" not-null="true">
+			<type name="domain">
+				<param name="domainName">DM_TIPO_CRITERIO_AGRUPAMENTO</param>
+			</type>
+		</property>
+		<property column="BL_AREA_RISCO" length="1" name="blAreaRisco" not-null="true" type="sim_nao" />
+		<property column="CD_EXIGENCIA_GER_RISCO" length="30" name="cdExigenciaGerRisco" type="java.lang.String" />
+
+		<many-to-one class="com.mercurio.lms.sgr.model.TipoExigenciaGerRisco" name="tipoExigenciaGerRisco" not-null="true">
+			<column name="ID_TIPO_EXIGENCIA_GER_RISCO" />
+		</many-to-one>
+		<bag cascade="none" inverse="true" lazy="true" name="exigenciaIndicadas">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.ExigenciaIndicada</meta>
+			<key>
+				<column name="ID_EXIGENCIA_GER_RISCO" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.ExigenciaIndicada" />
+		</bag>
+		<bag cascade="none" inverse="true" lazy="true" name="exigenciaSmps">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.ExigenciaSmp</meta>
+			<key>
+				<column name="ID_EXIGENCIA_GER_RISCO" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.ExigenciaSmp" />
+		</bag>
+		<bag cascade="none" inverse="true" lazy="true" name="exigenciaFaixaValors">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.ExigenciaFaixaValor</meta>
+			<key>
+				<column name="ID_EXIGENCIA_GER_RISCO" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.ExigenciaFaixaValor" />
+		</bag>
+		<bag cascade="none" inverse="false" lazy="false" name="perifericosRastreador">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.PerifericoExigenciaGerRisco</meta>
+			<key>
+				<column name="ID_EXIGENCIA_GER_RISCO" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.PerifericoExigenciaGerRisco" />
+		</bag>
+
+	</class>
+</hibernate-mapping>

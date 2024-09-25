@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.EmpresaUsuario" 
+    table="EMPRESA_USUARIO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id
+        name="idEmpresaUsuario"
+        type="java.lang.Long"
+        column="ID_EMPRESA_USUARIO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EMPRESA_USUARIO_SQ</param>
+        </generator>
+    </id>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+
+	<many-to-one
+        name="empresa"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA" />
+    </many-to-one>
+    
+    <property name="blIrrestritoFilial" type="sim_nao"
+		column="BL_IRRESTRITO_FILIAL" not-null="true" length="1">
+	</property>
+
+	<!-- bi-directional many-to-one association to FilialUsuario -->
+	<bag name="filiaisUsuario" lazy="true" inverse="true"
+		cascade="all">
+		<meta attribute="adsm-parametrized-attribute">
+			com.mercurio.lms.configuracoes.model.FilialUsuario
+		</meta>
+		<key>
+			<column name="ID_EMPRESA_USUARIO" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.configuracoes.model.FilialUsuario" />
+	</bag>
+
+	<!-- bi-directional one-to-many association to RegionalUsuario -->
+	<bag name="regionalUsuario" lazy="true" inverse="true"
+		cascade="all">
+		<meta attribute="adsm-parametrized-attribute">
+			com.mercurio.lms.configuracoes.model.RegionalUsuario
+		</meta>
+		<key>
+			<column name="ID_EMPRESA_USUARIO" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.configuracoes.model.RegionalUsuario" />
+	</bag>
+
+	<many-to-one name="filialPadrao"
+		class="com.mercurio.lms.municipios.model.Filial" not-null="false"
+		insert="true" update="true">
+		<column name="ID_FILIAL_PADRAO" />
+	</many-to-one>
+</class>
+
+</hibernate-mapping>

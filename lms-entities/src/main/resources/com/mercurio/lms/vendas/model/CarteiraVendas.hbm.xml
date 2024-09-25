@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.mercurio.lms.vendas.model.CarteiraVendas" table="CARTEIRA_VENDA_LOTE">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+		
+		<id name="idCarteiraVendas" column="ID_CARTEIRA_VENDA_LOTE" type="java.lang.Long" >
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">CARTEIRA_VENDA_LOTE_SQ</param>
+			</generator>
+		</id>	
+		
+		<many-to-one name="usuario" column="ID_USUARIO"
+			entity-name="usuario" not-null="true"/>
+			
+		<property name="tpSituacaoAprovacao" column="TP_SITUACAO_APROVACAO">
+			<type name="domain">
+				<param name="domainName">DM_STATUS_WORKFLOW</param>
+			</type>
+		</property>
+		
+		<many-to-one name="pendencia" column="ID_PENDENCIA" not-null="false"
+			class="com.mercurio.lms.workflow.model.Pendencia"/>
+			
+		<property name="blEfetivadoNivel1" column="BL_EFETIVADO_NIVEL_1"
+			type="sim_nao" length="1"/>
+			
+		<property name="blEfetivadoNivel2" column="BL_EFETIVADO_NIVEL_2"
+			type="sim_nao" length="1"/>
+			
+		<property name="dtInicioLote" column="DT_INICIO_LOTE"
+			type="jtyearmonthday" length="7"/>
+			
+		<property name="dtFimLote" column="DT_FIM_LOTE"
+			type="jtyearmonthday" length="7"/>
+			
+		<bag name="carteiraVendasClientes" lazy="true" cascade="none" inverse="true">
+			<meta attribute="adsm-parametrized-attribute">
+				com.mercurio.lms.vendas.model.CarteiraVendasCliente
+			</meta>
+			<key>
+				<column name="ID_CARTEIRA_VENDA_LOTE"></column>
+			</key>
+			<one-to-many class="com.mercurio.lms.vendas.model.CarteiraVendasCliente"/>
+		</bag>
+	</class>
+</hibernate-mapping>

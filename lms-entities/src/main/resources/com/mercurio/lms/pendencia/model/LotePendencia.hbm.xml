@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.LotePendencia" 
+    table="LOTE_PENDENCIA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idLotePendencia"
+        type="java.lang.Long"
+        column="ID_LOTE_PENDENCIA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">LOTE_PENDENCIA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrAno"
+			        type="java.lang.Short"
+            column="NR_ANO"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="nrLote"
+			        type="java.lang.Integer"
+            column="NR_LOTE"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="dhGeracao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_GERACAO"/><column name="DH_GERACAO_TZR"/></property>
+    <property
+        name="tpLote"
+		    column="TP_LOTE"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">TP_LOTE</param>
+	    </type>
+    </property>
+    <property
+        name="qtVolumes"
+			        type="java.lang.Integer"
+            column="QT_VOLUMES"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="vlMercadoria"
+			        type="java.math.BigDecimal"
+            column="VL_MERCADORIA"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dtVenda"
+			        type="jtyearmonthday"
+            column="DT_VENDA"
+        length="7"
+    />
+    <property
+        name="dtEntrega"
+			        type="jtyearmonthday"
+            column="DT_ENTREGA"
+        length="7"
+    />	
+    <property
+        name="dtVencimentoPagamento"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO_PAGAMENTO"
+        length="7"
+    />
+    <property
+        name="vlPago"
+			        type="java.math.BigDecimal"
+            column="VL_PAGO"
+        length="18"
+    />
+    <property
+        name="nrEnderecoComprador"
+			        type="java.lang.String"
+            column="NR_ENDERECO_COMPRADOR"
+        length="5"
+    />
+    <property
+        name="nrCep"
+			        type="java.lang.String"
+            column="NR_CEP"
+        length="45"
+    />
+    <property
+        name="edComprador"
+			        type="java.lang.String"
+            column="ED_COMPRADOR"
+        length="60"
+    />
+    <property
+        name="dsComplementoEndereco"
+			        type="java.lang.String"
+            column="DS_COMPLEMENTO_ENDERECO"
+        length="40"
+    />
+    <property
+        name="dsBairro"
+			        type="java.lang.String"
+            column="DS_BAIRRO"
+        length="40"
+    />
+    <property
+        name="tpFormaPagamento"
+		    column="TP_FORMA_PAGAMENTO"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">TP_FORMA_PAGAMENTO</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ProtocoloTransferencia -->
+    <many-to-one
+        name="protocoloTransferencia"
+        class="com.mercurio.lms.pendencia.model.ProtocoloTransferencia"
+        not-null="true"
+    >
+        <column name="ID_PROTOCOLO_TRANSFERENCIA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to MercadoriaLotePendencia -->
+    <bag
+        name="mercadoriaLotePendencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.MercadoriaLotePendencia</meta>
+ 	        <key>
+            <column name="ID_LOTE_PENDENCIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.MercadoriaLotePendencia"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to EmissaoLote -->
+    <bag
+        name="emissaoLotes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.EmissaoLote</meta>
+ 	        <key>
+            <column name="ID_LOTE_PENDENCIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.EmissaoLote"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ChequePagtoVendaLote -->
+    <bag
+        name="chequePagtoVendaLotes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.ChequePagtoVendaLote</meta>
+ 	        <key>
+            <column name="ID_LOTE_PENDENCIA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.ChequePagtoVendaLote"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

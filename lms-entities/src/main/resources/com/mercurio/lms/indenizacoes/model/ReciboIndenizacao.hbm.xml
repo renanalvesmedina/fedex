@@ -1,0 +1,402 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.indenizacoes.model.ReciboIndenizacao" 
+    table="RECIBO_INDENIZACAO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idReciboIndenizacao"
+        type="java.lang.Long"
+        column="ID_RECIBO_INDENIZACAO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">RECIBO_INDENIZACAO_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="nrReciboIndenizacao"
+			        type="java.lang.Integer"
+            column="NR_RECIBO_INDENIZACAO"
+        not-null="true"
+        length="6"
+    />
+   
+    <property
+        name="qtVolumesIndenizados"
+			        type="java.lang.Integer"
+            column="QT_VOLUMES_INDENIZADOS"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="vlIndenizacao"
+			        type="java.math.BigDecimal"
+            column="VL_INDENIZACAO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="tpIndenizacao"
+		    column="TP_INDENIZACAO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_INDENIZACAO</param>
+	    </type>
+    </property>
+    
+    <property
+        name="tpSituacaoWorkflow"
+		    column="TP_SITUACAO_WORKFLOW"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_WORKFLOW</param>
+	    </type>
+    </property>
+    
+    <many-to-one
+        name="pendencia"
+        class="com.mercurio.lms.workflow.model.Pendencia"
+        not-null="true"
+    >
+ 	   <column name="ID_PENDENCIA" />
+    </many-to-one> 
+    
+    <many-to-one
+        name="loteJdeRim"
+        class="com.mercurio.lms.indenizacoes.model.LoteJdeRim"
+        not-null="false"
+    >
+ 	   <column name="ID_LOTE_JDE_RIM" />
+    </many-to-one> 
+    
+    <property
+        name="tpBeneficiarioIndenizacao"
+		    column="TP_BENEFICIARIO_INDENIZACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_BENEFICIARIO_INDENIZACAO</param>
+	    </type>
+    </property>
+    <property
+        name="tpStatusIndenizacao"
+		    column="TP_STATUS_INDENIZACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_INDENIZACAO</param>
+	    </type>
+    </property>
+    <property
+        name="tpFormaPagamento"
+		    column="TP_FORMA_PAGAMENTO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_FORMA_PAGAMENTO_INDENIZACAO</param>
+	    </type>
+    </property>
+    <property
+        name="tpFavorecidoIndenizacao"
+		    column="TP_FAVORECIDO_INDENIZACAO"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_BENEFICIARIO_INDENIZACAO</param>
+	    </type>
+    </property>    
+    <property
+        name="blSalvados"
+			        type="sim_nao"
+            column="BL_SALVADOS"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <!-- LMS-428 REQ001 Segurado com seguro próprio-->
+    <property
+        name="blSegurado"
+			        type="sim_nao"
+            column="BL_SEGURADO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blEmailPgto"
+			        type="sim_nao"
+            column="BL_EMAILPGTO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    
+    <property
+        name="blMaisUmaOcorrencia"
+			        type="sim_nao"
+            column="BL_MAIS_UMA_OCORRENCIA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="dtEmissao"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO"
+        length="7"
+    />
+    <property
+        name="dtGeracao"
+		type="jtyearmonthday"
+        column="DT_GERACAO"
+        not-null="true"
+        length="7"
+    />    
+    <property
+        name="dtProgramadaPagamento"
+			        type="jtyearmonthday"
+            column="DT_PROGRAMADA_PAGAMENTO"
+        length="7"
+    />
+    <property
+        name="dtLiberacaoPagamento"
+			        type="jtyearmonthday"
+            column="DT_LIBERACAO_PAGAMENTO"
+        length="7"
+    />
+    <property
+        name="dtPagamentoEfetuado"
+			        type="jtyearmonthday"
+            column="DT_PAGAMENTO_EFETUADO"
+        length="7"
+    />
+    <property
+        name="dtDevolucaoBanco"
+			        type="jtyearmonthday"
+            column="DT_DEVOLUCAO_BANCO"
+        length="7"
+    />    
+    <property
+        name="nrNotaFiscalDebitoCliente"
+			        type="java.lang.Long"
+            column="NR_NOTA_FISCAL_DEBITO_CLIENTE"
+        length="10"
+    />
+    <property
+        name="nrContaCorrente"
+			        type="java.lang.Long"
+            column="NR_CONTA_CORRENTE"
+        length="15"
+    />
+    <property
+        name="qtParcelasBoletoBancario"
+			        type="java.lang.Byte"
+            column="QT_PARCELAS_BOLETO_BANCARIO"
+        length="2"
+    />
+    <property
+        name="vlJuros"
+			        type="java.math.BigDecimal"
+            column="VL_JUROS"
+        length="18"
+    />
+    <property
+        name="nrDigitoContaCorrente"
+			        type="java.lang.String"
+            column="NR_DIGITO_CONTA_CORRENTE"
+        length="2"
+    />
+    <property
+        name="obReciboIndenizacao"
+			        type="java.lang.String"
+            column="OB_RECIBO_INDENIZACAO"
+        length="100"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to AgenciaBancaria -->
+    <many-to-one
+        name="agenciaBancaria"
+        class="com.mercurio.lms.configuracoes.model.AgenciaBancaria"
+        not-null="true"
+    >
+        <column name="ID_AGENCIA_BANCARIA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ProcessoSinistro -->
+    <many-to-one
+        name="processoSinistro"
+        class="com.mercurio.lms.seguros.model.ProcessoSinistro"
+        not-null="true"
+    >
+        <column name="ID_PROCESSO_SINISTRO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Banco -->
+    <many-to-one
+        name="banco"
+        class="com.mercurio.lms.configuracoes.model.Banco"
+        not-null="true"
+    >
+        <column name="ID_BANCO" />
+    </many-to-one>
+  
+    <!-- bi-directional one-to-many association to FilialDebitada -->
+    <bag
+        name="filialDebitadas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.FilialDebitada</meta>
+ 	        <key>
+            <column name="ID_RECIBO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.FilialDebitada"
+        />
+    </bag>
+    
+        <!-- bi-directional one-to-many association to AvisoPagoRim -->
+    <bag
+        name="avisoPagoRim"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.AvisoPagoRimInd</meta>
+ 	        <key>
+            <column name="ID_RECIBO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.AvisoPagoRimInd"
+        />
+    </bag>
+    
+
+    <!-- bi-directional one-to-many association to DoctoServicoIndenizacao -->
+    <bag
+        name="doctoServicoIndenizacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.DoctoServicoIndenizacao</meta>
+ 	        <key>
+            <column name="ID_RECIBO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.DoctoServicoIndenizacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MdaSalvadoIndenizacao -->
+    <bag
+        name="mdaSalvadoIndenizacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.MdaSalvadoIndenizacao</meta>
+ 	        <key>
+            <column name="ID_RECIBO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.MdaSalvadoIndenizacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to EventoRim -->
+    <bag
+        name="eventoRims"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.EventoRim</meta>
+ 	        <key>
+            <column name="ID_RECIBO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.EventoRim"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ParcelaReciboIndenizacao -->
+    <bag
+        name="parcelaReciboIndenizacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.indenizacoes.model.ParcelaReciboIndenizacao</meta>
+ 	        <key>
+            <column name="ID_RECIBO_INDENIZACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.indenizacoes.model.ParcelaReciboIndenizacao"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoaByIdFavorecido"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="false"
+    >
+        <column name="ID_FAVORECIDO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pessoa -->
+    <many-to-one
+        name="pessoaByIdBeneficiario"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        not-null="true"
+    >
+        <column name="ID_BENEFICIARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vendas.model.PrazoVencimento" 
+    table="PRAZO_VENCIMENTO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPrazoVencimento"
+        type="java.lang.Long"
+        column="ID_PRAZO_VENCIMENTO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PRAZO_VENCIMENTO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpFrete"
+		column="TP_FRETE"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_FRETE</param>
+	    </type>
+    </property>
+    
+    <property
+        name="tpDiaSemana"
+		column="TP_DIA_SEMANA_VENCIMENTO"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_DIAS_SEMANA</param>
+	    </type>
+    </property>
+    
+    <property
+        name="nrPrazoPagamento"
+        type="java.lang.Short"
+		column="NR_PRAZO_PAGAMENTO"
+        length="3"
+    />
+     <property
+        name="nrPrazoPagamentoSolicitado"
+        type="java.lang.Short"
+		column="NR_PRAZO_PAGAMENTO_SOLICITADO"
+        length="3"
+    />
+     <property
+        name="nrPrazoPagamentoAprovado"
+        type="java.lang.Short"
+		column="NR_PRAZO_PAGAMENTO_APROVADO"
+        length="3"
+    />
+    <property
+        name="tpModal"
+		column="TP_MODAL"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property
+        name="tpAbrangencia"
+		column="TP_ABRANGENCIA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ABRANGENCIA</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to DivisaoCliente -->
+    <many-to-one
+        name="divisaoCliente"
+        class="com.mercurio.lms.vendas.model.DivisaoCliente"
+        not-null="true"
+    >
+        <column name="ID_DIVISAO_CLIENTE" />
+    </many-to-one>
+
+     <!-- bi-directional many-to-one association to Servico -->
+    <many-to-one
+        name="servico"
+        class="com.mercurio.lms.configuracoes.model.Servico"
+    >
+        <column name="ID_SERVICO" />
+    </many-to-one>
+
+     <!-- bi-directional one-to-many association to DiaVencimento -->
+    <bag
+        name="diasVencimento"
+        lazy="true"
+        inverse="true"
+		cascade="save-update,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.DiaVencimento</meta>
+ 	        <key>
+            <column name="ID_PRAZO_VENCIMENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.DiaVencimento"
+        />
+    </bag>
+
+</class>
+</hibernate-mapping>

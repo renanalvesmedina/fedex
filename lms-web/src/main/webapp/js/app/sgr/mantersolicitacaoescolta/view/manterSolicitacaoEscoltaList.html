@@ -1,0 +1,449 @@
+<form class="form-horizontal content-padding" ng-submit="find()">
+	<div class="fixed-top">
+		<div ng-include src="contextPath + 'js/app/common/view/templates/form-buttons-list.html'" />
+	</div>
+
+	<div class="row">
+		<div adsm-add-field boxSize="6" label="filial" labelSize="4" multiSize="3">
+			<input
+				lms-filial
+				maxlength="3"
+				ng-model="filter.filialSolicitacao"
+				type="text"
+			/>
+			<input
+				disabled
+				ng-model="filter.filialSolicitacao.nmFilial"
+				type="text"
+			/>
+		</div>
+		<div adsm-add-field boxSize="6" label="nrSolicitacaoEscolta" labelSize="4">
+			<input
+				class="text-right"
+				ng-model="filter.nrSolicitacaoEscolta"
+				type="text"
+			/>
+		</div>
+	</div>
+	<div class="row">
+		<div adsm-add-field boxSize="6" label="tpSituacao" labelSize="4">
+			<select
+				adsm-domain="DM_SITUACAO_SOLIC_ESCOLTA"
+				ng-model="filter.tpSituacao"
+			>
+				<option value="" />
+			</select>
+		</div>
+		<div adsm-add-field boxSize="6" label="usuarioSolicitante" labelSize="4" multiSize="4">
+			<input
+				lms-usuario-lms
+				ng-model="filter.usuarioSolicitante"
+				type="text"
+			/>
+			<input
+				disabled
+				ng-model="filter.usuarioSolicitante.nmUsuario"
+				type="text"
+			/>
+		</div>
+	</div>
+
+	<accordion>
+		<accordion-group is-open="isFiltroEscoltaOpen">
+			<accordion-heading>
+				<span
+					class="glyphicon"
+					ng-class="{ 'glyphicon-chevron-down' : isFiltroEscoltaOpen, 'glyphicon-chevron-right' : !isFiltroEscoltaOpen }"
+				/>
+				{{ 'escolta' | translate }}
+			</accordion-heading>
+
+			<div class="row">
+				<div adsm-add-field boxSize="6" label="tpEscolta" labelSize="4">
+					<select 
+						adsm-chosen
+						ng-model="filter.idExigenciaGerRisco"
+						ng-options="data.id as data.dsResumida for data in exigenciasDataSource"
+					>
+						<option value="" />
+					</select>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label class="col-lg-4 control-label">{{ 'quilometragem' | translate }}</label>
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-6">
+									<input
+										adsm-custom-validation="validateQuilometragem"
+										class="form-control text-right"
+										ng-model="filter.nrKmSolicitacaoEscoltaInicial"
+										numeric="{ vMin : 1, maxLength : 4 }"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-6">
+									<input
+										adsm-custom-validation="validateQuilometragem"
+										class="form-control text-right"
+										ng-model="filter.nrKmSolicitacaoEscoltaFinal"
+										numeric="{ vMin : 1, maxLength : 4 }"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div adsm-add-field boxSize="6" label="clienteSolicitante" labelSize="4" multiSize="4">
+					<input
+						lms-cliente
+						ng-model="filter.clienteEscolta"
+						type="text"
+					/>
+					<input
+						disabled
+						ng-model="filter.clienteEscolta.nmPessoa"
+						type="text"
+					/>
+				</div>
+				<div adsm-add-field boxSize="6" label="controleCarga" labelSize="4" multiSize="4">
+					<input
+						lms-controle-carga
+						ng-model="filter.controleCarga"
+						type="text"
+					/>
+					<input
+						class="text-right"
+						disabled
+						ng-model="filter.controleCarga.nrControleCarga"
+						type="text"
+					/>
+				</div>
+			</div>
+			<div class="row">
+				<div adsm-add-field boxSize="6" label="naturezaProduto" labelSize="4">
+					<select
+						lms-natureza-produto
+						ng-model="filter.idNaturezaProduto"
+					>
+						<option value="" />
+					</select>
+				</div>
+				<div adsm-add-field boxSize="3" label="meioTransporte" labelSize="4" multiSize="6">
+					<input
+						lms-meio-transporte
+						ng-model="filter.meioTransporteByIdTransportado"
+						type="text"
+					/>
+					<input
+						class="text-right"
+						disabled
+						ng-model="filter.meioTransporteByIdTransportado.nrFrota"
+						type="text"
+					/>
+				</div>
+				<div adsm-add-field boxSize="3" label="semiReboque" labelSize="4" multiSize="6">
+					<input
+						lms-meio-transporte
+						ng-model="filter.meioTransporteBySemiReboque"
+						type="text"
+					/>
+					<input
+						class="text-right"
+						disabled
+						ng-model="filter.meioTransporteBySemiReboque.nrFrota"
+						type="text"
+					/>
+				</div>
+			</div>
+		</accordion-group>
+	</accordion>
+
+	<accordion>
+		<accordion-group is-open="isFiltroDataOpen">
+			<accordion-heading>
+				<span
+					class="glyphicon"
+					ng-class="{ 'glyphicon-chevron-down' : isFiltroDataOpen, 'glyphicon-chevron-right' : !isFiltroDataOpen }"
+				/>
+				{{ 'datas' | translate }}
+			</accordion-heading>
+
+			<div class="row">
+				<div adsm-add-field boxSize="6" label="dataInclusao" labelSize="4" multiSize="6">
+					<input
+						adsm-date-picker
+						end="filter.dhInclusaoFinal"
+						mask="date"
+						ng-model="filter.dhInclusaoInicial"
+					/>
+					<input
+						adsm-date-picker
+						mask="date"
+						ng-model="filter.dhInclusaoFinal"
+						start="filter.dhInclusaoInicial"
+					/>
+				</div>
+				<div adsm-add-field boxSize="6" label="inicioPrevisto" labelSize="4" multiSize="6">
+					<input
+						adsm-date-picker
+						end="filter.dhInicioPrevistoFinal"
+						mask="date"
+						ng-model="filter.dhInicioPrevistoInicial"
+					/>
+					<input
+						adsm-date-picker
+						mask="date"
+						ng-model="filter.dhInicioPrevistoFinal"
+						start="filter.dhInicioPrevistoInicial"
+					/>
+				</div>
+			</div>
+		</accordion-group>
+	</accordion>
+
+	<accordion>
+		<accordion-group is-open="isFiltroTrechoOpen">
+			<accordion-heading>
+				<span
+					class="glyphicon"
+					ng-class="{ 'glyphicon-chevron-down' : isFiltroTrechoOpen, 'glyphicon-chevron-right' : !isFiltroTrechoOpen }"
+				/>
+				{{ 'trecho' | translate }}
+			</accordion-heading>
+
+			<div class="row">
+				<div adsm-add-field boxSize="6" label="origem" labelSize="4">
+					<select
+						adsm-domain="DM_TIPO_ORIGEM_SOLIC_ESCOLTA"
+						ng-change="clearOrigem()"
+						ng-model="filter.tpOrigem"
+					>
+						<option value="" />
+					</select>
+				</div>
+				<div adsm-add-field boxSize="6" label="destino" labelSize="4">
+					<select
+						adsm-domain="DM_TIPO_DESTINO_SOLIC_ESCOLTA"
+						ng-change="clearDestino()"
+						ng-model="filter.tpDestino"
+					>
+						<option value="" />
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="form-group" ng-show="filter.tpOrigem.value === 'F'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-3">
+									<input
+										class="form-control"
+										lms-filial
+										maxlength="3"
+										ng-model="filter.filialOrigem"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-9">
+									<input
+										class="form-control"
+										disabled
+										ng-model="filter.filialOrigem.nmFilial"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-show="filter.tpOrigem.value === 'C'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-5">
+									<input
+										class="form-control"
+										lms-cliente
+										ng-model="filter.clienteOrigem"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-7">
+									<input
+										class="form-control"
+										disabled
+										ng-model="filter.clienteOrigem.nmPessoa"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-show="filter.tpOrigem.value === 'A'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-3">
+									<input
+										class="form-control"
+										lms-aeroporto
+										ng-model="filter.aeroportoOrigem"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-9">
+									<input
+										class="form-control"
+										disabled
+										maxlength="3"
+										ng-model="filter.aeroportoOrigem.nmAeroporto"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group" ng-show="filter.tpDestino.value === 'F'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-3">
+									<input
+										class="form-control"
+										lms-filial
+										maxlength="3"
+										ng-model="filter.filialDestino"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-9">
+									<input
+										class="form-control"
+										disabled
+										ng-model="filter.filialDestino.nmFilial"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-show="filter.tpDestino.value === 'C'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-5">
+									<input
+										class="form-control"
+										lms-cliente
+										ng-model="filter.clienteDestino"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-7">
+									<input
+										class="form-control"
+										disabled
+										ng-model="filter.clienteDestino.nmPessoa"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-show="filter.tpDestino.value === 'A'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-3">
+									<input
+										class="form-control"
+										lms-aeroporto
+										maxlength="3"
+										ng-model="filter.aeroportoDestino"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-9">
+									<input
+										class="form-control"
+										disabled
+										ng-model="filter.aeroportoDestino.nmAeroporto"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="form-group" ng-show="filter.tpDestino.value === 'R'">
+						<div class="col-lg-4" />
+						<div class="col-lg-8">
+							<div class="multi-input">
+								<div class="col-xs-9">
+									<input
+										class="form-control"
+										lms-rota-coleta-entrega
+										ng-model="filter.rotaColetaEntrega"
+										type="text"
+									/>
+								</div>
+								<div class="col-xs-3">
+									<input
+										class="form-control text-right"
+										disabled
+										ng-model="filter.rotaColetaEntrega.nrRota"
+										type="text"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</accordion-group>
+	</accordion>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<table
+				adsm-table="listTableParams"
+				remove-service="removeByIds()"
+				show-checkboxes="true"
+			>
+				<thead>
+					<tr>
+						<th />
+						<th colspan="2">{{ 'solicitacaoEscolta' | translate }}</th>
+						<th>{{ 'situacao' | translate }}</th>
+						<th colspan="2">{{ 'clienteSolicitante' | translate }}</th>
+						<th>{{ 'origem' | translate }}</th>
+						<th>{{ 'destino' | translate }}</th>
+						<th>{{ 'inicioPrevisto' | translate }}</th>
+						<th>{{ 'tipoEscolta' | translate }}</th>
+						<th>{{ 'viaturas' | translate }}</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-click="detail(row)" ng-repeat="row in page">
+						<td>{{ row.filialSolicitante.sgFilial }}</td>
+						<td class="text-right">{{ row.nrSolicitacaoEscolta }}</td>
+						<td class="text-center">{{ row.tpSituacao.descriptionAsString }}</td>
+						<td>{{ row.clienteEscolta.nrIdentificacao }}</td>
+						<td>{{ row.clienteEscolta.nmPessoa }}</td>
+						<td>{{ row.dsOrigem }}</td>
+						<td>{{ row.dsDestino }}</td>
+						<td>{{ row.dhInicioPrevisto | dateTimeZone }}</td>
+						<td>{{ row.dsExigenciaGerRisco }}</td>
+						<td class="text-right">{{ row.qtViaturas }}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</form>

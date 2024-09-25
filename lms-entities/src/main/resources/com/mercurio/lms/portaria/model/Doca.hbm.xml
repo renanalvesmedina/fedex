@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.portaria.model.Doca" 
+    table="DOCA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+ 
+
+    <id
+        name="idDoca"
+        type="java.lang.Long"
+        column="ID_DOCA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">DOCA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrDoca"
+		type="java.lang.Short"
+        column="NR_DOCA"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="tpSituacaoDoca"
+		column="TP_SITUACAO_DOCA"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_DOCA_BOX</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="dsDoca"
+		type="java.lang.String"
+        column="DS_DOCA"
+        length="60"
+    />
+    <property
+        name="obDoca"
+		type="java.lang.String"
+        column="OB_DOCA"
+        length="500"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to Box -->
+    <bag
+        name="boxs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.Box</meta>
+ 	        <key>
+            <column name="ID_DOCA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.Box"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Terminal -->
+    <many-to-one
+        name="terminal"
+        class="com.mercurio.lms.portaria.model.Terminal"
+        not-null="true"
+    >
+        <column name="ID_TERMINAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

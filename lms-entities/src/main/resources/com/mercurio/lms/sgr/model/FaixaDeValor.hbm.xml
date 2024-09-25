@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping>
+	<class name="com.mercurio.lms.sgr.model.FaixaDeValor" table="FAIXA_DE_VALOR">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+
+		<id column="ID_FAIXA_DE_VALOR" name="idFaixaDeValor" type="java.lang.Long">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">FAIXA_DE_VALOR_SQ</param>
+			</generator>
+		</id>
+
+		<property column="VL_LIMITE_MINIMO" length="18" name="vlLimiteMinimo" not-null="true" type="java.math.BigDecimal" />
+		<property column="BL_REQUER_LIBERACAO_CEMOP" length="1" name="blRequerLiberacaoCemop" not-null="true" type="sim_nao" />
+		<property column="VL_LIMITE_MAXIMO" length="18" name="vlLimiteMaximo" type="java.math.BigDecimal" />
+		<property column="BL_EXCLUSIVA_AEROPORTO" length="1" name="blExclusivaAeroporto" not-null="true" type="sim_nao" />
+		<property column="BL_EXCLUSIVA_CLIENTE" length="1" name="blExclusivaCliente" not-null="true" type="sim_nao" />
+
+		<!-- Associations -->
+
+		<!-- bi-directional one-to-many association to ExigenciaFaixaValor -->
+		<bag cascade="none" inverse="true" lazy="true" name="exigenciaFaixaValors">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.ExigenciaFaixaValor</meta>
+			<key>
+				<column name="ID_FAIXA_DE_VALOR" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.ExigenciaFaixaValor" />
+		</bag>
+		<!-- bi-directional many-to-one association to EnquadramentoRegra -->
+		<many-to-one class="com.mercurio.lms.sgr.model.EnquadramentoRegra" name="enquadramentoRegra" not-null="true">
+			<column name="ID_ENQUADRAMENTO_REGRA" />
+		</many-to-one>
+
+		<bag cascade="none" inverse="false" lazy="false" name="naturezasImpedidas">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.FaixaValorNaturezaImpedida</meta>
+			<key>
+				<column name="ID_FAIXA_DE_VALOR" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.FaixaValorNaturezaImpedida" />
+		</bag>
+	</class>
+</hibernate-mapping>

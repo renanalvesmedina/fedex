@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!--  
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.sim.model.PedidoCompra" 
+    table="PEDIDO_COMPRA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id 
+        name="idPedidoCompra"
+        type="java.lang.Long"
+        column="ID_PEDIDO_COMPRA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PEDIDO_COMPRA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrPedido"
+			        type="java.lang.Long"
+            column="NR_PEDIDO"
+        not-null="true"
+        length="10"
+    />
+    <property
+        name="nrPedidoInternacional"
+			        type="java.lang.String"
+            column="NR_PEDIDO_INTERNACIONAL"
+        not-null="true"
+        length="20"
+    />
+    <property
+        name="tpOrigem"
+		    column="TP_ORIGEM"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ORIGEM_PEDIDO_COMPRA</param>
+	    </type>
+    </property>
+    <property
+        name="nrFatura"
+			        type="java.lang.String"
+            column="NR_FATURA"
+        not-null="true"
+        length="20"
+    />
+    <property
+        name="nrNotaFiscal"
+			        type="java.lang.String"
+            column="NR_NOTA_FISCAL"
+        not-null="true"
+        length="20"
+    />
+    <property
+        name="blCartao"
+			        type="sim_nao"
+            column="BL_CARTAO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="tpMotalBrasil"
+		    column="TP_MODAL_BRASIL"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property
+        name="tpModalExterior"
+		    column="TP_MODAL_EXTERIOR"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    <property
+        name="dhEmissao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+    <property
+        name="nrPesoBruto"
+			        type="java.math.BigDecimal"
+            column="NR_PESO_BRUTO"
+        length="18"
+    />
+    <property
+        name="nrPesoLiquido"
+			        type="java.math.BigDecimal"
+            column="NR_PESO_LIQUIDO"
+        length="18"
+    />
+    <property
+        name="nrQuantidadeVolumes"
+		type="java.lang.Integer"
+        column="NR_QUANTIDADE_VOLUMES"
+        length="5"
+    />
+    <property
+        name="vlExportacao"
+			        type="java.math.BigDecimal"
+            column="VL_EXPORTACAO"
+        length="18"
+    />
+    <property
+        name="dtPrevisaoEntregaBrasil"
+			        type="jtyearmonthday"
+            column="DT_PREVISAO_ENTREGA_BRASIL"
+        length="7"
+    />
+    <property
+        name="dtPrevisaoEntregaExterior"
+			        type="jtyearmonthday"
+            column="DT_PREVISAO_ENTREGA_EXTERIOR"
+        length="7"
+    />
+ 	<property
+        name="dhInclusao"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="remetente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE_REMETENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="destinatario"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE_DESTINATARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="false"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+      <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+      <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to EventoDocumentoServico -->
+    <bag
+        name="eventoDocumentoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.EventoDocumentoServico</meta>
+ 	        <key>
+            <column name="ID_PEDIDO_COMPRA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sim.model.EventoDocumentoServico"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

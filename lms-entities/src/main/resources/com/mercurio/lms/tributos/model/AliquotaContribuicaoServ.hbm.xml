@@ -1,0 +1,126 @@
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tributos.model.AliquotaContribuicaoServ" 
+    table="ALIQUOTA_CONTRIBUICAO_SERV"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idAliquotaContribuico"
+        type="java.lang.Long"
+        column="ID_ALIQUOTA_CONTRIBUICAO_SERV"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ALIQUOTA_CONTRIBUICAO_SERV_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="vlPiso"
+			        type="java.math.BigDecimal"
+            column="VL_PISO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="pcAliquota"
+			        type="java.math.BigDecimal"
+            column="PC_ALIQUOTA"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="pcBaseCalcReduzida"
+			        type="java.math.BigDecimal"
+            column="PC_BCALC_REDUZIDA"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+
+	<property
+        name="tpImposto"
+	    column="TP_IMPOSTO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_IMPOSTO</param>
+	    </type>
+    </property>
+    
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+    <property
+        name="obAliquotaContribuicaoServ"
+			        type="java.lang.String"
+            column="OB_ALIQUOTA_CONTRIBUICAO_SERV"
+        length="500"
+    />
+
+    <!-- Associations -->
+    <!-- bi-directional one-to-many association to AliquotaContribuicaoServMunic -->
+    <bag
+        name="aliquotasContribuicaoServMunic"
+        lazy="true"
+        inverse="true"
+		cascade="all,delete-orphan">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.AliquotaContribuicaoServMunic</meta>
+ 	        <key>
+    	        <column name="ID_ALIQUOTA_CONTRIBUICAO_SERV" />
+	        </key>
+        	<one-to-many class="com.mercurio.lms.tributos.model.AliquotaContribuicaoServMunic"/>
+    </bag>
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="pessoa"
+        class="com.mercurio.lms.configuracoes.model.Pessoa"
+        outer-join="true"
+        not-null="false"
+    >
+        <column name="ID_PESSOA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ServicoTributo -->
+    <many-to-one
+        name="servicoTributo"
+        class="com.mercurio.lms.tributos.model.ServicoTributo"
+        outer-join="true"
+        not-null="false"
+    >
+        <column name="ID_SERVICO_TRIBUTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ServicoAdicional -->
+    <many-to-one
+        name="servicoAdicional"
+        class="com.mercurio.lms.configuracoes.model.ServicoAdicional"
+        outer-join="true"
+        not-null="false"
+    >
+        <column name="ID_SERVICO_ADICIONAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

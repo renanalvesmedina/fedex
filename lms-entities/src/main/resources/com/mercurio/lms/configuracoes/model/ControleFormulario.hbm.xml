@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class 
+	name="com.mercurio.lms.configuracoes.model.ControleFormulario" 
+	table="CONTROLE_FORMULARIO"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idControleFormulario"
+		type="java.lang.Long"
+		column="ID_CONTROLE_FORMULARIO"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">CONTROLE_FORMULARIO_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="nrFormularioInicial"
+		type="java.lang.Long"
+		column="NR_FORMULARIO_INICIAL"
+		not-null="true"
+		length="10"
+	/>
+	<property
+		name="nrFormularioFinal"
+		type="java.lang.Long"
+		column="NR_FORMULARIO_FINAL"
+		not-null="true"
+		length="10"
+	/>
+	<property
+		name="dtRecebimento"
+		type="jtyearmonthday"
+		column="DT_RECEBIMENTO"
+		not-null="true"
+		length="7"
+	/>
+	<property
+		name="tpSituacaoFormulario"
+		column="TP_SITUACAO_FORMULARIO"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_SITUACAO_FORMULARIO</param>
+		</type>
+	</property>
+	<property
+		name="tpFormulario"
+		column="TP_FORMULARIO"
+		not-null="true"
+		length="2"
+	>
+		<type name="domain">
+			<param name="domainName">DM_TIPO_FORMULARIO</param>
+		</type>
+	</property>
+	<property
+		name="nrAidf"
+		type="java.lang.String"
+		column="NR_AIDF"
+		length="20"
+	/>
+	<property
+		name="nrSeloFiscalInicial"
+		type="java.lang.Long"
+		column="NR_SELO_FISCAL_INICIAL"
+		length="15"
+	/>
+	<property
+		name="nrSeloFiscalFinal"
+		type="java.lang.Long"
+		column="NR_SELO_FISCAL_FINAL"
+		length="15"
+	/>
+	<property
+		name="nrCodigoBarrasInicial"
+		type="java.lang.Long"
+		column="NR_CODIGO_BARRAS_INICIAL"
+		length="15"
+	/>
+	<property
+		name="nrCodigoBarrasFinal"
+		type="java.lang.Long"
+		column="NR_CODIGO_BARRAS_FINAL"
+		length="15"
+	/>
+	<property
+		name="cdSerie"
+		type="java.lang.String"
+		column="CD_SERIE"
+		length="5"
+	/>
+
+	<!-- Associations -->
+
+	<!-- bi-directional one-to-many association to ControleFormulario -->
+	<bag
+		name="controleFormularios"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.ControleFormulario</meta>
+ 		<key>
+			<column name="ID_CONTROLE_ESTOQUE_ORIGINAL" />
+		</key>
+		<one-to-many
+			class="com.mercurio.lms.configuracoes.model.ControleFormulario"
+		/>
+	</bag>
+	<!-- bi-directional many-to-one association to ControleFormulario -->
+	<many-to-one
+		name="controleFormulario"
+		class="com.mercurio.lms.configuracoes.model.ControleFormulario"
+		not-null="true"
+		outer-join="true"
+	>
+		<column name="ID_CONTROLE_ESTOQUE_ORIGINAL" />
+	</many-to-one>
+	<!-- bi-directional one-to-many association to ImpressoraFormulario -->
+	<bag
+		name="impressoraFormularios"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.ImpressoraFormulario</meta>
+ 		<key>
+			<column name="ID_CONTROLE_FORMULARIO" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.configuracoes.model.ImpressoraFormulario"
+		/>
+	</bag>
+	<!-- bi-directional many-to-one association to Empresa -->
+	<many-to-one
+		name="empresa"
+		class="com.mercurio.lms.municipios.model.Empresa"
+		not-null="true"
+	>
+		<column name="ID_EMPRESA" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filial"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true"
+	>
+		<column name="ID_FILIAL" />
+	</many-to-one>
+
+</class>
+</hibernate-mapping>

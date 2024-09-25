@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.sim.model.ConfiguracaoComunicacao" 
+    table="CONFIGURACAO_COMUNICACAO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idConfiguracaoComunicacao"
+        type="java.lang.Long"
+        column="ID_CONFIGURACAO_COMUNICACAO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CONFIGURACAO_COMUNICACAO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpCliente"
+		column="TP_CLIENTE"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_CLIENTE</param>
+	    </type>
+    </property>
+    <property
+        name="tpAcessoEvento"
+		column="TP_ACESSO_EVENTO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ACESSO_EVENTO</param>
+	    </type>
+    </property>
+    <property
+        name="blSomenteDiasUteis"
+		type="sim_nao"
+        column="BL_SOMENTE_DIAS_UTEIS"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="blComunicacaoCadaEvento"
+		type="sim_nao"
+        column="BL_COMUNICACAO_CADA_EVENTO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="tpDocumento"
+		column="TP_DOCUMENTO"
+        not-null="true"
+        length="3"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_DOCUMENTO_CLIENTE</param>
+	    </type>
+    </property>
+    <property
+        name="tpMeioComunicacao"
+		column="TP_MEIO_COMUNICACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MEIO_COMUNICACAO</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrIntervaloComunicacao"
+		type="java.lang.Integer"
+        column="NR_INTERVALO_COMUNICACAO"
+        length="2"
+    />
+    <property
+        name="hrDeterminado"
+		type="jttimeofday"
+        column="HR_DETERMINADO"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Servico -->
+    <many-to-one
+        name="servico"
+        class="com.mercurio.lms.configuracoes.model.Servico"
+        not-null="true"
+    >
+        <column name="ID_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to EventoClienteRecebe -->
+    <bag
+        name="eventoClienteRecebes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.EventoClienteRecebe</meta>
+ 	        <key>
+            <column name="ID_CONFIGURACAO_COMUNICACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sim.model.EventoClienteRecebe"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ContatoComunicacao -->
+    <bag
+        name="contatoComunicacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sim.model.ContatoComunicacao</meta>
+ 	        <key>
+            <column name="ID_CONFIGURACAO_COMUNICACAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.sim.model.ContatoComunicacao"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

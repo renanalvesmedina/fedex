@@ -1,0 +1,123 @@
+<style type="text/css">
+	.modal-formalidades .modal-dialog {
+		width: 532px;
+	}
+</style>
+
+<form class="form-horizontal content-padding" data-ng-submit="store()">
+
+	<div class="fixed-top">
+		<button type="button" class="btn btn-default btn-lg pull-right" id="efetivarProposta" ng-disabled="data.botoes.btEfetivarProposta" ng-click="efetivarProposta(false)">
+			{{'efetivarProposta' |  translate }}
+		</button>
+		<button type="button" data-ng-click="openModalReprov()" class="btn btn-default btn-lg pull-right" id="reprovarEfetivacao" ng-disabled="data.botoes.btReprovarEfetivacao">
+			{{'reprovarEfetivacao' | translate}}
+		</button>
+		<button type="button" class="btn btn-default btn-lg pull-right" id="solicitarEfetivacaoButton" ng-disabled="data.botoes.btSolicitarEfetivacao" ng-click="solicitarEfetivacaoProposta()">
+			{{'solicitarEfetivacao' |  translate }}
+		</button>
+		<button type="button" data-ng-click="openModalImprimir()" class="btn btn-default btn-lg pull-right" id="imprimirProposta" ng-disabled="data.botoes.btImprimirProposta">
+			{{'imprimirProposta' |  translate }}
+		</button>
+		<button type="button" class="btn btn-default btn-lg pull-right" id="aprovacao" ng-disabled="data.botoes.btAprovacao" ng-click="aprovarProposta()">
+			{{'aprovacao' |  translate }}
+		</button>
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="storeFormalidades" permission="salvar" ng-disabled="data.botoes.btSalvar">
+			{{'salvar' |  translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="periodicidadeFaturamento" data-labelSize="4" data-multiSize="3,7">
+            <select
+				adsm-domain="DM_PERIODICIDADE_FATURAMENTO"
+				id="tipoPeriodicidade"
+				ng-model="data.tpPeriodicidadeFaturamento"
+				disabled>
+				<option value=""></option>
+			</select>
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="prazoPagamento" data-labelSize="6" data-multiSize="4,8">
+            <input type="text" disabled ng-model="data.nrDiasPrazoPagamento" data-numeric>
+            <div adsm-add-field data-boxSize="6" data-label="dias"></div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="dataValidadeProposta" data-labelSize="4" data-multiSize="3,7">
+        	<input id="dataValidadeProposta" ng-disabled="data.campos.dataValidadeProposta" adsm-date-picker ng-model="data.dtValidadeProposta" mask="date" class="form-control">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="dataInicioVigencia" data-labelSize="6">
+        	<input id="dataInicioVigencia" ng-disabled="data.campos.dataInicioVigencia" adsm-date-picker ng-model="data.dtTabelaVigenciaInicial" mask="date" class="form-control">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="dataAceitacaoCliente" data-labelSize="4" data-multiSize="3,7">
+        	<input id="dataAceitacaoCliente" ng-disabled="data.campos.dataAceitacaoCliente" adsm-date-picker ng-model="data.dtAceiteCliente" mask="date" class="form-control">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="dataAprovacao" data-labelSize="6">
+        	<input id="dataAprovacao" disabled ng-model="data.dtAprovacao" mask="date" class="form-control">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="funcionarioAprovador" data-labelSize="4">
+            <input type="text" id="funcionarioAprovador" readonly="readonly" class="form-control"
+            	value="{{data.funcionarioAprovador.nrMatricula ? data.funcionarioAprovador.nrMatricula + ' - ' + data.funcionarioAprovador.nmUsuario : ''}}" >
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="dataEmissaoTabela" data-labelSize="4" data-multiSize="3,7">
+        	<input id="dataEmissaoTabela" disabled ng-model="data.dtEmissaoTabela" mask="date" class="form-control">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="situacaoAprovacao" data-labelSize="6">
+        	<input type="text" disabled ng-model="data.tpSituacaoAprovacao.descriptionAsString">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="funcionarioEfetivador" data-labelSize="4">
+            <input type="text" id="funcionarioEfetivador" readonly="readonly" class="form-control"
+            	value="{{data.funcionarioEfetivador.nrMatricula ? data.funcionarioEfetivador.nrMatricula + ' - ' + data.funcionarioEfetivador.nmUsuario : ''}}" >
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="observacao" data-labelSize="4">
+            <textarea id="observacao" ng-disabled="data.campos.observacao" rows="3" maxlength="500" ng-model="data.obProposta" class="form-control" style="resize: none;"></textarea>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="efetivada" data-labelSize="4">
+        	<input type="checkbox" disabled ng-model="data.blEfetivada">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="dataEfetivacao" data-labelSize="4" data-fieldSize="2">
+        	<input id="dataEfetivacao" disabled ng-model="data.dtEfetivacao" mask="date" class="form-control">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="dataSolicitacaoEfetivacao" data-labelSize="4" data-fieldSize="3">
+        	<input id="dataSolicitacaoEfetivacao" disabled adsm-date-time ng-model="data.dhSolicitacao" class="form-control">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="dataUltimaReprovacao" data-labelSize="4" data-fieldSize="3">
+        	<input id="dataUltimaReprovacao" disabled adsm-date-time ng-model="data.dhReprovacao" class="form-control">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="motivoUltReprovacao" data-labelSize="4">
+            <textarea id="motivoUltReprovacao" disabled rows="3" maxlength="500" ng-model="data.dsMotivo" class="form-control" style="resize: none;"></textarea>
+		</div>
+	</div>
+	
+</form>

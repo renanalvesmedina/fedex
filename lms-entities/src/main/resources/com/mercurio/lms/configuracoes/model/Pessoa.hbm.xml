@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.Pessoa" 
+    table="PESSOA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPessoa"
+        type="java.lang.Long"
+        column="ID_PESSOA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PESSOA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhInclusao"
+			        type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+		update="false"
+    ><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+    <property
+        name="nmPessoa"
+			        type="java.lang.String"
+            column="NM_PESSOA"
+        not-null="true"
+        length="50"
+    />
+    <property
+        name="nmFantasia"
+			        type="java.lang.String"
+            column="NM_FANTASIA"
+        length="60"
+    />
+    <property
+        name="dtEmissaoRg"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO_RG"
+        length="7"
+    />
+    <property
+        name="tpIdentificacao"
+		    column="TP_IDENTIFICACAO"
+        length="5"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_IDENTIFICACAO_PESSOA</param>
+	    </type>
+    </property>
+    <property
+        name="nrIdentificacao"
+			        type="java.lang.String"
+            column="NR_IDENTIFICACAO"
+        length="20"
+    />
+    
+    <property
+        name="tpPessoa"
+		    column="TP_PESSOA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_PESSOA</param>
+	    </type>
+    </property>
+    <property
+        name="dsEmail"
+			        type="java.lang.String"
+            column="DS_EMAIL"
+        length="60"
+    />
+    <property
+        name="nrRg"
+			        type="java.lang.String"
+            column="NR_RG"
+        length="20"
+    />
+    <property
+        name="dsOrgaoEmissorRg"
+			        type="java.lang.String"
+            column="DS_ORGAO_EMISSOR_RG"
+        length="10"
+    />
+    <property
+        name="nrInscricaoMunicipal"
+			        type="java.lang.String"
+            column="NR_INSCRICAO_MUNICIPAL"
+        length="15"
+    />    
+    <property
+		name="blAtualizacaoCountasse"
+		type="sim_nao"
+		column="BL_ATUALIZACAO_COUNTASSE"
+		not-null="true"
+		length="1"
+	/>
+	<property
+		name="nrCnae"
+		type="java.lang.Long"
+		column="NR_CNAE"
+		not-null="false"
+		length="7"
+	/>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="enderecoPessoa"
+        class="com.mercurio.lms.configuracoes.model.EnderecoPessoa">
+        <column name="ID_ENDERECO_PESSOA" />
+    </many-to-one>	         
+    
+    <many-to-one
+        name="unidadeFederativaExpedicaoRg"
+        class="com.mercurio.lms.municipios.model.UnidadeFederativa">
+        <column name="ID_UF_EXPEDICAO_RG" />
+    </many-to-one>      
+     
+    <!-- bi-directional one-to-many association to InscricaoEstadual -->
+    <bag
+        name="inscricaoEstaduais"
+        inverse="true"
+    >
+	    <key>
+            <column name="ID_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.InscricaoEstadual"
+        />
+    </bag> 
+
+    <!-- bi-directional one-to-many association to ContaBancaria-->
+    <bag
+        name="contaBancarias"
+        inverse="true"
+    >
+	    <key>
+            <column name="ID_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.ContaBancaria"
+        />
+    </bag>
+    
+    <bag
+        name="enderecoPessoas"
+        inverse="true"
+    >
+	    <key>
+            <column name="ID_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.EnderecoPessoa"
+        />
+    </bag>
+    <bag
+        name="contatosByIdPessoaContatado"
+        inverse="true"
+    >
+	    <key>
+            <column name="ID_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.Contato"
+        />
+    </bag>
+	<bag
+        name="telefoneEnderecos"
+        inverse="true"
+    >
+	    <key>
+            <column name="ID_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.TelefoneEndereco"
+        />
+    </bag>
+    <bag
+        name="volContatos"
+        inverse="true"
+    >
+	    <key>
+            <column name="ID_PESSOA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolContatos"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

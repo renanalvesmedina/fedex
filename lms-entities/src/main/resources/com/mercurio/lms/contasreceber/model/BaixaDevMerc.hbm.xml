@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+	<!-- 
+		Created by the Middlegen Hibernate plugin 2.1 for ADSM
+		
+		http://boss.bekk.no/boss/middlegen/
+		http://www.hibernate.org/
+	-->
+
+	<class name="com.mercurio.lms.contasreceber.model.BaixaDevMerc"
+		table="BAIXA_DEV_MERC">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+
+		<id name="idBaixaDevMerc" type="java.lang.Long"
+			column="ID_BAIXA_DEV_MERC">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">BAIXA_DEV_MERC_SQ</param>
+			</generator>
+		</id>
+
+		<version name="versao" column="NR_VERSAO" />
+
+		<property name="nrBdm" type="java.lang.Long" column="NR_BDM"
+			not-null="true" length="10" />
+			
+		<property name="dtEmissao" type="jtyearmonthday"
+			column="DT_EMISSAO" not-null="true" length="7" />
+			
+		<property name="tpSituacao"	column="TP_SITUACAO" not-null="true" length="1">
+			<type name="domain">
+	        	<param name="domainName">DM_STATUS_BDM</param>
+		    </type>
+		</property>
+		
+		<property name="dhTransmissao" type="jtdatetimetzr" length="7" ><column name="DH_TRANSMISSAO"/><column name="DH_TRANSMISSAO_TZR"/></property>
+		
+		<property name="dhCancelamento" type="jtdatetimetzr" length="7" >
+			<column name="DH_CANCELAMENTO"/>
+			<column name="DH_CANCELAMENTO_TZR"/>
+		</property>
+			
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to Cliente -->
+		<many-to-one name="cliente"
+			class="com.mercurio.lms.vendas.model.Cliente" not-null="true">
+			<column name="ID_CLIENTE" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to Filial -->
+		<many-to-one name="filialEmissora"
+			class="com.mercurio.lms.municipios.model.Filial" not-null="true">
+			<column name="ID_FILIAL_EMISSORA" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to Filial -->
+		<many-to-one name="filialDestino"
+			class="com.mercurio.lms.municipios.model.Filial" not-null="true">
+			<column name="ID_FILIAL_DESTINO" />
+		</many-to-one>
+
+		<!-- bi-directional one-to-many association to ItemBaixaDevMerc -->
+		<bag name="itemBaixaDevMercs" lazy="true" inverse="true"
+			cascade="none">
+			<meta attribute="adsm-parametrized-attribute">
+				com.mercurio.lms.contasreceber.model.ItemBaixaDevMerc
+			</meta>
+			<key>
+				<column name="ID_BAIXA_DEV_MERC" />
+			</key>
+			<one-to-many
+				class="com.mercurio.lms.contasreceber.model.ItemBaixaDevMerc" />
+		</bag>
+	</class>
+</hibernate-mapping>

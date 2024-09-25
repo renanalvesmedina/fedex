@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.CargoOperacional" 
+    table="CARGO_OPERACIONAL"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idCargoOperacional"
+        type="java.lang.Long"
+        column="ID_CARGO_OPERACIONAL"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CARGO_OPERACIONAL_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dsCargo"
+		type="java.lang.String"
+        column="DS_CARGO"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="tpSituacao"
+		column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to IntegranteEquipe -->
+    <bag
+        name="integrantesEquipe"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+   		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.IntegranteEquipe</meta>
+        <key>
+            <column name="ID_INTEGRANTE_EQUIPE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.IntegranteEquipe"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to IntegranteEqOperac -->
+    <bag
+        name="integrantesEqOperac"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+   		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.IntegranteEqOperac</meta>
+        <key>
+            <column name="ID_INTEGRANTE_EQ_OPERAC" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.IntegranteEqOperac"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

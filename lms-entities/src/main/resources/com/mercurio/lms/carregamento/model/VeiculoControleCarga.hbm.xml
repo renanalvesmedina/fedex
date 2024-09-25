@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.carregamento.model.VeiculoControleCarga" 
+    table="VEICULO_CONTROLE_CARGA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idVeiculoControleCarga"
+        type="java.lang.Long"
+        column="ID_VEICULO_CONTROLE_CARGA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">VEICULO_CONTROLE_CARGA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhTroca"
+			        type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_TROCA"/><column name="DH_TROCA_TZR"/></property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MeioTransporte -->
+    <many-to-one
+        name="meioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to LocalTroca -->
+    <many-to-one
+        name="localTroca"
+        class="com.mercurio.lms.carregamento.model.LocalTroca"
+        not-null="false"
+    >
+        <column name="ID_LOCAL_TROCA" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to SolicitacaoContratacao -->
+    <many-to-one
+        name="solicitacaoContratacao"
+        class="com.mercurio.lms.contratacaoveiculos.model.SolicitacaoContratacao"
+        not-null="false"
+    >
+        <column name="ID_SOLICITACAO_CONTRATACAO" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuarioByIdFuncAlteraStatus"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_FUNC_ALTERA_STATUS" />
+    </many-to-one>
+
+
+    <!-- bi-directional one-to-many association to PagtoProprietarioCc -->
+    <bag
+        name="pagtoProprietarioCcs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.PagtoProprietarioCc</meta>
+ 	    <key>
+            <column name="ID_VEICULO_CONTROLE_CARGA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.carregamento.model.PagtoProprietarioCc"
+        />
+    </bag>
+
+</class>
+</hibernate-mapping>

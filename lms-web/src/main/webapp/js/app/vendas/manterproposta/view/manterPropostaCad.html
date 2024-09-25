@@ -1,0 +1,139 @@
+<form class="form-horizontal content-padding" data-ng-submit="store()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="limpar()" class="btn btn-default btn-lg pull-right" id="limparDados">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="button" data-ng-click="removeById()" class="btn btn-default btn-lg pull-right" id="removeById" permission="excluir" ng-disabled="!data.nrSimulacao || data.disableAll">
+			{{'excluir' |  translate }}
+		</button>
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="data.disableAll">
+			{{'salvar' |  translate }}
+		</button>
+		<button type="button" data-ng-click="openManterParametros()" class="btn btn-default btn-lg pull-right" id="btnParametros"  ng-disabled="!data.nrSimulacao || data.disableAll">
+			{{'manterParam' | translate}}
+		</button>
+		<button type="button" data-ng-click="openGerarParametros()" class="btn btn-default btn-lg pull-right" id="btnGerarParametros" ng-disabled="!data.nrSimulacao || data.disableAll || disabledBtnGerarParametros">
+			{{'gerarParametros' | translate}}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="numeroProposta" data-labelSize="6" data-fieldSize="6">
+            <input type="text" disabled ng-model="data.nrSimulacao">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="promotorVendas" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-funcionario-promotor
+				ng-model="data.promotor"
+				id="idUsuario"
+				class="form-control"
+				ng-disabled="data.campos.promotor || data.disableAll"
+				required>
+           <input type="text" disabled ng-model="data.promotor.nmUsuario">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="cliente" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-cliente
+				ng-model="data.cliente"
+				id="cliente"
+				class="form-control"
+				ng-disabled="data.campos.cliente || data.disableAll"
+				required>
+           <input type="text" disabled ng-model="data.cliente.nmPessoa">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="divisaoCliente" data-labelSize="4" data-fieldSize="8">
+            <select
+					adsm-chosen
+					id="divisaoCliente"
+					ng-model="data.divisaoCliente.idDivisaoCliente"
+					ng-options="data.idDivisaoCliente as data.nmDivisaoCliente for data in divisoesCliente"
+					ng-disabled="data.campos.divisaoCliente || data.disableAll"
+					required>
+					<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="tabelaPrecos" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-tabela-preco="{apenasVigentes:'false'}"
+				ng-model="data.tabelaPreco"
+				id="tabelaPreco"
+				class="form-control"
+				ng-disabled="data.campos.tabelaPreco || data.disableAll"
+				ng-required="!data.tabelaPrecoFob">
+           <input type="text" disabled ng-model="data.tabelaPreco.descricao">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="servico" data-labelSize="4" data-fieldSize="8">
+            <select
+					adsm-chosen
+					id="servico"
+					ng-model="data.servico.idServico"
+					ng-options="data.idServico as data.nomeServico for data in servicosTabela"
+					ng-disabled="data.campos.servico || data.disableAll"
+					required>
+					<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="8" data-label="tabelaFob" data-labelSize="3" data-multiSize="3,7">
+            <input
+				lms-tabela-preco="{subtipo:'F'}"
+				ng-model="data.tabelaPrecoFob"
+				id="tabelaPrecoFob"
+				class="form-control"
+				disabled
+				ng-required="!data.tabelaPreco">
+           <input type="text" disabled ng-model="data.tabelaPrecoFob.descricao">
+		</div>
+		<div adsm-add-field data-boxSize="4" data-label="tipoGeracao" data-labelSize="4" data-fieldSize="8">
+
+			<select
+				adsm-domain="DM_TIPO_GERACAO_PROPOSTA"
+				id="tipoGeracao"
+				filter="['O','M','I','V','T']"
+				ng-model="data.tpGeracaoProposta"
+				ng-disabled="data.campos.tpGeracaoProposta || data.disableAll"
+				required
+				ng-change="changeTpGeracaoProposta()">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="fatorCubagem" data-labelSize="6" data-fieldSize="6">
+            <input type="text" ng-disabled="data.campos.nrFatorCubagem || data.disableAll" ng-model="data.nrFatorCubagem" mask="decimal">
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="fatorDensidade" data-labelSize="6" data-fieldSize="6">
+            <input type="text" ng-disabled="data.campos.nrFatorDensidade || data.disableAll" ng-model="data.nrFatorDensidade" data-numeric="{vMin: '1.00'}" data-decimal>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="4" data-label="produtoEspecifico" data-labelSize="6" data-fieldSize="6">
+            <select
+					adsm-chosen
+					id="produtoEspecifico"
+					ng-model="data.produtoEspecifico.idProdutoEspecifico"
+					ng-disabled="data.nrSimulacao"
+					ng-options="data.idProdutoEspecifico as data.dsProdutoEspecifico for data in produtosEspecificos">
+					<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+</form>

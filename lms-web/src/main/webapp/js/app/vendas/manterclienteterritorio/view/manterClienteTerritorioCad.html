@@ -1,0 +1,142 @@
+<form class="form-horizontal content-padding" data-ng-submit="salvar()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearData()" class="btn btn-default btn-lg pull-right" id="limparDados">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="showLoading">
+			{{'salvar' |  translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="cliente" data-labelSize="3" data-fieldSize="9" data-multiSize="3,5">
+			<input type="text" class="form-control" ng-model="data.cliente" lms-cliente id="cliente" required />
+			<input type="text" class="form-control" ng-model="data.cliente.nmPessoa" id="razaoSocial" disabled />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="territorio" data-labelSize="3" data-fieldSize="4">
+			<input type="text" class="form-control" ng-model="data.territorio" lms-territorio id="territorio" maxlength="50" autocomplete="off" required />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="modal" data-labelSize="3" data-fieldSize="4" data-multiSize="7,4">
+			<select data-adsm-domain="DM_MODAL" id="tpModal"  ng-model="data.tpModal">
+				<option value=""></option>
+			</select>
+			<span ng-show="!data.tpModal" style="line-height: 25px;">{{'aereorodoviario' | translate}}</span>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="vigencia" data-labelSize="3" data-fieldSize="3" data-multiSize="6,6">
+			<input type="text" class="form-control" ng-model="data.dtInicio" mask="date" adsm-date-picker id="dtInicio" 
+				data-end="data.dtFim" data-maxInterval="{{ getIntervaloMax() }}" required />
+			<input type="text" class="form-control" ng-model="data.dtFim" mask="date" adsm-date-picker id="dtFim"
+				data-start="data.dtInicio" data-maxInterval="{{ getIntervaloMax() }}" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="filialResponsavel" data-labelSize="3" data-fieldSize="6" data-multiSize="7,4">
+			<div class="multi-input">
+				<div class="col-xs-3">
+					<input
+						lms-filial
+						ng-model="data.filialResponsavel"
+						ng-disabled="true"
+						id="filialResponsavel"
+						class="form-control" 
+						disabled="true" />
+			    </div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control" value="{{data.filialResponsavel.nmFilial}}" id="filialResponsavel.nmFilial">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="filialNegociacao" data-labelSize="3" data-fieldSize="6" data-multiSize="7,4">
+			<div class="multi-input">
+				<div class="col-xs-3">
+					<input
+						lms-filial
+						ng-model="data.filialNegociacao"
+						ng-disabled="true"
+						id="filialNegociacao"
+						class="form-control" 
+						disabled="true" />
+			    </div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control" value="{{data.filialNegociacao.nmFilial}}" id="filialNegociacao.nmFilial">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="tpCliente" data-labelSize="3" data-fieldSize="4" data-multiSize="7,4">
+			<select data-adsm-domain="DM_TIPO_CLIENTE" id="tpCliente" ng-model="data.tpCliente" disabled="true">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="tpSituacao" data-labelSize="3" data-fieldSize="4" data-multiSize="7,4">
+			<select data-adsm-domain="DM_STATUS_PESSOA" id="tpSituacao" ng-model="data.tpSituacao" disabled="true">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+	
+	<div adsm-add-field data-boxSize="12" data-label="comissaoConquista" data-labelSize="3" data-labelSize="4" data-multiSize="7,4">
+		<input type="checkbox" ng-model="data.blComissaoConquista" ng-click="updateComissaoConquista($event)" id="blComissaoConquista" />
+	</div>
+
+	<div adsm-add-field data-boxSize="12" data-label="periodo" data-labelSize="3" data-fieldSize="3" data-multiSize="6,6">
+		<input type="text" class="form-control" ng-model="data.dtComissaoConquistaInicio" mask="date" adsm-date-picker id="dtComissaoConquistaInicio"
+			data-end="data.dtComissaoConquistaFim" data-maxInterval="{{ getIntervaloMax() }}" ng-disabled="!data.blComissaoConquista" ng-required="data.blComissaoConquista" />
+		<input type="text" class="form-control" ng-model="data.dtComissaoConquistaFim" mask="date" adsm-date-picker id="dtComissaoConquistaFim"
+			data-start="data.dtComissaoConquistaInicio" data-maxInterval="{{ getIntervaloMax() }}" ng-disabled="!data.blComissaoConquista" ng-required="data.blComissaoConquista" />
+	</div>
+
+	<style>
+		.adsm-table td.empty-content {
+			text-align: center;
+			vertical-align: middle;
+		}
+	</style>
+
+	<div class="row" style="margin-top: 30px">
+		<div class="col-sm-12">
+			<table adsm-table="listDetailTableParams"
+				class="table table-condensed adsm-table"
+				style="width: 100%"
+				show-checkboxes="false"
+				>
+				<tbody>
+					<tr ng-repeat="row in page">
+						<td column-title="'cliente' | translate" sortable="'nmPessoa'">{{row.nmPessoa}}</td>
+
+						<td column-title="'territorio' | translate" sortable="'nmTerritorio'">{{row.nmTerritorio}}</td>
+
+						<td column-title="'modal' | translate" sortable="'tpModal'"
+							ng-class="{'empty-content':!row.tpModal}">{{row.tpModal || '-'}}</td>
+
+						<td column-title="'vigenciaInicial' | translate" sortable="'dtInicio'"
+							style="text-align:center">{{row.dtInicio | date:'dd/MM/yyyy'}}</td>
+
+						<td column-title="'vigenciaFinal'" sortable="'dtFim'"
+							style="text-align:center" ng-class="{'empty-content':!row.dtFim}">{{(row.dtFim | date:'dd/MM/yyyy') || '-'}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+</form>

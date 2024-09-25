@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.ComunicadoApreensao" 
+    table="COMUNICADO_APREENSAO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idComunicadoApreensao"
+        type="java.lang.Long"
+        column="ID_COMUNICADO_APREENSAO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">COMUNICADO_APREENSAO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dtOcorrencia"
+			        type="jtyearmonthday"
+            column="DT_OCORRENCIA"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrTermoApreensao"
+			        type="java.lang.String"
+            column="NR_TERMO_APREENSAO"
+        not-null="true"
+        length="20"
+    />
+    <property
+        name="dsMotivoAlegado"
+			        type="java.lang.String"
+            column="DS_MOTIVO_ALEGADO"
+        not-null="true"
+        length="200"
+    />
+    <property
+        name="vlMulta"
+			        type="java.math.BigDecimal"
+            column="VL_MULTA"
+        not-null="true"
+        length="18"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to OcorrenciaDoctoServico -->
+    <bag
+        name="ocorrenciaDoctoServicos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico</meta>
+ 	        <key>
+            <column name="ID_COMUNICADO_APREENSAO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.OcorrenciaDoctoServico"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

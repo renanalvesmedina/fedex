@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+
+<class
+	name="com.mercurio.lms.contratacaoveiculos.model.LiberacaoReguladora" 
+	table="LIBERACAO_REGULADORA"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idLiberacaoReguladora"
+		type="java.lang.Long"
+		column="ID_LIBERACAO_REGULADORA"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">LIBERACAO_REGULADORA_SQ</param>
+		</generator>
+	</id>
+
+	<property
+		name="nrLiberacao"
+		type="java.lang.String"
+		column="NR_LIBERACAO"
+		not-null="true"
+		length="15"
+	/>
+	<property
+		name="dtLiberacao"
+		type="jtyearmonthday"
+		column="DT_LIBERACAO"
+		length="7"
+	/>
+	<property
+		name="dtVencimento"
+		type="jtyearmonthday"
+		column="DT_VENCIMENTO"
+		length="7"
+	/>
+	<property
+		name="tpOperacao"
+		column="TP_OPERACAO"
+		not-null="true"
+		length="1"
+	>
+		<type name="domain">
+			<param name="domainName">DM_TIPO_CONTROLE_CARGAS</param>
+		</type>
+	</property>
+
+	<!-- Associations -->
+  
+	<!-- bi-directional many-to-one association to Usuario -->
+	<many-to-one
+		name="usuario"
+		entity-name="usuario"
+		not-null="true"
+	>
+		<column name="ID_USUARIO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to ReguladoraSeguro -->
+	<many-to-one
+		name="reguladoraSeguro"
+		class="com.mercurio.lms.seguros.model.ReguladoraSeguro"
+		not-null="true"
+	>
+		<column name="ID_REGULADORA_SEGURO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Motorista -->
+	<many-to-one
+		name="motorista"
+		class="com.mercurio.lms.contratacaoveiculos.model.Motorista"
+		not-null="true"
+	>
+		<column name="ID_MOTORISTA" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Proprietario -->
+
+	<many-to-one
+		name="meioTransporte"
+		class="com.mercurio.lms.contratacaoveiculos.model.MeioTransporte"
+		not-null="false"
+	>
+		<column name="ID_MEIO_TRANSPORTE" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filial"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true"
+	>
+		<column name="ID_FILIAL" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Pendencia -->
+	<many-to-one
+		name="pendencia"
+		class="com.mercurio.lms.workflow.model.Pendencia"
+	>
+		<column name="ID_PENDENCIA" />
+	</many-to-one>
+	<!-- bi-directional one-to-many association to MotoristaControleCarga -->
+	<bag
+		name="motoristaControleCargas"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.MotoristaControleCarga</meta>
+ 		<key>
+			<column name="ID_MOTORISTA_CONTROLE_CARGA" />
+		</key>
+		<one-to-many 
+			class="com.mercurio.lms.carregamento.model.MotoristaControleCarga"
+		/>
+	</bag>
+</class>
+</hibernate-mapping>

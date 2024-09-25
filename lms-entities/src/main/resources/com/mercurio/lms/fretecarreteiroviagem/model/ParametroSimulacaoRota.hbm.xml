@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteiroviagem.model.ParametroSimulacaoRota" 
+    table="PARAMETRO_SIMULACAO_ROTA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idParametroSimulacaoRota"
+        type="java.lang.Long"
+        column="ID_PARAMETRO_SIMULACAO_ROTA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PARAMETRO_SIMULACAO_ROTA_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">TP_SITUACAO</param>
+	    </type>
+    </property>
+    <property
+        name="pcReajuste"
+			        type="java.math.BigDecimal"
+            column="PC_REAJUSTE"
+        length="5"
+    />
+    <property
+        name="vlReajuste"
+			        type="java.lang.String"
+            column="VL_REAJUSTE"
+        length="18"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to CriterioAplicSimulacao -->
+    <bag
+        name="criterioAplicSimulacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteiroviagem.model.CriterioAplicSimulacao</meta>
+ 	        <key>
+            <column name="ID_PARAMETRO_SIMULACAO_ROTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteiroviagem.model.CriterioAplicSimulacao"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to SimulacaoReajusteRota -->
+    <many-to-one
+        name="simulacaoReajusteRota"
+        class="com.mercurio.lms.fretecarreteiroviagem.model.SimulacaoReajusteRota"
+        not-null="true"
+    >
+        <column name="ID_SIMULACAO_REAJUSTE_ROTA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

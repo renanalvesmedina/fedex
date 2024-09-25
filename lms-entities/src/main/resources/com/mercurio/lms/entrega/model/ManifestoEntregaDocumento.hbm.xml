@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.entrega.model.ManifestoEntregaDocumento" 
+    table="MANIFESTO_ENTREGA_DOCUMENTO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idManifestoEntregaDocumento"
+        type="java.lang.Long"
+        column="ID_MANIFESTO_ENTREGA_DOCUMENTO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MANIFESTO_ENTREGA_DOCUMENTO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dhOcorrencia"
+        type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_OCORRENCIA"/><column name="DH_OCORRENCIA_TZR"/></property>
+    <property
+        name="dhInclusao"
+        type="jtdatetimetzr"
+        not-null="false"
+        length="7"
+    ><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+    <property 
+        name="tpFormaBaixa"
+		column="TP_FORMA_BAIXA"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_FORMA_BAIXA_ENTREGA</param>
+	    </type>
+    </property>
+    <property
+        name="nmRecebedor"
+		type="java.lang.String"
+        column="NM_RECEBEDOR"
+        length="60"
+    />
+	<property
+        name="nmRgRecebedor"
+		type="java.lang.String"
+        column="NR_RG_RECEBEDOR"
+        length="15"
+    />
+    <property
+        name="tpDocumentoCobranca"
+		    column="TP_DOCUMENTO_COBRANCA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_DOCUMENTO_COBRANCA</param>
+	    </type>
+    </property>
+    <property
+        name="tpEntregaParcial"
+		    column="TP_ENTREGA_PARCIAL"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_ENTREGA_PARCIAL</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacaoDocumento"
+		    column="TP_SITUACAO_DOCUMENTO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_DOCTO_SERVICO_MANIFESTO_ENTREG</param>
+	    </type>
+    </property>
+    <property
+        name="obAlteracao"
+		type="java.lang.String"
+        column="OB_ALTERACAO"
+        length="500"
+    />
+    <property
+        name="obMotivoAlteracao"
+		type="java.lang.String"
+        column="OB_MOTIVO_ALTERACAO"
+        length="500"
+    />
+    <property
+        name="obManifestoEntregaDocumento"
+		type="java.lang.String"
+        column="OB_MANIFESTO_ENTREGA_DOCUMENTO"
+        length="500"
+    />
+    <property
+        name="blRetencaoComprovanteEnt"
+        type="sim_nao"
+        column="BL_RETENCAO_COMPROVANTE_ENT"
+        length="1"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to OcorrenciaEntrega -->
+    <many-to-one
+        name="ocorrenciaEntrega"
+        class="com.mercurio.lms.entrega.model.OcorrenciaEntrega"
+        not-null="false"
+    >
+        <column name="ID_OCORRENCIA_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="false"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="true"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ManifestoEntrega -->
+    <many-to-one
+        name="manifestoEntrega"
+        class="com.mercurio.lms.entrega.model.ManifestoEntrega"
+        not-null="true"
+    >
+        <column name="ID_MANIFESTO_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to NotaFiscalConhecimento -->
+    <many-to-one
+        name="notaFiscalConhecimento"
+        class="com.mercurio.lms.expedicao.model.NotaFiscalConhecimento"
+        not-null="false"
+    >
+        <column name="ID_NOTA_FISCAL_CONHECIMENTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Awb -->
+    <many-to-one
+        name="awb"
+        class="com.mercurio.lms.expedicao.model.Awb"
+        not-null="false"
+    >
+        <column name="ID_AWB" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to VolRecusas -->
+    <bag
+        name="volRecusas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vol.model.VolRecusas</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_ENTREGA_DOCUMENTO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vol.model.VolRecusas"
+        />
+    </bag>
+    <property
+        name="tpGrauRecebedor"
+		    column="TP_GRAU_RECEB"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_GRAU_PARENTESCO</param>
+	    </type>
+    </property>
+</class>
+</hibernate-mapping>

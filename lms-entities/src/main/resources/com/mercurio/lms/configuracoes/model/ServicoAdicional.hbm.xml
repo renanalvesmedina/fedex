@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+	Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+	http://boss.bekk.no/boss/middlegen/
+	http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.configuracoes.model.ServicoAdicional" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="SERVICO_ADICIONAL">
+	<meta attribute="implement-equals" inherit="false">true</meta>
+	<cache usage="read-write"/>
+
+	<id column="ID_SERVICO_ADICIONAL" name="idServicoAdicional" type="java.lang.Long">
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">SERVICO_ADICIONAL_SQ</param>
+		</generator>
+	</id>
+
+	<property column="DT_VIGENCIA_INICIAL" length="7" name="dtVigenciaInicial" not-null="true" type="jtyearmonthday"/>
+	<property column="DS_SERVICO_ADICIONAL_I" length="500" name="dsServicoAdicional" not-null="true" type="varcharI18n" unique="true"/>
+	<property column="DT_VIGENCIA_FINAL" length="7" name="dtVigenciaFinal" type="jtyearmonthday_v"/>
+
+	<!-- Associations -->
+  
+	<!-- bi-directional many-to-one association to ServicoOficialTributo -->
+	<many-to-one class="com.mercurio.lms.tributos.model.ServicoOficialTributo" name="servicoOficialTributo" not-null="true">
+		<column name="ID_SERVICO_OFICIAL_TRIBUTO"/>
+	</many-to-one>
+	<!-- bi-directional one-to-many association to ServAdicionalDocServ -->
+	<bag cascade="none" inverse="true" lazy="true" name="servAdicionalDocServs">
+		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.ServAdicionalDocServ</meta>
+ 		<key>
+			<column name="ID_SERVICO_ADICIONAL"/>
+		</key>
+		<one-to-many class="com.mercurio.lms.expedicao.model.ServAdicionalDocServ"/>
+	</bag>
+	
+	<property column="CD_SERVICO_EDI" length="3" name="cdServicoEDI" type="java.lang.String" />
+	
+</class>
+
+</hibernate-mapping>

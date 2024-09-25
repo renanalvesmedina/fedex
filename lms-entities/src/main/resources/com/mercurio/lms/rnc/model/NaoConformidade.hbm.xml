@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.rnc.model.NaoConformidade" 
+    table="NAO_CONFORMIDADE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idNaoConformidade"
+        type="java.lang.Long"
+        column="ID_NAO_CONFORMIDADE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">NAO_CONFORMIDADE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrNaoConformidade"
+		type="java.lang.Integer"
+        column="NR_NAO_CONFORMIDADE"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="dsMotivoAbertura"
+        type="java.lang.String"
+        column="DS_MOTIVO_ABERTURA"
+        not-null="false"
+    />
+    <property
+        name="dhInclusao"
+		type="jtdatetimetzr"
+        not-null="true"
+        length="7"
+    ><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+    <property
+        name="tpStatusNaoConformidade"
+		column="TP_STATUS_NAO_CONFORMIDADE"
+        not-null="true"
+        length="3"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_NAO_CONFORMIDADE</param>
+	    </type>
+    </property>
+    <property
+        name="dhEmissao"
+		type="jtdatetimetzr"
+        length="7"
+    ><column name="DH_EMISSAO"/><column name="DH_EMISSAO_TZR"/></property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to DoctoServico -->
+    <many-to-one
+        name="doctoServico"
+        class="com.mercurio.lms.expedicao.model.DoctoServico"
+        not-null="true"
+    >
+        <column name="ID_DOCTO_SERVICO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to NaoConformidadeAuditoria -->
+    <bag
+        name="naoConformidadeAuditorias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.portaria.model.NaoConformidadeAuditoria</meta>
+ 	        <key>
+            <column name="ID_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.portaria.model.NaoConformidadeAuditoria"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to OcorrenciaNaoConformidade -->
+    <bag
+        name="ocorrenciaNaoConformidades"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade</meta>
+ 	        <key>
+            <column name="ID_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to ItemMda -->
+    <bag
+        name="itensMda"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.ItemMda</meta>
+ 	        <key>
+            <column name="ID_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.ItemMda"
+        />
+    </bag>
+
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="clienteByIdClienteRemetente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE_REMETENTE" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="clienteByIdClienteDestinatario"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE_DESTINATARIO" />
+    </many-to-one>
+    
+    <property
+        name="tpModal"
+		column="TP_MODAL"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_MODAL</param>
+	    </type>
+    </property>
+    
+    <property
+        name="causadorRnc"
+		column="TP_LOCAL_CAUSADOR"
+        not-null="false"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_LOCAL_CAUSADOR</param>
+	    </type>
+    </property>
+    
+    <!-- bi-directional many-to-one association to Awb -->
+    <many-to-one
+        name="awb"
+        class="com.mercurio.lms.expedicao.model.Awb"
+        not-null="false"
+        lazy="false"
+    >
+        <column name="ID_AWB" />
+    </many-to-one>
+
+</class>
+</hibernate-mapping>

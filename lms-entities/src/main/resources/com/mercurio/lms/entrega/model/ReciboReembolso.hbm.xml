@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+
+	<joined-subclass 
+		name="com.mercurio.lms.entrega.model.ReciboReembolso" 
+		extends="com.mercurio.lms.expedicao.model.DoctoServico"
+		table="RECIBO_REEMBOLSO"
+	>
+		<key column="ID_RECIBO_REEMBOLSO"/>
+	
+		<property
+			name="nrReciboReembolso"
+			type="java.lang.Integer"
+			column="NR_RECIBO_REEMBOLSO"
+			not-null="true"
+			length="8"
+		/>
+		<property
+			name="vlAplicado"
+			type="java.math.BigDecimal"
+			column="VL_APLICADO"
+			length="18"
+		/>
+		<property
+			name="obMotivoValorAplicado"
+			type="java.lang.String"
+			column="OB_MOTIVO_VALOR_APLICADO"
+			length="500"
+		/>
+		<property
+			name="obCancelamento"
+			type="java.lang.String"
+			column="OB_CANCELAMENTO"
+			length="500"
+		/>
+		<property
+			name="obRecolhimento"
+			type="java.lang.String"
+			column="OB_RECOLHIMENTO"
+			length="500"
+		/>
+		
+		<property
+			name="obReciboReembolso"
+			type="java.lang.String"
+			column="OB_RECIBO_REEMBOLSO"
+			length="500"
+		/>
+		<property
+	        name="tpSituacaoRecibo"
+			column="TP_SITUACAO_RECIBO"
+	        not-null="true"
+	        length="2"
+    	>
+			<type name="domain">
+        		<param name="domainName">DM_STATUS_RECIBO_REEMBOLSO</param>
+		    </type>
+	    </property>
+	    <property
+	        name="tpValorAtribuidoRecibo"
+			column="TP_VALOR_ATRIBUIDO_RECIBO"
+	        not-null="false"
+	        length="1"
+    	>
+			<type name="domain">
+        		<param name="domainName">DM_TIPO_VALOR_ATRIBUIDO_RECIBO_REEMBOLSO</param>
+		    </type>
+	    </property>
+    
+    	<property
+			name="vlReembolso"
+			type="java.math.BigDecimal"
+			column="VL_REEMBOLSO"
+			length="18"
+		/>
+		<property
+			name="dhCancelamento"
+			type="jtdatetimetzr"
+			length="7"
+		><column name="DH_CANCELAMENTO"/><column name="DH_CANCELAMENTO_TZR"/></property>
+		
+		<property
+			name="dhDigitacaoCheque"
+			type="jtdatetimetzr"
+			length="7"
+		><column name="DH_DIGITACAO_CHEQUE"/><column name="DH_DIGITACAO_CHEQUE_TZR"/></property>
+		<!-- Associations -->
+	  
+		<!-- bi-directional many-to-one association to DoctoServico -->
+		<many-to-one
+			name="doctoServicoByIdDoctoServReembolsado"
+			class="com.mercurio.lms.expedicao.model.DoctoServico"
+			not-null="true"
+		>
+			<column name="ID_DOCTO_SERV_REEMBOLSADO" />
+		</many-to-one>
+		
+		<many-to-one
+			name="manifestoEntrega"
+			class="com.mercurio.lms.entrega.model.ManifestoEntrega"
+		>
+			<column name="ID_MANIFESTO_ENTREGA" />
+		</many-to-one>
+		
+		<many-to-one
+			name="manifestoViagemNacional"
+			class="com.mercurio.lms.expedicao.model.ManifestoViagemNacional"
+		>
+			<column name="ID_MANIFESTO_VIAGEM_NACIONAL" />
+		</many-to-one>
+		
+		<!-- bi-directional one-to-many association to ChequeReembolso -->
+		<bag
+			name="chequeReembolsos"
+			lazy="true"
+			inverse="true"
+			cascade="all,delete-orphan"
+		>
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ChequeReembolso</meta>
+ 			<key>
+				<column name="ID_RECIBO_REEMBOLSO" />
+			</key>
+			<one-to-many 
+			class="com.mercurio.lms.entrega.model.ChequeReembolso"
+			/>
+		</bag>
+		<!-- bi-directional one-to-many association to DocumentoMir -->
+		<bag
+			name="documentoMirs"
+			lazy="true"
+			inverse="true"
+			cascade="none"
+		>
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.DocumentoMir</meta>
+	 		<key>
+				<column name="ID_RECIBO_REEMBOLSO" />
+			</key>
+			<one-to-many 
+				class="com.mercurio.lms.entrega.model.DocumentoMir"
+			/>
+		</bag>
+		<!-- bi-directional many-to-one association to Filial -->
+		<many-to-one
+			name="filial"
+			class="com.mercurio.lms.municipios.model.Filial"
+			not-null="true"
+		>
+			<column name="ID_FILIAL" />
+		</many-to-one>
+		
+		
+		
+	</joined-subclass>
+
+</hibernate-mapping>

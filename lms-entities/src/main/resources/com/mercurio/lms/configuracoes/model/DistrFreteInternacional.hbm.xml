@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.DistrFreteInternacional" 
+    table="DISTR_FRETE_INTERNACIONAL"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idDistrFreteInternacional"
+        type="java.lang.Long"
+        column="ID_DISTR_FRETE_INTERNACIONAL"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">DISTR_FRETE_INTERNACIONAL_SQ</param>
+        </generator>
+    </id>
+    <version name="versao" column="NR_VERSAO"/>
+
+    <property
+        name="cdPermisso"
+			        type="java.lang.Short"
+            column="CD_PERMISSO"
+        not-null="true"
+        length="4"
+    />
+    <property
+        name="distanciaKm"
+			        type="java.lang.Integer"
+            column="DISTANCIA_KM"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="pcFreteExterno"
+			        type="java.math.BigDecimal"
+            column="PC_FRETE_EXTERNO"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="pcFreteOrigem"
+			        type="java.math.BigDecimal"
+            column="PC_FRETE_ORIGEM"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="pcFreteDestino"
+			        type="java.math.BigDecimal"
+            column="PC_FRETE_DESTINO"
+        not-null="true"
+        length="5"
+    />
+    <property
+        name="nrTempoViagem"
+			        type="java.math.BigDecimal"
+            column="NR_TEMPO_VIAGEM"
+    />
+
+    <!-- Associations -->
+    <many-to-one
+        name="filialOrigem"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ORIGEM" />
+    </many-to-one>
+    <many-to-one
+        name="filialDestino"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_DESTINO" />
+    </many-to-one>  
+    <!-- bi-directional one-to-many association to TramoFreteInternacional -->
+    <bag
+        name="tramoFreteInternacionais"
+        lazy="true"
+        inverse="true"
+        cascade="delete-orphan">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.TramoFreteInternacional</meta>
+ 	        <key>
+	            <column name="ID_DISTR_FRETE_INTERNACIONAL" />
+	        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.TramoFreteInternacional"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

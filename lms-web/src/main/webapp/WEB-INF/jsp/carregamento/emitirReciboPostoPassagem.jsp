@@ -1,0 +1,6 @@
+<%@ taglib uri="/WEB-INF/adsm.tld" prefix="adsm" %>
+<adsm:window title="emitirReciboPostoPassagem" type="main">
+	<adsm:tabGroup selectedTab="0">
+		<adsm:tab title="relatorio" id="pesq" src="/carregamento/emitirReciboPostoPassagem" cmd="pesq"/>
+	</adsm:tabGroup>
+</adsm:window>

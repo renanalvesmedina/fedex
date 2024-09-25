@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.CiaFilialMercurio" 
+    table="CIA_FILIAL_MERCURIO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idCiaFilialMercurio"
+        type="java.lang.Long"
+        column="ID_CIA_FILIAL_MERCURIO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">CIA_FILIAL_MERCURIO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrUltimoAwb"
+		type="java.lang.Integer"
+        column="NR_ULTIMO_AWB"
+        length="7"
+    />
+    <property
+        name="dvUltimoAwb"
+		type="java.lang.Integer"
+        column="DV_ULTIMO_AWB"
+        length="1"
+    />
+    <property
+        name="nrSerieAwb"
+		type="java.lang.Integer"
+        column="NR_SERIE_AWB"
+        length="4"
+    />
+    <property
+        name="nrPrestacaoContas"
+		type="java.lang.Long"
+        column="NR_PRESTACAO_CONTAS"
+        length="6"
+    />
+    <property
+        name="dsIdentificadorCiaAerea"
+		type="java.lang.String"
+        column="DS_IDENTIFICADOR_CIA_AEREA"
+        length="20"
+    />
+    <property
+        name="vlIdentificadorCiaAerea"
+		type="java.lang.Long"
+        column="VL_IDENTIFICADOR_CIA_AEREA"
+        length="10"
+    />
+    <property
+        name="tpUso"
+		column="TP_USO"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_AEROPORTO</param>
+	    </type>
+    </property>
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ObservacaoCiaAerea -->
+    <many-to-one
+        name="observacaoCiaAerea"
+        class="com.mercurio.lms.municipios.model.ObservacaoCiaAerea"
+        not-null="true"
+    >
+        <column name="ID_OBSERVACAO_CIA_AEREA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one
+        name="empresa"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+        lazy="false"
+    >
+        <column name="ID_EMPRESA" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to FilialMercurioFilialCia -->
+    <bag
+        name="filialMercurioFilialCias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.FilialMercurioFilialCia</meta>
+ 	        <key>
+            <column name="ID_CIA_FILIAL_MERCURIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.FilialMercurioFilialCia"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Awb -->
+    <bag
+        name="awbs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.Awb</meta>
+ 	        <key>
+            <column name="ID_CIA_FILIAL_MERCURIO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.Awb"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

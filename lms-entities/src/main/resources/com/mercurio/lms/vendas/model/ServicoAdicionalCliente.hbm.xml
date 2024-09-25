@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vendas.model.ServicoAdicionalCliente" 
+    table="SERVICO_ADICIONAL_CLIENTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idServicoAdicionalCliente"
+        type="java.lang.Long"
+        unsaved-value="null"
+        column="ID_SERVICO_ADICIONAL_CLIENTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SERVICO_ADICIONAL_CLIENTE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="vlValor"
+			        type="java.math.BigDecimal"
+            column="VL_VALOR"
+        not-null="true"
+        length="18"
+    />
+    
+    <property
+        name="nrQuantidadeDias"
+			        type="java.lang.Integer"
+            column="NR_QUANTIDADE_DIAS"
+        length="5"
+    />
+    
+    <property
+        name="vlMinimo"
+			        type="java.math.BigDecimal"
+            column="VL_MINIMO"
+        length="18"
+    />
+    
+    <property
+        name="tpIndicador"
+		column="TP_INDICADOR"
+		not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_INDICADOR_PARAMETRO_CLIENTE</param>
+	    </type>
+    </property>
+
+	<property
+        name="tpFormaCobranca"
+		column="TP_FORMA_COBRANCA"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_FORMA_COBRANCA_SERVICO</param>
+	    </type>
+    </property>
+    
+    <property
+		name="blCobrancaRetroativa"
+		type="sim_nao"
+		column="BL_COBRANCA_RETROATIVA"
+		length="1"
+	/>
+	
+	<property
+        name="nrDecursoPrazo"
+		type="java.lang.Integer"
+		column="NR_DECURSO_PRAZO"
+        length="3"
+    />
+    
+    <property
+		name="blPagaParaTodos"
+		type="sim_nao"
+		column="BL_PAGA_PARA_TODOS"
+		length="1"
+	/>
+	
+	<property
+		name="blSeparaDocumentosNfs"
+		type="sim_nao"
+		column="BL_SEPARA_DOCS_NFS"
+		length="1"
+	/>
+	
+	
+	 <property
+        name="tpUnidMedidaCalcCobr"
+		column="TP_UNID_MEDIDA_CALC_COBR"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_CALCULO_COBRANCA_SERV_AD</param>
+	    </type>
+    </property>
+    
+    <property
+		name="blCobrancaCte"
+		type="sim_nao"
+		column="BL_COBRANCA_CTE"
+		length="1"
+	/> 
+	
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Simulacao -->
+    <many-to-one
+        name="simulacao"
+        class="com.mercurio.lms.vendas.model.Simulacao"
+    >
+        <column name="ID_SIMULACAO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TabelaDivisaoCliente -->
+    <many-to-one
+        name="tabelaDivisaoCliente"
+        class="com.mercurio.lms.vendas.model.TabelaDivisaoCliente"
+    >
+        <column name="ID_TABELA_DIVISAO_CLIENTE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to ParcelaPreco -->
+    <many-to-one
+        name="parcelaPreco"
+        class="com.mercurio.lms.tabelaprecos.model.ParcelaPreco"
+        not-null="true"
+    >
+        <column name="ID_PARCELA_PRECO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Cotacao -->
+    <many-to-one
+        name="cotacao"
+        class="com.mercurio.lms.vendas.model.Cotacao"
+    >
+        <column name="ID_COTACAO" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to totalCarregamentos -->
+	<bag
+        name="destinatariosClientePagaServico"
+		lazy="true"
+		inverse="true"
+		cascade="none"
+	>
+   		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.ServicoAdicionalClienteDestinatario</meta>
+		<key>
+			<column name="ID_SERVICO_ADICIONAL_CLIENTE" />
+		</key>
+		<one-to-many 
+            class="com.mercurio.lms.vendas.model.ServicoAdicionalClienteDestinatario"
+		/>
+	</bag>
+</class>
+</hibernate-mapping>

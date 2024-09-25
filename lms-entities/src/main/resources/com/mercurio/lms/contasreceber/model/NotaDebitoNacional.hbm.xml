@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping>
+
+	<joined-subclass
+		name="com.mercurio.lms.contasreceber.model.NotaDebitoNacional"
+		extends="com.mercurio.lms.expedicao.model.DoctoServico"
+		table="NOTA_DEBITO_NACIONAL">
+		<key column="ID_NOTA_DEBITO_NACIONAL" />
+
+		<property name="nrNotaDebitoNac" type="java.lang.Long"
+			column="NR_NOTA_DEBITO_NAC" not-null="true" length="10" />
+		<property name="tpSituacaoNotaDebitoNac"
+			column="TP_SITUACAO_NOTA_DEBITO_NAC" not-null="true" length="1">
+			<type name="domain">
+				<param name="domainName">DM_STATUS_NOTA_DEBITO_NACIONAL</param>
+			</type>
+		</property>
+
+		<property name="tpSituacaoCancelamento"
+			column="TP_SITUACAO_CANCELAMENTO"  length="1">
+			<type name="domain">
+				<param name="domainName">DM_STATUS_WORKFLOW</param>
+			</type>
+		</property>
+
+		<property name="dhTransmissao" type="jtdatetimetzr" length="7" ><column name="DH_TRANSMISSAO"/><column name="DH_TRANSMISSAO_TZR"/></property>
+		<property name="obNotaDebitoNac" type="java.lang.String"
+			column="OB_NOTA_DEBITO_NAC" length="500" />
+
+		<property name="tpSituacaoDesconto"
+			column="TP_SITUACAO_DESCONTO" length="1">
+			<type name="domain">
+				<param name="domainName">DM_STATUS_WORKFLOW</param>
+			</type>
+		</property>
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to Cliente -->
+		<many-to-one name="cliente"
+			class="com.mercurio.lms.vendas.model.Cliente" not-null="true">
+			<column name="ID_CLIENTE" />
+		</many-to-one>
+
+
+		
+		<!-- bi-directional many-to-one association to Cliente -->		
+		<many-to-one name="pendencia"
+			class="com.mercurio.lms.workflow.model.Pendencia" >
+			<column name="ID_PENDENCIA" />
+		</many-to-one>
+
+
+
+
+		<!-- bi-directional one-to-many association to ItemNotaDebitoNacional -->
+		<bag name="itemNotaDebitoNacionais" lazy="true" inverse="true"
+			cascade="none">
+			<meta attribute="adsm-parametrized-attribute">
+				com.mercurio.lms.contasreceber.model.ItemNotaDebitoNacional
+			</meta>
+			<key>
+				<column name="ID_NOTA_DEBITO_NACIONAL" />
+			</key>
+			<one-to-many
+				class="com.mercurio.lms.contasreceber.model.ItemNotaDebitoNacional" />
+		</bag>
+	</joined-subclass>
+
+</hibernate-mapping>

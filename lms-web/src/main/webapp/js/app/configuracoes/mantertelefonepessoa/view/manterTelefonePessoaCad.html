@@ -1,0 +1,213 @@
+<style type="text/css">	
+	.ui-datepicker {
+		z-index: 1200 !important;
+	}
+</style>
+
+<div class="menu-top"></div>
+
+<div class="content" style="background-color: white; padding: 20px;">
+	<form novalidate ng-class="{submitted: submitted}" class="form-horizontal" ng-submit="store($event)">
+		<div class="fixed-top">
+			<div class="content">				
+				<button type="submit" data-adsm-loading="salvando" class="btn btn-default btn-lg pull-right" id="store" permission="salvar" ng-disabled="dados.disabled">
+					{{'salvar' | translate }}
+				</button>
+				<button type="button" data-ng-click="removeTelefonePessoaById()" ng-disabled="!dados.idTelefone" class="btn btn-default btn-lg pull-right" id="removeTelefonePessoaById" ng-disabled="dados.disabled" permission="excluir">
+					{{'excluir' |  translate }}
+				</button>			
+				<button type="button" data-ng-click="limparDados()" class="btn btn-default btn-lg pull-right" id="limpar">
+					{{'limpar' | translate }}
+				</button>		
+			</div>
+		</div>
+		
+		<div class="alert-container" data-ng-show="popupAlerts.length">
+			<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+				<span data-ng-bind="alert.msg"></span>
+			</alert>
+		</div>
+
+		<div class="clearfix">		
+			<div adsm-sub-tab orientation="horizontal">
+				<div adsm-tab-panel="principal" heading="{{'principal' | translate}}">
+					<div class="form-horizontal">
+					
+					<div class="row">
+						<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-3 control-label">{{'identificacao' | translate }}</label>
+									<div class="col-lg-8" >
+										<div class="multi-input">
+											<div class="col-xs-4">
+												<input 
+													type="text" 
+													id="tpIdentificacao" 
+													class="form-control" 
+													ng-model="dados.tpIdentificacao" 
+													maxlength="20" 
+													readonly="readonly">			
+												</div>
+											<div class="col-xs-8">
+												<input 
+													type="text" 
+													id="nrIdentificacao" 
+													class="form-control" 
+													ng-model="dados.nrIdentificacao" 
+													maxlength="20" 
+													readonly="readonly">							
+											</div>					
+										</div>
+									</div>
+								</div>
+							</div>	
+							<div class="col-sm-6">
+								<div class="form-group">
+									<label class="col-lg-2 control-label">{{'nome' | translate }}</label>
+									<div class="col-lg-9">
+										<input type="text" class="form-control" id="nmPessoa" ng-model="dados.nmPessoa" readonly="readonly">
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<accordion close-others="false" id="accordionTelefone">
+							<accordion-group is-open="isTelefoneOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isTelefoneOpen , 'glyphicon-chevron-right': !isTelefoneOpen}"></span>
+									{{'telefone' | translate}}
+								</accordion-heading>	
+						
+								<div class="row">	
+										<div class="col-sm-6">
+												<div class="form-group">								
+													<label class="col-lg-4 control-label">{{'tipoTelefone' | translate }}</label>
+													<div class="col-lg-8">
+														<select 
+															id="tpTelefone"
+															ng-model="dados.tpTelefone"
+															adsm-domain="DM_TIPO_TELEFONE"
+															required>
+															<option value=""></option>
+														</select>					
+													</div>
+												</div>
+										</div>
+										<div class="col-sm-6">
+												<div class="form-group">								
+													<label class="col-lg-4 control-label">{{'usoTelefone' | translate }}</label>
+													<div class="col-lg-8">
+														<select 
+															id="tpUso"
+															ng-model="dados.tpUso"
+															adsm-domain="DM_USO_TELEFONE"
+															required>
+															<option value=""></option>
+														</select>					
+													</div>
+												</div>
+											</div>
+									</div>
+						
+								<div class="row">	
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'ddi' | translate }}</label>
+											<div class="col-lg-2">
+												<input type="text" id="nrDdi" class="form-control" ng-model="dados.nrDdi" maxlength="5"  >							
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-4 control-label">{{'numero' | translate }}</label>
+											<div class="multi-input">
+												<div class="col-xs-2">
+													<input 
+														type="text" 
+														id="nrDdd" 
+														class="form-control" 
+														ng-model="dados.nrDdd" 
+														maxlength="5" 
+														required>			
+													</div>
+												<div class="col-xs-4">
+													<input 
+														type="text" 
+														id="nrTelefone" 
+														class="form-control" 
+														ng-model="dados.nrTelefone" 
+														maxlength="10" 
+														required>							
+												</div>
+											</div>					
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+							
+							<accordion-group is-open="isEnderecoOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isEnderecoOpen , 'glyphicon-chevron-right': !isEnderecoOpen}"></span>
+									{{'endereco' | translate}}
+								</accordion-heading>
+								<div class="row">	
+									<div class="col-sm-12">										
+										<div class="form-group">
+											<label class="col-lg-2 control-label">{{'endereco' | translate}}</label>
+											<div class="col-lg-6">
+												<select 
+													adsm-chosen
+													id="endereco"
+													ng-model="dados.enderecoPessoa"
+													ng-options="data as (data.dsEndereco + ' ' +data.nrEndereco ) for data in enderecos track by data.idEnderecoPessoa"
+													>
+													<option value=""></option>
+												</select>
+											</div>
+										</div>
+									</div>
+								</div>		
+							</accordion-group>								
+							
+							<accordion-group is-open="isContatoOpen">
+								<accordion-heading>
+									<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isContatoOpen , 'glyphicon-chevron-right': !isContatoOpen}"></span>
+									{{'contato' | translate}}
+								</accordion-heading>
+								
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-lg-3 control-label">{{'contatos' | translate}}</label>
+											<div class="col-lg-8">								
+												<div adsm-list-options 
+													ng-disabled="!dados.idTelefone"
+												 	ng-model="dados.listContatos"
+												 	equals="contato.nome"
+												 	not-null="contato"
+												 	blank-token="-"
+												 	view="contato|translate,': ',contato.nome,' ',ramal|translate,': ',nrRamal">
+												 	
+													<input type="text" id="nrRamal" ng-model="nrRamal" mask="integer" class="form-control" placeholder="ramal" maxlength="10">
+												
+													<select	adsm-chosen
+														id="contatoTelefone"
+														ng-model="contato"
+														ng-options="data as data.nome for data in dados.contatos track by data.idContato">														
+														<option value=""></option>
+													</select>												
+												</div>						
+											</div>
+										</div>
+									</div>
+								</div>
+							</accordion-group>
+						</accordion>		
+					</div>
+				</div>
+			</div>		
+		</div>
+	</form>
+</div>

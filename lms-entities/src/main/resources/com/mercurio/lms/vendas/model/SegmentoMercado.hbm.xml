@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.vendas.model.SegmentoMercado" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="SEGMENTO_MERCADO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_SEGMENTO_MERCADO" name="idSegmentoMercado" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SEGMENTO_MERCADO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_SEGMENTO_MERCADO_I" length="500" name="dsSegmentoMercado" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <property
+		name="nrFatorCubagemReal"
+		type="java.math.BigDecimal"
+		column="NR_FATOR_CUBAGEM_REAL"
+		length="8"
+	/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to MunicipioFilialSegmento -->
+    <bag cascade="none" inverse="true" lazy="true" name="municipioFilialSegmentos">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.MunicipioFilialSegmento</meta>
+ 	        <key>
+            <column name="ID_SEGMENTO_MERCADO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.municipios.model.MunicipioFilialSegmento"/>
+    </bag>
+    <!-- bi-directional one-to-many association to Cliente -->
+    <bag cascade="none" inverse="true" lazy="true" name="clientes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.Cliente</meta>
+ 	        <key>
+            <column name="ID_SEGMENTO_MERCADO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.vendas.model.Cliente"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

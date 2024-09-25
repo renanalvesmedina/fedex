@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+	
+<hibernate-mapping>
+
+	<joined-subclass
+		name="com.mercurio.lms.pendencia.model.Mda"
+		extends="com.mercurio.lms.expedicao.model.DoctoServico"
+		table="MDA"
+	>
+		<key column="ID_MDA"/>
+
+		<property
+			name="tpDestinatarioMda"
+			column="TP_DESTINATARIO_MDA"
+			not-null="true"
+			length="1">
+			<type name="domain">
+				<param name="domainName">DM_TIPO_DESTINATARIO_MDA</param>
+			</type>			
+		</property>
+		<property
+			name="tpRemetenteMda"
+			column="TP_REMETENTE_MDA"
+			not-null="true"
+			length="1">
+			<type name="domain">
+				<param name="domainName">DM_TIPO_REMETENTE_MDA</param>
+			</type>			
+		</property>
+		<property
+			name="tpStatusMda"
+			column="TP_STATUS_MDA"
+			not-null="true"
+			length="1">
+			<type name="domain">
+				<param name="domainName">DM_STATUS_MDA</param>
+			</type>	
+		</property>
+		<property
+			name="obMda"
+			type="java.lang.String"
+			column="OB_MDA"
+			length="200"
+		/>
+		<property
+			name="nmRecebedorCliente"
+			type="java.lang.String"
+			column="NM_RECEBEDOR_CLIENTE"
+			length="60"
+		/>
+		<property
+			name="dhRecebimentoMatriz"
+			type="jtdatetimetzr"
+			length="7"
+		><column name="DH_RECEBIMENTO_MATRIZ"/><column name="DH_RECEBIMENTO_MATRIZ_TZR"/></property>
+		<property
+			name="dhRecebimento"
+			type="jtdatetimetzr"
+			length="7"
+		><column name="DH_RECEBIMENTO"/><column name="DH_RECEBIMENTO_TZR"/></property>
+		<property
+			name="dhCancelamento"
+			type="jtdatetimetzr"
+			length="7"
+		><column name="DH_CANCELAMENTO"/><column name="DH_CANCELAMENTO_TZR"/></property>
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to EnderecoEstoque -->
+		<many-to-one
+			name="enderecoEstoque"
+			class="com.mercurio.lms.pendencia.model.EnderecoEstoque"
+			not-null="true"
+		>
+			<column name="ID_ENDERECO_ESTOQUE" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to EnderecoPessoa -->
+		<many-to-one
+			name="enderecoRemetente"
+			class="com.mercurio.lms.configuracoes.model.EnderecoPessoa"
+			not-null="true"
+		>
+			<column name="ID_ENDERECO_REMETENTE" />
+		</many-to-one>		
+		<!-- bi-directional many-to-one association to EnderecoPessoa -->
+		<many-to-one
+			name="enderecoDestinatario"
+			class="com.mercurio.lms.configuracoes.model.EnderecoPessoa"
+			not-null="true"
+		>
+			<column name="ID_ENDERECO_DESTINATARIO" />
+		</many-to-one>		
+		
+		<!-- bi-directional many-to-one association to EnderecoPessoa -->
+		<many-to-one
+			name="enderecoConsignatario"
+			class="com.mercurio.lms.configuracoes.model.EnderecoPessoa"
+			not-null="false"
+		>
+			<column name="ID_ENDERECO_CONSIGNATARIO" />
+		</many-to-one>		
+				
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one
+			name="usuarioByIdUsuarioRecMz"
+			entity-name="usuario"
+			not-null="true"
+		>
+			<column name="ID_USUARIO_REC_MZ" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one
+			name="usuarioByIdUsuarioGeradaPor"
+			entity-name="usuario"
+			not-null="true"
+		>
+			<column name="ID_USUARIO_GERADA_POR" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one
+			name="usuarioByIdUsuarioRecebidoPor"
+			entity-name="usuario"
+			not-null="true"
+		>
+			<column name="ID_USUARIO_RECEBIDO_POR" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one
+			name="usuarioByIdUsuarioEmitidoPor"
+			entity-name="usuario"
+			not-null="true"
+		>
+			<column name="ID_USUARIO_EMITIDO_POR" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Usuario -->
+		<many-to-one
+			name="usuarioByIdUsuarioDestino"
+			entity-name="usuario"
+			not-null="false"
+		>
+			<column name="ID_USUARIO_DESTINADO" />
+		</many-to-one>
+		<!-- bi-directional many-to-one association to Setor -->
+		<many-to-one
+			name="setor"
+			class="com.mercurio.lms.configuracoes.model.Setor"
+			not-null="true"
+		>
+			<column name="ID_SETOR" />
+		</many-to-one>
+
+		<!-- bi-directional one-to-many association to ItemMda -->
+		<bag
+			name="itemMdas"
+			lazy="true"
+			inverse="true"
+			cascade="none"
+		>
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.ItemMda</meta>
+ 			<key>
+				<column name="ID_MDA" />
+			</key>
+			<one-to-many 
+				class="com.mercurio.lms.pendencia.model.ItemMda"
+			/>
+		</bag>
+	</joined-subclass>
+
+</hibernate-mapping>

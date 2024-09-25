@@ -1,0 +1,283 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.rnc.model.OcorrenciaNaoConformidade" 
+    table="OCORRENCIA_NAO_CONFORMIDADE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idOcorrenciaNaoConformidade"
+        type="java.lang.Long"
+        column="ID_OCORRENCIA_NAO_CONFORMIDADE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">OCORRENCIA_NAO_CONFORMIDADE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrOcorrenciaNc"
+        type="java.lang.Integer"
+        column="NR_OCORRENCIA_NC"
+        not-null="true"
+        length="2"
+    />
+    <property
+        name="dsOcorrenciaNc"
+        type="java.lang.String"
+        column="DS_OCORRENCIA_NC"
+        not-null="true"
+        length="1000"
+    />
+    <property
+        name="dsCausaNc"
+        type="java.lang.String"
+        column="DS_CAUSA_NC"
+        length="200"
+        not-null="false"
+    />
+    <property
+        name="dhInclusao"
+        type="jtdatetimetzr"
+     	not-null="true"
+        length="7"
+    ><column name="DH_INCLUSAO"/><column name="DH_INCLUSAO_TZR"/></property>
+    <property
+        name="qtVolumes"
+        type="java.lang.Integer"
+        column="QT_VOLUMES"
+        length="6"
+    />
+    <property
+        name="blCaixaReaproveitada"
+        type="sim_nao"
+        column="BL_CAIXA_REAPROVEITADA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="tpStatusOcorrenciaNc"
+	    column="TP_STATUS_OCORRENCIA_NC"
+        not-null="true"
+        length="1">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_OCORRENCIA_NC</param>
+	    </type>
+    </property>
+    <property
+        name="vlOcorrenciaNc"
+        type="java.math.BigDecimal"
+        column="VL_OCORRENCIA_NC"
+        length="18"
+    />
+    <property
+        name="dsCaixaReaproveitada"
+        type="java.lang.String"
+        column="DS_CAIXA_REAPROVEITADA"
+        length="80"
+    />
+
+    <property
+        name="nrRncLegado"
+		type="java.lang.Integer"
+        column="NR_RNC_LEGADO"
+        not-null="true"
+        length="8"
+    />
+
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to ControleCarga -->
+    <many-to-one
+        name="controleCarga"
+        class="com.mercurio.lms.carregamento.model.ControleCarga"
+        not-null="true"
+    >
+        <column name="ID_CONTROLE_CARGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to MotivoAberturaNc -->
+    <many-to-one
+        name="motivoAberturaNc"
+        class="com.mercurio.lms.rnc.model.MotivoAberturaNc"
+        not-null="true"
+    >
+        <column name="ID_MOTIVO_ABERTURA_NC" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to CausaNaoConformidade -->
+    <many-to-one
+        name="causaNaoConformidade"
+        class="com.mercurio.lms.rnc.model.CausaNaoConformidade"
+        not-null="true"
+    >
+        <column name="ID_CAUSA_NAO_CONFORMIDADE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to DescricaoPadraoNc -->
+    <many-to-one
+        name="descricaoPadraoNc"
+        class="com.mercurio.lms.rnc.model.DescricaoPadraoNc"
+        not-null="true"
+    >
+        <column name="ID_DESCRICAO_PADRAO_NC" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Usuario -->
+    <many-to-one
+        name="usuario"
+        entity-name="usuario"
+        not-null="true"
+    >
+        <column name="ID_USUARIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Moeda -->
+    <many-to-one
+        name="moeda"
+        class="com.mercurio.lms.configuracoes.model.Moeda"
+        not-null="true"
+    >
+        <column name="ID_MOEDA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Manifesto -->
+    <many-to-one
+        name="manifesto"
+        class="com.mercurio.lms.carregamento.model.Manifesto"
+        not-null="true"
+    >
+        <column name="ID_MANIFESTO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one
+        name="empresa"
+        class="com.mercurio.lms.municipios.model.Empresa"
+        not-null="true"
+    >
+        <column name="ID_EMPRESA" />
+    </many-to-one>
+
+	<!-- bi-directional one-to-many association to NotaOcorrenciaNc -->
+	<bag name="notaOcorrenciaNcs" inverse="true" cascade="all-delete-orphan"> 
+		<key>
+			<column name="ID_OCORRENCIA_NAO_CONFORMIDADE" />
+		</key>
+		<one-to-many class="com.mercurio.lms.rnc.model.NotaOcorrenciaNc"/>
+	</bag>
+
+    <!-- bi-directional one-to-many association to Negociacao -->
+    <bag
+        name="negociacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.Negociacao</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.rnc.model.Negociacao"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to FotoOcorrencia -->
+    <bag
+        name="fotoOcorrencias"
+        lazy="false"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.FotoOcorrencia</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.rnc.model.FotoOcorrencia"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to CaractProdutoOcorrencia -->
+    <bag
+        name="caractProdutoOcorrencias"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.CaractProdutoOcorrencia</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.rnc.model.CaractProdutoOcorrencia"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to Disposicao -->
+    <bag
+        name="disposicoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.Disposicao</meta>
+ 	        <key>
+            <column name="ID_OCORRENCIA_NAO_CONFORMIDADE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.rnc.model.Disposicao"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialResponsavel"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_RESPONSAVEL" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialAbertura"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_ABERTURA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to NaoConformidade -->
+    <many-to-one
+        name="naoConformidade"
+        class="com.mercurio.lms.rnc.model.NaoConformidade"
+        not-null="true"
+    >
+        <column name="ID_NAO_CONFORMIDADE" />
+    </many-to-one>
+
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filialByIdFilialLegado"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL_LEGADO" />
+    </many-to-one>
+    
+    <!-- bi-directional one-to-many association to OcorrenciaNaoConformidade -->
+    <bag cascade="none" inverse="true" lazy="true" name="itemOcorrencias">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.ItemOcorrenciaNc</meta>
+ 	        <key>
+            <column name="ID_ITEM_OCORRENCIA_NC"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.ItemOcorrenciaNc"/>
+    </bag>
+    
+</class>
+</hibernate-mapping>

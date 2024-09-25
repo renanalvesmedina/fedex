@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.mercurio.lms.sgr.model.EnquadramentoRegra" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="ENQUADRAMENTO_REGRA">
+		<meta attribute="implement-equals" inherit="false">true</meta>
+		<cache usage="read-write" />
+
+		<id column="ID_ENQUADRAMENTO_REGRA" name="idEnquadramentoRegra" type="java.lang.Long">
+			<meta attribute="use-in-equals">true</meta>
+			<generator class="sequence">
+				<param name="sequence">ENQUADRAMENTO_REGRA_SQ</param>
+			</generator>
+		</id>
+
+		<property column="DS_ENQUADRAMENTO_REGRA_I" length="100" name="dsEnquadramentoRegra" not-null="true" type="varcharI18n" unique="true" />
+		<property column="BL_REQUER_PASSAPORTE_VIAGEM" length="1" name="blRequerPassaporteViagem" not-null="true" type="sim_nao" />
+		<property column="BL_SEGURO_MERCURIO" length="1" name="blSeguroMercurio" not-null="true" type="sim_nao" />
+		<property column="DT_VIGENCIA_INICIAL" length="7" name="dtVigenciaInicial" not-null="true" type="jtyearmonthday" />
+		<property column="DT_VIGENCIA_FINAL" length="7" name="dtVigenciaFinal" type="jtyearmonthday_v" />
+		<property column="TP_OPERACAO" length="1" name="tpOperacao">
+			<type name="domain">
+				<param name="domainName">DM_TIPO_OPERACAO_ENQ_REGRA</param>
+			</type>
+		</property>
+		<property column="TP_VINCULO_MEIO_TRANSPORTE" length="1" name="tpVinculoMeioTransporte">
+			<type name="domain">
+				<param name="domainName">DM_TIPO_VINCULO_VEICULO</param>
+			</type>
+		</property>
+		<property column="TP_MODAL" length="1" name="tpModal">
+			<type name="domain">
+				<param name="domainName">DM_MODAL</param>
+			</type>
+		</property>
+		<property column="TP_ABRANGENCIA" length="1" name="tpAbrangencia">
+			<type name="domain">
+				<param name="domainName">DM_ABRANGENCIA</param>
+			</type>
+		</property>
+		<property column="TP_GRAU_RISCO_COLETA_ENTREGA" length="1" name="tpGrauRiscoColetaEntrega">
+			<type name="domain">
+				<param name="domainName">DM_GRAU_RISCO</param>
+			</type>
+		</property>
+		<property column="TP_CRITERIO_ORIGEM" length="1" name="tpCriterioOrigem">
+			<type name="domain">
+				<param name="domainName">DM_CRITERIO_REGIAO_SGR</param>
+			</type>
+		</property>
+		<property column="TP_CRITERIO_DESTINO" length="1" name="tpCriterioDestino">
+			<type name="domain">
+				<param name="domainName">DM_CRITERIO_REGIAO_SGR</param>
+			</type>
+		</property>
+		<property column="BL_REGRA_GERAL" length="1" name="blRegraGeral" not-null="true" type="sim_nao" />
+
+		<!-- Associations -->
+
+		<!-- bi-directional many-to-one association to NaturezaProduto -->
+		<many-to-one class="com.mercurio.lms.expedicao.model.NaturezaProduto" name="naturezaProduto" not-null="false">
+			<column name="ID_NATUREZA_PRODUTO" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to ReguladoraSeguro -->
+		<many-to-one class="com.mercurio.lms.seguros.model.ReguladoraSeguro" name="reguladoraSeguro" not-null="true">
+			<column name="ID_REGULADORA_SEGURO" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to Moeda -->
+		<many-to-one class="com.mercurio.lms.configuracoes.model.Moeda" name="moeda" not-null="true">
+			<column name="ID_MOEDA" />
+		</many-to-one>
+
+		<!-- bi-directional one-to-many association to FaixaDeValor -->
+		<bag cascade="none" inverse="true" lazy="true" name="clienteEnquadramentos">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.ClienteEnquadramento</meta>
+			<key>
+				<column name="ID_ENQUADRAMENTO_REGRA" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.ClienteEnquadramento" />
+		</bag>
+
+		<!-- bi-directional one-to-many association to FaixaDeValor -->
+		<bag cascade="none" inverse="true" lazy="true" name="faixaDeValors">
+			<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.sgr.model.FaixaDeValor</meta>
+			<key>
+				<column name="ID_ENQUADRAMENTO_REGRA" />
+			</key>
+			<one-to-many class="com.mercurio.lms.sgr.model.FaixaDeValor" />
+		</bag>
+
+		<!-- bi-directional many-to-one association to ApoliceSeguro -->
+		<many-to-one class="com.mercurio.lms.seguros.model.ApoliceSeguro" name="apoliceSeguro" not-null="false">
+			<column name="ID_APOLICE_SEGURO" />
+		</many-to-one>
+
+		<!-- bi-directional many-to-one association to SeguroCliente -->
+		<many-to-one class="com.mercurio.lms.vendas.model.SeguroCliente" name="seguroCliente" not-null="false">
+			<column name="ID_SEGURO_CLIENTE" />
+		</many-to-one>
+	</class>
+</hibernate-mapping>

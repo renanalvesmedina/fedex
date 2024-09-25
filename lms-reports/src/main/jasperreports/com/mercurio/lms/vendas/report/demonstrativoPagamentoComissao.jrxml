@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="emitirRecibo"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Portrait"
+		 pageWidth="595"
+		 pageHeight="842"
+		 columnWidth="537"
+		 columnSpacing="0"
+		 leftMargin="28"
+		 rightMargin="28"
+		 topMargin="28"
+		 bottomMargin="28"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.fretecarreteirocoletaentrega.report.emitirRecibo">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.mercurio.lms.util.*" />
+
+	<parameter name="BaseDir" isForPrompting="false" class="java.io.File">
+		<defaultValueExpression ><![CDATA[new File(".")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LMS_URL" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["http://localhost:8080/lms"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuarioEmissor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["João da Silva"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="dataAtual" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="SERVICE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="LB_INSS" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT
+RFC.ID_RECIBO_FRETE_CARRETEIRO,
+P_EMPRESA.NR_IDENTIFICACAO AS NR_IDENT_EMPRESA,
+P_EMPRESA.TP_IDENTIFICACAO AS TP_IDENT_EMPRESA,
+P_EMPRESA.NM_PESSOA AS NM_EMPRESA,
+P_FILIAL.TP_IDENTIFICACAO AS TP_IDENT_FILIAL,
+P_FILIAL.NR_IDENTIFICACAO AS NR_IDENT_FILIAL,
+P_FILIAL.NM_FANTASIA AS NM_FILIAL,
+F.SG_FILIAL,
+RFC.NR_RECIBO_FRETE_CARRETEIRO,
+CC.NR_CONTROLE_CARGA,
+R.DS_ROTA,
+P_PROP.TP_PESSOA AS TP_PESSOA_PROP,
+P_PROP.NR_IDENTIFICACAO AS NR_IDENT_PROP,
+P_PROP.TP_IDENTIFICACAO AS TP_IDENT_PROP,
+P_PROP.NM_PESSOA AS NM_PROPRIETARIO,
+PROP.NR_INSS,
+P_MOT.NR_IDENTIFICACAO AS NR_IDENT_MOT,
+P_MOT.TP_IDENTIFICACAO AS TP_IDENT_MOT,
+P_MOT.NM_PESSOA AS NM_MOTORISTA,
+MT.NR_IDENTIFICADOR AS NR_IDENT_MT,
+MT.NR_FROTA AS NR_FROTA,
+MODELO.DS_MODELO_MEIO_TRANSPORTE,
+MARCA.DS_MARCA_MEIO_TRANSPORTE,
+TIPO.DS_TIPO_MEIO_TRANSPORTE,
+MT.NR_ANO_FABRICAO AS NR_ANO_FABRICACAO,
+MUNIC_MT.NM_MUNICIPIO AS NM_MUNICIPIO_MT,
+TIPO.NR_CAPACIDADE_PESO_FINAL AS CAPACIDADE,
+P_BENEF.NR_IDENTIFICACAO AS NR_IDENT_BENEF,
+P_BENEF.TP_IDENTIFICACAO AS TP_IDENT_BENEF,
+P_BENEF.NM_PESSOA AS NM_BENEFICIARIO,
+B.NR_BANCO,
+AB.NR_AGENCIA_BANCARIA,
+AB.NR_DIGITO,
+CB.NR_CONTA_BANCARIA,
+CB.DV_CONTA_BANCARIA,
+RFC.VL_BRUTO,
+RFC.VL_POSTO_PASSAGEM,
+RFC.VL_PREMIO,
+RFC.VL_DIARIA,
+(SELECT Sum(RFC2.VL_BRUTO) FROM RECIBO_FRETE_CARRETEIRO RFC2
+ WHERE RFC2.BL_ADIANTAMENTO = 'S'
+ AND RFC2.ID_CONTROLE_CARGA = RFC.ID_CONTROLE_CARGA
+ AND RFC2.ID_PROPRIETARIO = RFC.ID_PROPRIETARIO) AS VL_ADIANTAMENTO,
+CASE
+    WHEN P_PROP.TP_PESSOA = 'F' THEN RFC.VL_INSS
+    ELSE NULL
+END AS VL_INSS,
+CASE
+    WHEN P_PROP.TP_PESSOA = 'J' THEN VL_ISSQN
+    ELSE NULL
+END AS VL_ISSQN,
+CASE
+    WHEN P_PROP.TP_PESSOA = 'F' THEN VL_IRRF
+    ELSE NULL
+END AS VL_IRRF,
+RFC.VL_LIQUIDO,
+RFC.VL_SALARIO_CONTRIBUICAO,
+RFC.PC_ALIQUOTA_INSS,
+(RFC.VL_SALARIO_CONTRIBUICAO * PC_ALIQUOTA_INSS)/100 AS VL_APURADO,
+RFC.VL_OUTRAS_FONTES,
+((RFC.VL_SALARIO_CONTRIBUICAO * PC_ALIQUOTA_INSS)/100) - VL_OUTRAS_FONTES AS RESULTADO_APURADO,
+FCC_ORIGEM.SG_FILIAL AS SG_FILIAL_ORIGEM,
+PCC_ORIGEM.NM_PESSOA AS NM_PESSOA_ORIGEM,
+FCC_DESTINO.SG_FILIAL AS SG_FILIAL_DESTINO,
+PCC_DESTINO.NM_PESSOA AS NM_PESSOA_DESTINO
+FROM RECIBO_FRETE_CARRETEIRO RFC
+INNER JOIN FILIAL F ON RFC.ID_FILIAL = F.ID_FILIAL
+INNER JOIN PESSOA P_FILIAL ON F.ID_FILIAL = P_FILIAL.ID_PESSOA
+INNER JOIN EMPRESA E ON F.ID_EMPRESA = E.ID_EMPRESA
+INNER JOIN PESSOA P_EMPRESA ON E.ID_EMPRESA = P_EMPRESA.ID_PESSOA
+LEFT JOIN CONTROLE_CARGA CC ON RFC.ID_CONTROLE_CARGA = CC.ID_CONTROLE_CARGA
+LEFT JOIN FILIAL FCC_ORIGEM ON CC.ID_FILIAL_ORIGEM = FCC_ORIGEM.ID_FILIAL
+LEFT JOIN PESSOA PCC_ORIGEM ON FCC_ORIGEM.ID_FILIAL = PCC_ORIGEM.ID_PESSOA
+LEFT JOIN FILIAL FCC_DESTINO ON CC.ID_FILIAL_DESTINO = FCC_DESTINO.ID_FILIAL
+LEFT JOIN PESSOA PCC_DESTINO ON FCC_DESTINO.ID_FILIAL = PCC_DESTINO.ID_PESSOA
+LEFT JOIN ROTA_IDA_VOLTA RIV ON CC.ID_ROTA_IDA_VOLTA = RIV.ID_ROTA_IDA_VOLTA
+LEFT JOIN ROTA R ON RIV.ID_ROTA = R.ID_ROTA
+INNER JOIN PROPRIETARIO PROP ON RFC.ID_PROPRIETARIO = PROP.ID_PROPRIETARIO
+INNER JOIN PESSOA P_PROP ON PROP.ID_PROPRIETARIO = P_PROP.ID_PESSOA
+INNER JOIN MOTORISTA MOT ON RFC.ID_MOTORISTA = MOT.ID_MOTORISTA
+INNER JOIN PESSOA P_MOT ON MOT.ID_MOTORISTA = P_MOT.ID_PESSOA
+LEFT JOIN BENEFICIARIO BENEF ON RFC.ID_BENEFICIARIO = BENEF.ID_BENEFICIARIO
+LEFT JOIN PESSOA P_BENEF ON BENEF.ID_BENEFICIARIO = P_BENEF.ID_PESSOA
+INNER JOIN MEIO_TRANSPORTE MT ON RFC.ID_MEIO_TRANSPORTE = MT.ID_MEIO_TRANSPORTE
+INNER JOIN MODELO_MEIO_TRANSPORTE MODELO ON MT.ID_MODELO_MEIO_TRANSPORTE = MODELO.ID_MODELO_MEIO_TRANSPORTE
+INNER JOIN MARCA_MEIO_TRANSPORTE MARCA ON MODELO.ID_MARCA_MEIO_TRANSPORTE = MARCA.ID_MARCA_MEIO_TRANSPORTE
+INNER JOIN TIPO_MEIO_TRANSPORTE TIPO ON MODELO.ID_TIPO_MEIO_TRANSPORTE = TIPO.ID_TIPO_MEIO_TRANSPORTE
+LEFT JOIN MEIO_TRANSPORTE_RODOVIARIO MT_RODO ON MT.ID_MEIO_TRANSPORTE = MT_RODO.ID_MEIO_TRANSPORTE
+LEFT JOIN MUNICIPIO MUNIC_MT ON MT_RODO.ID_MUNICIPIO = MUNIC_MT.ID_MUNICIPIO
+LEFT JOIN CONTA_BANCARIA CB ON RFC.ID_CONTA_BANCARIA = CB.ID_CONTA_BANCARIA
+LEFT JOIN AGENCIA_BANCARIA AB ON CB.ID_AGENCIA_BANCARIA = AB.ID_AGENCIA_BANCARIA
+LEFT JOIN BANCO B ON AB.ID_BANCO = B.ID_BANCO]]></queryString>
+
+	<field name="ID_CLIENTE_TERRITORIO" class="java.lang.String"/>
+	<field name="ID_CLIENTE" class="java.lang.String"/>
+
+
+		<group  name="masterGroup" isStartNewPage="true" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="80"  isSplitAllowed="true" >
+				<staticText>
+					<reportElement
+						x="91"
+						y="25"
+						width="267"
+						height="19"
+						key="staticText-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<text><![CDATA[Nosso belo relatorio]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="22"
+						y="60"
+						width="228"
+						height="12"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{tpZembrzuski}]]></textFieldExpression>
+				</textField>
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="outrasFontesFooter" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="outrasFontesDetalhe" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="outrasFontesGroup" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="1"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="notasCredito" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="98"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="contaBancaria" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="benbeficiario" >
+			<groupExpression><![CDATA[null]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="14"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="5"
+						y="1"
+						width="228"
+						height="12"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ID_CLIENTE_TERRITORIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="266"
+						y="1"
+						width="228"
+						height="13"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{ID_CLIENTE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="13"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

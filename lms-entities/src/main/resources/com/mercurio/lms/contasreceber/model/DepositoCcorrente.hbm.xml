@@ -1,0 +1,123 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.contasreceber.model.DepositoCcorrente" 
+    table="DEPOSITO_CCORRENTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idDepositoCcorrente"
+        type="java.lang.Long"
+        column="ID_DEPOSITO_CCORRENTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">DEPOSITO_CCORRENTE_SQ</param>
+        </generator>
+    </id>
+    
+    <version name="versao" column="NR_VERSAO"/>    
+
+    <property
+        name="vlDeposito"
+			        type="java.math.BigDecimal"
+            column="VL_DEPOSITO"
+        not-null="true"
+        length="18"
+    />
+    <property
+        name="dtDeposito"
+			        type="jtyearmonthday"
+            column="DT_DEPOSITO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtCarga"
+			        type="jtyearmonthday"
+            column="DT_CARGA"
+        not-null="false"
+        length="7"
+    />
+    <property
+        name="tpOrigem"
+		    column="TP_ORIGEM"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_ORIGEM</param>
+	    </type>
+    </property>
+    <property
+        name="blRelacaoFechada"
+			        type="sim_nao"
+            column="BL_RELACAO_FECHADA"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="tpSituacaoRelacao"
+		    column="TP_SITUACAO_RELACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_RELACAO</param>
+	    </type>
+    </property>
+    <property
+        name="obDepositoCcorrente"
+			        type="java.lang.String"
+            column="OB_DEPOSITO_CCORRENTE"
+        length="255"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="true"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cedente"
+        class="com.mercurio.lms.contasreceber.model.Cedente"
+        not-null="true"
+    >
+        <column name="ID_CEDENTE" />
+    </many-to-one>    
+    <!-- bi-directional one-to-many association to ItemDepositoCcorrente -->
+    <bag
+        name="itemDepositoCcorrentes"
+        lazy="true" inverse="true" cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.contasreceber.model.ItemDepositoCcorrente</meta>
+ 	        <key>
+            <column name="ID_DEPOSITO_CCORRENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.contasreceber.model.ItemDepositoCcorrente"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

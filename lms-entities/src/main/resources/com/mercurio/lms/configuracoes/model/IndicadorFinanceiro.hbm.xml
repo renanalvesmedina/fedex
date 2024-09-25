@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.configuracoes.model.IndicadorFinanceiro" 
+    table="INDICADOR_FINANCEIRO"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idIndicadorFinanceiro"
+        type="java.lang.Long"
+        column="ID_INDICADOR_FINANCEIRO"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">INDICADOR_FINANCEIRO_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nmIndicadorFinanceiro"
+			        type="java.lang.String"
+            column="NM_INDICADOR_FINANCEIRO"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="sgIndicadorFinanceiro"
+			        type="java.lang.String"
+            column="SG_INDICADOR_FINANCEIRO"
+        not-null="true"
+        unique="true"
+        length="10"
+    />
+    <property
+        name="tpIndicadorFinanceiro"
+		    column="TP_INDICADOR_FINANCEIRO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_IND_FINANCEIRO</param>
+	    </type>
+    </property>
+    <property
+        name="tpSituacao"
+		    column="TP_SITUACAO"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to CotacaoIndicadorFinanceiro -->
+    <bag
+        name="cotacaoIndicadorFinanceiros"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.CotacaoIndicadorFinanceiro</meta>
+ 	        <key>
+            <column name="ID_INDICADOR_FINANCEIRO" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.configuracoes.model.CotacaoIndicadorFinanceiro"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Frequencia -->
+    <many-to-one
+        name="frequencia"
+        class="com.mercurio.lms.configuracoes.model.Frequencia"
+        not-null="true"
+    >
+        <column name="ID_FREQUENCIA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pais -->
+    <many-to-one
+        name="pais"
+        class="com.mercurio.lms.municipios.model.Pais"
+        not-null="true"
+    >
+        <column name="ID_PAIS" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

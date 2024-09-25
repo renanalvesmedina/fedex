@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"
+>
+
+<hibernate-mapping>
+
+<class
+	name="com.mercurio.lms.expedicao.model.DoctoServicoFin"
+	table="V_DOCTO_SERVICO_FIN"
+>
+	<meta attribute="implement-equals" inherit="false">true</meta>
+
+	<id
+		name="idDoctoServico"
+		type="java.lang.Long"
+		column="ID_DOCTO_SERVICO"
+	>
+		<meta attribute="use-in-equals">true</meta>
+		<generator class="sequence">
+			<param name="sequence">DOCTO_SERVICO_SQ</param>
+		</generator>
+	</id>
+	<discriminator column="TP_DOCUMENTO_SERVICO" type="string"/>
+
+	<property
+		name="nrDoctoServico"
+		type="java.lang.Long"
+		column="NR_DOCTO_SERVICO"
+		not-null="true"
+		length="10"
+	/>
+	<property
+		name="tpDocumentoServico"
+		column="TP_DOCUMENTO_SERVICO"
+		not-null="true"
+		length="3">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_DOCUMENTO_SERVICO</param>
+		</type>
+	</property>	
+	<property
+		name="psReal"
+		type="java.math.BigDecimal"
+		column="PS_REAL"
+		length="18"
+	/>
+	<property
+		name="psAforado"
+		type="java.math.BigDecimal"
+		column="PS_AFORADO"
+		length="18"
+	/>
+	<property
+		name="vlTotalDocServico"
+		type="java.math.BigDecimal"
+		column="VL_TOTAL_DOC_SERVICO"
+		not-null="true"
+		length="18"
+	/>
+    <property
+        name="tpFrete"
+        column="TP_FRETE"
+        length="3">
+		<type name="domain">
+			<param name="domainName">DM_TIPO_FRETE</param>
+		</type>    
+    </property>
+	<property
+		name="tpSituacao"
+		column="TP_SITUACAO"
+		length="1">
+		<type name="domain">
+			<param name="domainName">DM_STATUS_CONHECIMENTO</param>
+		</type>
+	</property>
+
+	<!-- Associations -->
+
+	<!-- bi-directional many-to-one association to Moeda -->
+	<many-to-one
+		name="moeda"
+		class="com.mercurio.lms.configuracoes.model.Moeda"
+		not-null="true"
+	>
+		<column name="ID_MOEDA" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Servico -->
+	<many-to-one
+		name="servico"
+		class="com.mercurio.lms.configuracoes.model.Servico"
+	>
+		<column name="ID_SERVICO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filialByIdFilialDestino"
+		class="com.mercurio.lms.municipios.model.Filial"
+	>
+		<column name="ID_FILIAL_DESTINO" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Filial -->
+	<many-to-one
+		name="filialByIdFilialOrigem"
+		class="com.mercurio.lms.municipios.model.Filial"
+		not-null="true"
+	>
+		<column name="ID_FILIAL_ORIGEM" />
+	</many-to-one>
+	<!-- bi-directional many-to-one association to Pais -->
+	<many-to-one
+		name="paisOrigem"
+		class="com.mercurio.lms.municipios.model.Pais"
+		not-null="true"
+	>
+		<column name="ID_PAIS" />
+	</many-to-one>
+</class>
+</hibernate-mapping>

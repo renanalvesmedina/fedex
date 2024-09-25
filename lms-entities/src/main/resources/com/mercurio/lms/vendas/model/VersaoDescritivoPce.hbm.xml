@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.vendas.model.VersaoDescritivoPce" 
+    table="VERSAO_DESCRITIVO_PCE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idVersaoDescritivoPce"
+        type="java.lang.Long"
+        column="ID_VERSAO_DESCRITIVO_PCE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">VERSAO_DESCRITIVO_PCE_SQ</param>
+        </generator>
+    </id>
+    <version name="versao" column="NR_VERSAO"/>
+
+
+    <!-- Associations -->
+  
+    <!-- bi-directional many-to-one association to DescritivoPce -->
+    <many-to-one
+        name="descritivoPce"
+        class="com.mercurio.lms.vendas.model.DescritivoPce"
+        not-null="true"
+    >
+        <column name="ID_DESCRITIVO_PCE" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to VersaoPce -->
+    <many-to-one
+        name="versaoPce"
+        class="com.mercurio.lms.vendas.model.VersaoPce"
+        not-null="true"
+    >
+        <column name="ID_VERSAO_PCE" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to VersaoContatoPce -->
+    <bag
+        name="versaoContatoPces"
+        lazy="true"
+        inverse="true"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.vendas.model.VersaoContatoPce</meta>
+ 	        <key>
+            <column name="ID_VERSAO_DESCRITIVO_PCE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.vendas.model.VersaoContatoPce"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

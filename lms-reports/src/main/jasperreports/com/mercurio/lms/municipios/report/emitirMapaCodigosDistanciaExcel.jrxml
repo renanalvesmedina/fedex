@@ -1,0 +1,1399 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="LMS-1917_RelatorioMCD"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="2150"
+		 pageHeight="600"
+		 columnWidth="2150"
+		 columnSpacing="0"
+		 leftMargin="0"
+		 rightMargin="0"
+		 topMargin="0"
+		 bottomMargin="0"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.municipios.report.emitirMapaCodigosDistanciaExcel"
+		 whenResourceMissingType="Empty"
+		 isIgnorePagination="true">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+
+	<parameter name="DT_GERACAO" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["21/12/2012"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuarioEmissor" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="parametrosPesquisa" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="titulo" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT tb.id_filial_destino
+,      tb.id_filial_origem
+,      tb.id_filial_reembarcadora
+,      tb.sg_filial_reembarcadora
+,      tb.nm_filial_reembarcadora
+,      15 AS nr_prazo_total
+,      REGEXP_REPLACE( tb.ds_servico, '^.*pt_BR»(([[:alnum:]]|[[:space:]])+).*$', '\1' ) AS ds_servico
+,      tb.id_servico
+,      tb.nr_dias_atendidos_origem
+,      tb.nr_dias_atendidos_destino
+ 
+--dados da origem  
+,      tb.bl_distrito_origem
+,      tb.bl_domingo_origem
+,      tb.bl_segunda_origem
+,      tb.bl_terca_origem
+,      tb.bl_quarta_origem
+,      tb.bl_quinta_origem
+,      tb.bl_sexta_origem
+,      tb.bl_sabado_origem
+,      tb.cd_ibge_origem
+,      tb.id_municipio_filial_origem
+,      tb.id_municipio_origem
+,      tb.id_pais_origem
+,      tb.id_tipo_localizacao_origem
+,      tb.id_unidade_federativa_origem
+,      tb.id_zona_origem
+,      tb.nm_filial_origem
+,      tb.nm_municipio_origem
+,      REGEXP_REPLACE( tb.nm_pais_origem, '^.*pt_BR»(([[:alnum:]]|[[:space:]])+).*$', '\1' ) AS nm_pais_origem
+
+,      tb.nm_unidade_federativa_origem
+,      tb.sg_filial_origem
+,      tb.nr_tempo_entrega_origem
+,      tb.dt_vigencia_final
+,      tb.dt_vigencia_inicial
+,      tb.nr_tempo_coleta
+--dados do destino  
+,      tb.bl_distrito_destino
+,      tb.bl_domingo_destino
+,      tb.bl_segunda_destino
+,      tb.bl_terca_destino
+,      tb.bl_quarta_destino
+,      tb.bl_quinta_destino
+,      tb.bl_sexta_destino
+,      tb.bl_sabado_destino
+,      tb.cd_ibge_destino
+,      tb.id_municipio_destino
+,      tb.id_municipio_filial_destino
+,      tb.id_pais_destino
+,      tb.id_tipo_localizacao_destino
+,      tb.id_unidade_federativa_destino
+,      tb.id_zona_destino
+,      tb.nm_filial_destino
+,      tb.nm_municipio_destino
+,      REGEXP_REPLACE( tb.nm_pais_destino, '^.*pt_BR»(([[:alnum:]]|[[:space:]])+).*$', '\1' ) AS nm_pais_destino
+,      tb.nm_unidade_federativa_destino
+,      tb.sg_filial_destino
+,      tb.nr_tempo_entrega_destino
+
+--dados do calculo de tarifa  
+,      tb.distancia_total 
+
+--somar todos os postos de passagem do municipio filial de origem  
+,      tb.qt_pedagio
+
+--Ver esquema da empresa
+,      '440-5' AS cd_tarifa_preco
+,      '440-5' AS cd_tarifa_preco_atual
+
+--Dados do calculo de PPE, em dias
+,      19 AS nr_ppe           
+,      tb.sg_regional_origem
+,      tb.sg_regional_destino                                  
+,      tb.sg_unidade_federativa_origem
+,      tb.sg_unidade_federativa_destino
+FROM (
+      SELECT 
+      --Dados do Fluxo Filial
+             ff.id_filial_destino                       AS ID_FILIAL_DESTINO,
+             ff.id_filial_origem                        AS ID_FILIAL_ORIGEM,
+             ff.id_filial_reembarcadora                 AS ID_FILIAL_REEMBARCADORA,
+             fr.sg_filial                               AS sg_filial_reembarcadora,              
+             fr.sg_filial 
+                || NVL2( ff.id_filial_reembarcadora, ' - ', '' )
+                || p_fr.nm_fantasia                     AS NM_FILIAL_REEMBARCADORA,    --Dados da filial reembarcadora
+             
+             
+                    
+             s.ds_servico_i                             AS DS_SERVICO, --Descrição do servico, null SE O FLUXO NÃO TEMS ERVIÇO
+             ff.id_servico                              AS ID_SERVICO,
+
+             5                                          AS NR_DIAS_ATENDIDOS_ORIGEM, 
+             5                                          AS NR_DIAS_ATENDIDOS_DESTINO, 
+             --DADOS DA ORIGEM  
+
+             osl_fo.bl_domingo                    AS BL_DOMINGO_ORIGEM, 
+             osl_fo.bl_segunda                    AS BL_SEGUNDA_ORIGEM,
+             osl_fo.bl_terca                      AS BL_TERCA_ORIGEM,
+             osl_fo.bl_quarta                     AS BL_QUARTA_ORIGEM, 
+             osl_fo.bl_quinta                     AS BL_QUINTA_ORIGEM, 
+             osl_fo.bl_sexta                      AS BL_SEXTA_ORIGEM, 
+             osl_fo.bl_sabado                     AS BL_SABADO_ORIGEM,  
+             osl_fo.nr_tempo_entrega              AS NR_TEMPO_ENTREGA_ORIGEM, 
+             osl_fo.nr_tempo_coleta               AS nr_tempo_coleta, 
+             osl_fo.id_tipo_localizacao_municipio AS ID_TIPO_LOCALIZACAO_ORIGEM, 
+                          
+             m_fo.cd_ibge                         AS CD_IBGE_ORIGEM,         
+             m_fo.bl_distrito                     AS BL_DISTRITO_ORIGEM, 
+             m_fo.id_municipio                    AS ID_MUNICIPIO_ORIGEM, 
+             m_fo.nm_municipio                    AS NM_MUNICIPIO_ORIGEM,
+             
+             mf_fo.id_municipio_filial            AS ID_MUNICIPIO_FILIAL_ORIGEM,
+             mf_fo.dt_vigencia_inicial            AS DT_VIGENCIA_INICIAL,
+             mf_fo.dt_vigencia_final              AS DT_VIGENCIA_FINAL,
+             
+             ps_fo.id_pais                        AS ID_PAIS_ORIGEM, 
+             ps_fo.id_zona                        AS ID_ZONA_ORIGEM,
+             ps_fo.nm_pais_i                      AS NM_PAIS_ORIGEM,
+             
+             uf_fo.id_unidade_federativa          AS ID_UNIDADE_FEDERATIVA_ORIGEM, 
+             uf_fo.nm_unidade_federativa          AS NM_UNIDADE_FEDERATIVA_ORIGEM, 
+             uf_fo.sg_unidade_federativa          AS sg_unidade_federativa_origem,             
+             
+             p_fo.nm_fantasia                     AS NM_FILIAL_ORIGEM, 
+ 
+             fo.sg_filial                         AS SG_FILIAL_ORIGEM, 
+             r_fo.sg_regional                     AS sg_regional_origem,
+             --DADOS DO DESTINO  
+              
+             osl_fd.bl_domingo                    AS BL_DOMINGO_DESTINO, 
+             osl_fd.bl_segunda                    AS BL_SEGUNDA_DESTINO,
+             osl_fd.bl_terca                      AS BL_TERCA_DESTINO, 
+             osl_fd.bl_quarta                     AS BL_QUARTA_DESTINO, 
+             osl_fd.bl_quinta                     AS BL_QUINTA_DESTINO,
+             osl_fd.bl_sexta                      AS BL_SEXTA_DESTINO, 
+             osl_fd.bl_sabado                     AS BL_SABADO_DESTINO, 
+             
+             osl_fd.id_tipo_localizacao_municipio AS ID_TIPO_LOCALIZACAO_DESTINO,
+             osl_fd.nr_tempo_entrega              AS nr_tempo_entrega_destino,
+             
+             m_fd.bl_distrito                     AS BL_DISTRITO_DESTINO,
+             m_fd.cd_ibge                         AS CD_IBGE_DESTINO,        
+             m_fd.id_municipio                    AS ID_MUNICIPIO_DESTINO, 
+             m_fd.nm_municipio                    AS NM_MUNICIPIO_DESTINO,
+             
+             mf_fd.id_municipio_filial            AS ID_MUNICIPIO_FILIAL_DESTINO,  
+             mf_fd.bl_padrao_mcd                  AS mf_fd_bl_mcd,            
+
+             ps_fd.id_pais                        AS ID_PAIS_DESTINO, 
+             ps_fd.id_zona                        AS ID_ZONA_DESTINO,
+             ps_fd.nm_pais_i                      AS NM_PAIS_DESTINO,       
+                                 
+             uf_fd.id_unidade_federativa          AS ID_UNIDADE_FEDERATIVA_DESTINO, 
+             uf_fd.nm_unidade_federativa          AS NM_UNIDADE_FEDERATIVA_DESTINO,            
+             uf_fd.sg_unidade_federativa          AS sg_unidade_federativa_destino,
+             
+             r_fd.sg_regional                     AS sg_regional_destino,
+             
+             p_fd.nm_fantasia                     AS NM_FILIAL_DESTINO,               
+             fd.sg_filial                         AS SG_FILIAL_DESTINO,
+             p.tp_emissao                         AS tp_emissao, 
+
+             --Dados do calculo de tarifa  
+             500    AS DISTANCIA_TOTAL, 
+
+             --Dados da quantidade de pedagio  
+
+             --SOMAR TODOS OS POSTOS DE PASSAGEM DO MUNICIPIO FILIAL DE ORIGEM  
+            20       AS QT_PEDAGIO 
+                                    
+      FROM      ( SELECT SYSDATE                 AS dt 
+                  ,      NULL       AS id_serv 
+                  ,      'D'     AS tp_emissao
+                  ,      2114    AS id_mun_o
+                  ,      NULL    AS id_fo
+                  ,      NULL    AS id_uf_o
+                  ,      NULL    AS id_reg_o
+                  ,      NULL    AS id_mun_d
+                  ,      378     AS id_fd
+                  ,      NULL    AS id_uf_d
+                  ,      NULL    AS id_reg_d
+                  ,      NULL    AS id_cliente 
+                  FROM   dual ) p
+      ,         fluxo_filial              ff                 
+      LEFT JOIN servico                   s      ON s.id_servico = ff.id_servico 
+      --JOIN com a filial reeembarcadora
+      LEFT JOIN filial                    fr     ON fr.id_filial = ff.id_filial_reembarcadora
+      LEFT JOIN pessoa                    p_fr   ON p_fr.id_pessoa = fr.id_filial
+
+      --JOIN com a filial de origem
+      JOIN      filial                    fo     ON  fo.id_filial = ff.id_filial_origem
+      JOIN      pessoa                    p_fo   ON  fo.id_filial = p_fo.id_pessoa
+     
+      JOIN      municipio_filial          mf_fo  ON  mf_fo.id_filial = fo.id_filial
+ 
+      JOIN      municipio                 m_fo   ON  mf_fo.id_municipio = m_fo.id_municipio
+      JOIN      unidade_federativa        uf_fo  ON  m_fo.id_unidade_federativa = uf_fo.id_unidade_federativa
+      JOIN      pais                      ps_fo  ON  uf_fo.id_pais = ps_fo.id_pais      
+      JOIN      operacao_servico_localiza osl_fo ON  osl_fo.id_municipio_filial = mf_fo.id_municipio_filial
+      JOIN      regional_filial           rf_fo  ON  fo.id_filial = rf_fo.id_filial            
+      JOIN      regional                  r_fo   ON  rf_fo.id_regional = r_fo.id_regional
+
+
+      --JOIN com a filial de destino
+      JOIN      filial                    fd     ON  fd.id_filial = ff.id_filial_destino
+      JOIN      pessoa                    p_fd   ON  fd.id_filial = p_fd.id_pessoa
+     
+      JOIN      municipio_filial          mf_fd  ON  mf_fd.id_filial = fd.id_filial
+      JOIN      municipio                 m_fd   ON  m_fd.id_municipio = mf_fd.id_municipio                                             
+      JOIN      unidade_federativa        uf_fd  ON  m_fd.id_unidade_federativa = uf_fd.id_unidade_federativa
+      JOIN      pais                      ps_fd  ON  uf_fd.id_pais = ps_fd.id_pais      
+      JOIN      operacao_servico_localiza osl_fd ON  osl_fd.id_municipio_filial = mf_fd.id_municipio_filial
+      JOIN      regional_filial           rf_fd  ON  fd.id_filial = rf_fd.id_filial            
+      JOIN      regional                  r_fd   ON  rf_fd.id_regional = r_fd.id_regional
+      
+      WHERE p.dt BETWEEN ff.dt_vigencia_inicial AND ff.dt_vigencia_final
+      
+      AND   p.dt BETWEEN mf_fo.dt_vigencia_inicial AND mf_fo.dt_vigencia_final
+      AND   p.dt BETWEEN osl_fo.dt_vigencia_inicial AND osl_fo.dt_vigencia_final
+
+      AND   p.dt BETWEEN r_fo.dt_vigencia_inicial AND r_fo.dt_vigencia_final
+      AND   p.dt BETWEEN rf_fo.dt_vigencia_inicial AND rf_fo.dt_vigencia_final
+
+      AND   p.dt BETWEEN mf_fd.dt_vigencia_inicial AND mf_fd.dt_vigencia_final
+      AND   p.dt BETWEEN osl_fd.dt_vigencia_inicial AND osl_fd.dt_vigencia_final
+
+      AND   p.dt BETWEEN r_fd.dt_vigencia_inicial AND r_fd.dt_vigencia_final
+      AND   p.dt BETWEEN rf_fd.dt_vigencia_inicial AND rf_fd.dt_vigencia_final
+      
+      --Filtros
+      AND   NVL( p.id_serv, -1 ) IN ( -1, ff.id_servico )
+      
+      AND   NVL( p.id_reg_o, -1 ) IN ( -1, r_fo.id_regional )
+      AND   NVL( p.id_mun_o, -1 ) IN ( -1, m_fo.id_municipio )
+      AND   NVL( p.id_uf_o, -1 )  IN ( -1, uf_fo.id_unidade_federativa )
+      AND   NVL( p.id_fo, -1 )    IN ( -1, fo.id_filial )      
+      
+      AND   NVL( p.id_reg_d, -1 ) IN ( -1, r_fd.id_regional )
+      AND   NVL( p.id_mun_d, -1 ) IN ( -1, m_fd.id_municipio )
+      AND   NVL( p.id_uf_d, -1 )  IN ( -1, uf_fd.id_unidade_federativa )
+      AND   NVL( p.id_fd, -1 )    IN ( -1, fd.id_filial )   
+      AND   ROWNUM <= 100
+) tb 
+ORDER  BY id_servico        ASC
+,         nm_filial_origem  ASC
+,         nm_filial_destino ASC]]></queryString>
+
+	<field name="ID_FILIAL_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_FILIAL_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_FILIAL_REEMBARCADORA" class="java.math.BigDecimal"/>
+	<field name="NM_FILIAL_REEMBARCADORA" class="java.lang.String"/>
+	<field name="NR_PRAZO_TOTAL" class="java.math.BigDecimal"/>
+	<field name="DS_SERVICO" class="java.lang.String"/>
+	<field name="ID_SERVICO" class="java.math.BigDecimal"/>
+	<field name="NR_DIAS_ATENDIDOS_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="NR_DIAS_ATENDIDOS_DESTINO" class="java.math.BigDecimal"/>
+	<field name="BL_DISTRITO_ORIGEM" class="java.lang.String"/>
+	<field name="BL_DOMINGO_ORIGEM" class="java.lang.String"/>
+	<field name="BL_SEGUNDA_ORIGEM" class="java.lang.String"/>
+	<field name="BL_TERCA_ORIGEM" class="java.lang.String"/>
+	<field name="BL_QUARTA_ORIGEM" class="java.lang.String"/>
+	<field name="BL_QUINTA_ORIGEM" class="java.lang.String"/>
+	<field name="BL_SEXTA_ORIGEM" class="java.lang.String"/>
+	<field name="BL_SABADO_ORIGEM" class="java.lang.String"/>
+	<field name="CD_IBGE_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_MUNICIPIO_FILIAL_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_MUNICIPIO_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_PAIS_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_TIPO_LOCALIZACAO_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_UNIDADE_FEDERATIVA_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="ID_ZONA_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="NM_FILIAL_ORIGEM" class="java.lang.String"/>
+	<field name="NM_MUNICIPIO_ORIGEM" class="java.lang.String"/>
+	<field name="NM_PAIS_ORIGEM" class="java.lang.String"/>
+	<field name="NM_UNIDADE_FEDERATIVA_ORIGEM" class="java.lang.String"/>
+	<field name="SG_FILIAL_ORIGEM" class="java.lang.String"/>
+	<field name="NR_TEMPO_ENTREGA_ORIGEM" class="java.math.BigDecimal"/>
+	<field name="DT_VIGENCIA_FINAL" class="java.sql.Timestamp"/>
+	<field name="DT_VIGENCIA_INICIAL" class="java.sql.Timestamp"/>
+	<field name="NR_TEMPO_COLETA" class="java.math.BigDecimal"/>
+	<field name="BL_DISTRITO_DESTINO" class="java.lang.String"/>
+	<field name="BL_DOMINGO_DESTINO" class="java.lang.String"/>
+	<field name="BL_SEGUNDA_DESTINO" class="java.lang.String"/>
+	<field name="BL_TERCA_DESTINO" class="java.lang.String"/>
+	<field name="BL_QUARTA_DESTINO" class="java.lang.String"/>
+	<field name="BL_QUINTA_DESTINO" class="java.lang.String"/>
+	<field name="BL_SEXTA_DESTINO" class="java.lang.String"/>
+	<field name="BL_SABADO_DESTINO" class="java.lang.String"/>
+	<field name="CD_IBGE_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_MUNICIPIO_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_MUNICIPIO_FILIAL_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_PAIS_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_TIPO_LOCALIZACAO_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_UNIDADE_FEDERATIVA_DESTINO" class="java.math.BigDecimal"/>
+	<field name="ID_ZONA_DESTINO" class="java.math.BigDecimal"/>
+	<field name="NM_FILIAL_DESTINO" class="java.lang.String"/>
+	<field name="NM_MUNICIPIO_DESTINO" class="java.lang.String"/>
+	<field name="NM_PAIS_DESTINO" class="java.lang.String"/>
+	<field name="NM_UNIDADE_FEDERATIVA_DESTINO" class="java.lang.String"/>
+	<field name="SG_FILIAL_DESTINO" class="java.lang.String"/>
+	<field name="NR_TEMPO_ENTREGA_DESTINO" class="java.math.BigDecimal"/>
+	<field name="DISTANCIA_TOTAL" class="java.math.BigDecimal"/>
+	<field name="QT_PEDAGIO" class="java.math.BigDecimal"/>
+	<field name="CD_TARIFA_PRECO" class="java.lang.String"/>
+	<field name="CD_TARIFA_PRECO_ATUAL" class="java.lang.String"/>
+	<field name="NR_PPE" class="java.math.BigDecimal"/>
+	<field name="SG_REGIONAL_ORIGEM" class="java.lang.String"/>
+	<field name="SG_REGIONAL_DESTINO" class="java.lang.String"/>
+	<field name="SG_UNIDADE_FEDERATIVA_ORIGEM" class="java.lang.String"/>
+	<field name="SG_UNIDADE_FEDERATIVA_DESTINO" class="java.lang.String"/>
+	<field name="SG_FILIAL_REEMBARCADORA" class="java.lang.String"/>
+
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="72"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="18"
+						width="894"
+						height="14"
+						key="textField-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new Date())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="32"
+						width="894"
+						height="14"
+						key="textField-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{usuarioEmissor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="190"
+						y="46"
+						width="894"
+						height="14"
+						key="textField-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{parametrosPesquisa}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="0"
+						width="471"
+						height="18"
+						key="textField-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{titulo}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="18"
+						width="190"
+						height="14"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{relatorioGeradoEm}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="32"
+						width="190"
+						height="14"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{relatorioGeradoPor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="0"
+						y="46"
+						width="190"
+						height="14"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{parametrosDePesquisa}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="60"
+						width="190"
+						height="12"
+						backcolor="#999999"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{servico}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="190"
+						y="60"
+						width="120"
+						height="12"
+						backcolor="#999999"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{regionalOrigem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="310"
+						y="60"
+						width="80"
+						height="12"
+						backcolor="#999999"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{UFOrigem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="390"
+						y="60"
+						width="80"
+						height="12"
+						backcolor="#999999"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{filialOrigem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="470"
+						y="60"
+						width="124"
+						height="12"
+						backcolor="#999999"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{nomeFilialOrigem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="594"
+						y="60"
+						width="126"
+						height="12"
+						backcolor="#999999"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{municipioOrigem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="720"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{dom}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="750"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{seg}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="780"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{ter}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="810"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{qua}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="870"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{sex}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="840"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{qui}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="930"
+						y="60"
+						width="154"
+						height="12"
+						backcolor="#999999"
+						key="textField-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{filialReembarcadora}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="900"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{sab}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1084"
+						y="60"
+						width="79"
+						height="12"
+						backcolor="#999999"
+						key="textField-22"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{regionalDestino}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1163"
+						y="60"
+						width="56"
+						height="12"
+						backcolor="#999999"
+						key="textField-23"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{UFDestino}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1219"
+						y="60"
+						width="60"
+						height="12"
+						backcolor="#999999"
+						key="textField-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{filialDestino}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1279"
+						y="60"
+						width="106"
+						height="12"
+						backcolor="#999999"
+						key="textField-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{nomeFilialDestino}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1385"
+						y="60"
+						width="114"
+						height="12"
+						backcolor="#999999"
+						key="textField-26"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{municipioDestino}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1709"
+						y="60"
+						width="60"
+						height="12"
+						backcolor="#999999"
+						key="textField-27"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{codigoIBGE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1499"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-28"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{dom}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1529"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-29"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{seg}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1559"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-30"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{ter}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1589"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-31"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{qua}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1619"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{qui}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1649"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{sex}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1679"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{sab}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1769"
+						y="60"
+						width="100"
+						height="12"
+						backcolor="#999999"
+						key="textField-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{indicadorDeDistrito}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1869"
+						y="60"
+						width="70"
+						height="12"
+						backcolor="#999999"
+						key="textField-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{tarifaAtual}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1939"
+						y="60"
+						width="70"
+						height="12"
+						backcolor="#999999"
+						key="textField-37"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{tarifaAntiga}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2009"
+						y="60"
+						width="110"
+						height="12"
+						backcolor="#999999"
+						key="textField-38"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{postosDePassagem}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2119"
+						y="60"
+						width="30"
+						height="12"
+						backcolor="#999999"
+						key="textField-39"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$R{ppe}]]></textFieldExpression>
+				</textField>
+			</band>
+		</title>
+		<pageHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="13"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="190"
+						height="13"
+						key="textFilial"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{DS_SERVICO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="190"
+						y="0"
+						width="120"
+						height="13"
+						key="textFrota"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SG_REGIONAL_ORIGEM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="310"
+						y="0"
+						width="80"
+						height="13"
+						key="textPlaca"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SG_UNIDADE_FEDERATIVA_ORIGEM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="390"
+						y="0"
+						width="80"
+						height="13"
+						key="textCombustivel"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SG_FILIAL_ORIGEM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="470"
+						y="0"
+						width="124"
+						height="13"
+						key="textQuilometragem"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NM_FILIAL_ORIGEM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="594"
+						y="0"
+						width="126"
+						height="13"
+						key="textVinculo"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NM_MUNICIPIO_ORIGEM}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1084"
+						y="0"
+						width="79"
+						height="13"
+						key="textModalidade"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SG_REGIONAL_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1163"
+						y="0"
+						width="56"
+						height="13"
+						key="textTipo"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SG_UNIDADE_FEDERATIVA_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1219"
+						y="0"
+						width="60"
+						height="13"
+						key="textTipo-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{SG_FILIAL_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1279"
+						y="0"
+						width="106"
+						height="13"
+						key="textQuilometragem-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NM_FILIAL_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1385"
+						y="0"
+						width="114"
+						height="13"
+						key="textVinculo-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NM_MUNICIPIO_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1499"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_DOMINGO_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1529"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-3"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_SEGUNDA_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1559"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-4"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_TERCA_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1589"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_QUARTA_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1619"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_QUINTA_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1649"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_SEXTA_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1679"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_SABADO_DESTINO}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1709"
+						y="0"
+						width="60"
+						height="13"
+						key="textVinculo-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{CD_IBGE_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1769"
+						y="0"
+						width="100"
+						height="13"
+						key="textVinculo-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{BL_DISTRITO_DESTINO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1869"
+						y="0"
+						width="70"
+						height="13"
+						key="textVinculo-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CD_TARIFA_PRECO_ATUAL}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="1939"
+						y="0"
+						width="70"
+						height="13"
+						key="textVinculo-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{CD_TARIFA_PRECO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2009"
+						y="0"
+						width="110"
+						height="13"
+						key="textVinculo-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{QT_PEDAGIO}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="2119"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Right">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.math.BigDecimal"><![CDATA[$F{NR_PPE}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="930"
+						y="0"
+						width="154"
+						height="13"
+						key="textCombustivel-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{NM_FILIAL_REEMBARCADORA}!=null?$F{NM_FILIAL_REEMBARCADORA}:""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="720"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-15"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_DOMINGO_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="750"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-16"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_SEGUNDA_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="780"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-17"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_TERCA_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="810"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-18"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_QUARTA_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="840"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-19"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_QUINTA_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="870"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-20"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_SEXTA_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="900"
+						y="0"
+						width="30"
+						height="13"
+						key="textVinculo-21"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA["S".equals($F{BL_SABADO_ORIGEM}) ? "X" : ""]]></textFieldExpression>
+				</textField>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

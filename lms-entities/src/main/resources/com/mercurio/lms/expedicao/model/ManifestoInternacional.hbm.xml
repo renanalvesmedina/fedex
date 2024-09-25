@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.expedicao.model.ManifestoInternacional" 
+    table="MANIFESTO_INTERNACIONAL"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idManifestoInternacional"
+        type="java.lang.Long"
+        column="ID_MANIFESTO_INTERNACIONAL"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">MANIFESTO_INTERNACIONAL_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrApoliceSeguroCarga"
+			        type="java.lang.Long"
+            column="NR_APOLICE_SEGURO_CARGA"
+        not-null="true"
+        length="12"
+    />
+    <property
+        name="dtVencimentoPermisso"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO_PERMISSO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVencimentoSeguro"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO_SEGURO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="nrManifestoInt"
+		type="java.lang.Long"
+        column="NR_MANIFESTO_INT"
+        not-null="true"
+        length="6"
+    />
+    <property
+        name="nrPermisso"
+		type="java.lang.Long"
+        column="NR_PERMISSO"
+        length="5"
+    />
+    <property
+        name="tpMic"
+		column="TP_MIC"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_MIC</param>
+	    </type>
+    </property>
+    <property
+        name="blTransitoAduaneiro"
+			        type="sim_nao"
+            column="BL_TRANSITO_ADUANEIRO"
+        not-null="true"
+        length="1"
+    >
+    </property>
+    <property
+        name="dsAduanaCidadePaisPartida"
+			        type="java.lang.String"
+            column="DS_ADUANA_CIDADE_PAIS_PARTIDA"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="dsCidadePaisDestino"
+			        type="java.lang.String"
+            column="DS_CIDADE_PAIS_DESTINO"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="dsRota"
+			        type="java.lang.String"
+            column="DS_ROTA"
+        not-null="true"
+        length="60"
+    />
+    <property
+        name="dsPermisso"
+		type="java.lang.String"
+        column="DS_PERMISSO"
+        length="60"
+    />
+    <property
+        name="dsCodigoAduana"
+			        type="java.lang.String"
+            column="DS_CODIGO_ADUANA"
+        length="10"
+    />
+    <property
+        name="dsCodigoPaisDestino"
+			        type="java.lang.String"
+            column="DS_CODIGO_PAIS_DESTINO"
+        length="3"
+    />
+    <property
+        name="dsNumeroDta"
+			        type="java.lang.String"
+            column="DS_NUMERO_DTA"
+        length="10"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Manifesto -->
+    <one-to-one
+        name="manifesto"
+        class="com.mercurio.lms.carregamento.model.Manifesto"
+        outer-join="auto"
+        constrained="true"
+    />
+    <!-- bi-directional one-to-many association to ManifestoInternacCto -->
+    <bag
+        name="manifestoInternacCtos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.expedicao.model.ManifestoInternacCto</meta>
+ 	        <key>
+            <column name="ID_MANIFESTO_INTERNACIONAL" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.expedicao.model.ManifestoInternacCto"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one
+        name="filial"
+        class="com.mercurio.lms.municipios.model.Filial"
+        not-null="true"
+    >
+        <column name="ID_FILIAL" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Pais -->
+    <many-to-one
+        name="pais"
+        class="com.mercurio.lms.municipios.model.Pais"
+        not-null="true"
+    >
+        <column name="ID_PAIS" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

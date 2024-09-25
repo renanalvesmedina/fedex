@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.municipios.model.RotaIntervaloCep" 
+    table="ROTA_INTERVALO_CEP"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idRotaIntervaloCep"
+        type="java.lang.Long"
+        column="ID_ROTA_INTERVALO_CEP"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ROTA_INTERVALO_CEP_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrCepInicial"
+			        type="java.lang.String"
+            column="NR_CEP_INICIAL"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="nrCepFinal"
+			        type="java.lang.String"
+            column="NR_CEP_FINAL"
+        not-null="true"
+        length="8"
+    />
+    <property
+        name="tpGrauRisco"
+		    column="TP_GRAU_RISCO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_GRAU_RISCO</param>
+	    </type>
+    </property>
+    <property
+        name="hrCorteSolicitacao"
+			        type="jttimeofday"
+            column="HR_CORTE_SOLICITACAO"
+        not-null="true"
+        length="7"
+    />
+   
+    <property
+        name="dsBairro"
+			        type="java.lang.String"
+            column="DS_BAIRRO"
+        length="120"
+    />
+    <property
+        name="hrCorteExecucao"
+			        type="jttimeofday"
+            column="HR_CORTE_EXECUCAO"
+        length="7"
+    />
+	<property
+        name="nrOrdemOperacao"
+			        type="java.lang.Short"
+            column="NR_ORDEM_OPERACAO"
+        length="3"
+    />
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+	<property
+		name="blAtendimentoTemporario"
+		type="sim_nao"
+		column="BL_ANTEDIMENTO_TEMPORARIO"
+		not-null="true"
+		length="1"
+	>    
+    </property>
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to HorarioTransito -->
+    <bag
+        name="horarioTransitos"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.HorarioTransito</meta>
+ 	        <key>
+            <column name="ID_ROTA_INTERVALO_CEP" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.municipios.model.HorarioTransito"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to PedidoColeta -->
+    <bag
+        name="pedidoColetas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.coleta.model.PedidoColeta</meta>
+ 	        <key>
+            <column name="ID_ROTA_INTERVALO_CEP" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.coleta.model.PedidoColeta"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Municipio -->
+    <many-to-one
+        name="municipio"
+        class="com.mercurio.lms.municipios.model.Municipio"
+        not-null="true"
+    >
+        <column name="ID_MUNICIPIO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TipoDificuldadeAcesso -->
+    <many-to-one
+        name="tipoDificuldadeAcesso"
+        class="com.mercurio.lms.municipios.model.TipoDificuldadeAcesso"
+        not-null="false"
+    >
+        <column name="ID_TIPO_DIFICULDADE_ACESSO" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to RotaColetaEntrega -->
+    <many-to-one
+        name="rotaColetaEntrega"
+        class="com.mercurio.lms.municipios.model.RotaColetaEntrega"
+        not-null="true"
+    >
+        <column name="ID_ROTA_COLETA_ENTREGA" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to Cliente -->
+    <many-to-one
+        name="cliente"
+        class="com.mercurio.lms.vendas.model.Cliente"
+        not-null="false"
+    >
+        <column name="ID_CLIENTE" />
+    </many-to-one>    
+    <!-- bi-directional many-to-one association to EnderecoPessoa -->
+    <many-to-one
+        name="enderecoPessoa"
+        class="com.mercurio.lms.configuracoes.model.EnderecoPessoa"
+        not-null="false"
+    >
+        <column name="ID_ENDERECO_PESSOA" />
+    </many-to-one>    
+</class>
+</hibernate-mapping>

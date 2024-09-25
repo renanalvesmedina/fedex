@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.fretecarreteirocoletaentrega.model.SimulacaoReajusteFreteCe" 
+    table="SIMULACAO_REAJUSTE_FRETE_CE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idSimulacaoReajusteFreteCe"
+        type="java.lang.Long"
+        column="ID_SIMULACAO_REAJUSTE_FRETE_CE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SIMULACAO_REAJUSTE_FRETE_CE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="dtVigenciaInicial"
+			        type="jtyearmonthday"
+            column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVigenciaFinal"
+			        type="jtyearmonthday_v"
+            column="DT_VIGENCIA_FINAL"
+        length="7"
+    />
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ParcelaReajuste -->
+    <bag
+        name="parcelaReajustes"
+        lazy="true"
+        inverse="true"
+		cascade="all,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.ParcelaReajuste</meta>
+ 	        <key>
+            <column name="ID_SIMULACAO_REAJUSTE_FRETE_CE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteirocoletaentrega.model.ParcelaReajuste"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to FilialReajuste -->
+    <bag
+        name="filialReajustes"
+        lazy="true"
+        inverse="true"
+		cascade="all,delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.fretecarreteirocoletaentrega.model.FilialReajuste</meta>
+ 	        <key>
+            <column name="ID_SIMULACAO_REAJUSTE_FRETE_CE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.fretecarreteirocoletaentrega.model.FilialReajuste"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to TipoMeioTransporte -->
+    <many-to-one
+        name="tipoMeioTransporte"
+        class="com.mercurio.lms.contratacaoveiculos.model.TipoMeioTransporte"
+        not-null="true"
+    >
+        <column name="ID_TIPO_MEIO_TRANSPORTE" />
+    </many-to-one>
+    <many-to-one
+        name="moedaPais"
+        class="com.mercurio.lms.configuracoes.model.MoedaPais"
+        not-null="true">
+        <column name="ID_MOEDA_PAIS" />
+    </many-to-one>
+    <!-- bi-directional many-to-one association to TipoTabelaColetaEntrega -->
+    <many-to-one
+        name="tipoTabelaColetaEntrega"
+        class="com.mercurio.lms.fretecarreteirocoletaentrega.model.TipoTabelaColetaEntrega"
+        not-null="true"
+    >
+        <column name="ID_TIPO_TABELA_COLETA_ENTREGA" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

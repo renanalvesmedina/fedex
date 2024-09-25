@@ -1,0 +1,2914 @@
+<?xml version="1.0" encoding="UTF-8"  ?>
+<!-- Created with iReport - A designer for JasperReports -->
+<!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
+<jasperReport
+		 name="emitirRecibo"
+		 columnCount="1"
+		 printOrder="Vertical"
+		 orientation="Landscape"
+		 pageWidth="842"
+		 pageHeight="595"
+		 columnWidth="786"
+		 columnSpacing="0"
+		 leftMargin="28"
+		 rightMargin="28"
+		 topMargin="28"
+		 bottomMargin="28"
+		 whenNoDataType="NoPages"
+		 isTitleNewPage="false"
+		 isSummaryNewPage="false"
+		 resourceBundle="com.mercurio.lms.fretecarreteirocoletaentrega.report.emitirRecibo">
+	<property name="ireport.scriptlethandling" value="0" />
+	<property name="ireport.encoding" value="UTF-8" />
+	<import value="java.util.*" />
+	<import value="net.sf.jasperreports.engine.*" />
+	<import value="net.sf.jasperreports.engine.data.*" />
+	<import value="com.mercurio.lms.util.*" />
+
+	<parameter name="BaseDir" isForPrompting="false" class="java.io.File">
+		<defaultValueExpression ><![CDATA[new File(".")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="LMS_URL" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["http://localhost:8080/lms"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="usuarioEmissor" isForPrompting="false" class="java.lang.String">
+		<defaultValueExpression ><![CDATA["João da Silva"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="SERVICE" isForPrompting="false" class="java.lang.Object"/>
+	<parameter name="LB_INSS" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="tpZembrzuski" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="rangeDatas" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="tpTransporte" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="nomeVendedor" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="somaCif" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="somaFob" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="somaCifFob" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="somaValor" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="numberOfPages" isForPrompting="false" class="java.lang.Integer"/>
+	<parameter name="totalDemonstrativoComissao" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="servicosAdicionais" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="totalComissao" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="nomeExecutivo" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="competencia" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="matricula" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="filial" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="manutencaoSobreSalario" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="clientesNovos" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="diferenca" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="crossSelling" isForPrompting="false" class="java.lang.String"/>
+	<parameter name="fobDirigido" isForPrompting="false" class="java.lang.String"/>
+	<queryString><![CDATA[SELECT
+RFC.ID_RECIBO_FRETE_CARRETEIRO,
+P_EMPRESA.NR_IDENTIFICACAO AS NR_IDENT_EMPRESA,
+P_EMPRESA.TP_IDENTIFICACAO AS TP_IDENT_EMPRESA,
+P_EMPRESA.NM_PESSOA AS NM_EMPRESA,
+P_FILIAL.TP_IDENTIFICACAO AS TP_IDENT_FILIAL,
+P_FILIAL.NR_IDENTIFICACAO AS NR_IDENT_FILIAL,
+P_FILIAL.NM_FANTASIA AS NM_FILIAL,
+F.SG_FILIAL,
+RFC.NR_RECIBO_FRETE_CARRETEIRO,
+CC.NR_CONTROLE_CARGA,
+R.DS_ROTA,
+P_PROP.TP_PESSOA AS TP_PESSOA_PROP,
+P_PROP.NR_IDENTIFICACAO AS NR_IDENT_PROP,
+P_PROP.TP_IDENTIFICACAO AS TP_IDENT_PROP,
+P_PROP.NM_PESSOA AS NM_PROPRIETARIO,
+PROP.NR_INSS,
+P_MOT.NR_IDENTIFICACAO AS NR_IDENT_MOT,
+P_MOT.TP_IDENTIFICACAO AS TP_IDENT_MOT,
+P_MOT.NM_PESSOA AS NM_MOTORISTA,
+MT.NR_IDENTIFICADOR AS NR_IDENT_MT,
+MT.NR_FROTA AS NR_FROTA,
+MODELO.DS_MODELO_MEIO_TRANSPORTE,
+MARCA.DS_MARCA_MEIO_TRANSPORTE,
+TIPO.DS_TIPO_MEIO_TRANSPORTE,
+MT.NR_ANO_FABRICAO AS NR_ANO_FABRICACAO,
+MUNIC_MT.NM_MUNICIPIO AS NM_MUNICIPIO_MT,
+TIPO.NR_CAPACIDADE_PESO_FINAL AS CAPACIDADE,
+P_BENEF.NR_IDENTIFICACAO AS NR_IDENT_BENEF,
+P_BENEF.TP_IDENTIFICACAO AS TP_IDENT_BENEF,
+P_BENEF.NM_PESSOA AS NM_BENEFICIARIO,
+B.NR_BANCO,
+AB.NR_AGENCIA_BANCARIA,
+AB.NR_DIGITO,
+CB.NR_CONTA_BANCARIA,
+CB.DV_CONTA_BANCARIA,
+RFC.VL_BRUTO,
+RFC.VL_POSTO_PASSAGEM,
+RFC.VL_PREMIO,
+RFC.VL_DIARIA,
+(SELECT Sum(RFC2.VL_BRUTO) FROM RECIBO_FRETE_CARRETEIRO RFC2
+ WHERE RFC2.BL_ADIANTAMENTO = 'S'
+ AND RFC2.ID_CONTROLE_CARGA = RFC.ID_CONTROLE_CARGA
+ AND RFC2.ID_PROPRIETARIO = RFC.ID_PROPRIETARIO) AS VL_ADIANTAMENTO,
+CASE
+    WHEN P_PROP.TP_PESSOA = 'F' THEN RFC.VL_INSS
+    ELSE NULL
+END AS VL_INSS,
+CASE
+    WHEN P_PROP.TP_PESSOA = 'J' THEN VL_ISSQN
+    ELSE NULL
+END AS VL_ISSQN,
+CASE
+    WHEN P_PROP.TP_PESSOA = 'F' THEN VL_IRRF
+    ELSE NULL
+END AS VL_IRRF,
+RFC.VL_LIQUIDO,
+RFC.VL_SALARIO_CONTRIBUICAO,
+RFC.PC_ALIQUOTA_INSS,
+(RFC.VL_SALARIO_CONTRIBUICAO * PC_ALIQUOTA_INSS)/100 AS VL_APURADO,
+RFC.VL_OUTRAS_FONTES,
+((RFC.VL_SALARIO_CONTRIBUICAO * PC_ALIQUOTA_INSS)/100) - VL_OUTRAS_FONTES AS RESULTADO_APURADO,
+FCC_ORIGEM.SG_FILIAL AS SG_FILIAL_ORIGEM,
+PCC_ORIGEM.NM_PESSOA AS NM_PESSOA_ORIGEM,
+FCC_DESTINO.SG_FILIAL AS SG_FILIAL_DESTINO,
+PCC_DESTINO.NM_PESSOA AS NM_PESSOA_DESTINO
+FROM RECIBO_FRETE_CARRETEIRO RFC
+INNER JOIN FILIAL F ON RFC.ID_FILIAL = F.ID_FILIAL
+INNER JOIN PESSOA P_FILIAL ON F.ID_FILIAL = P_FILIAL.ID_PESSOA
+INNER JOIN EMPRESA E ON F.ID_EMPRESA = E.ID_EMPRESA
+INNER JOIN PESSOA P_EMPRESA ON E.ID_EMPRESA = P_EMPRESA.ID_PESSOA
+LEFT JOIN CONTROLE_CARGA CC ON RFC.ID_CONTROLE_CARGA = CC.ID_CONTROLE_CARGA
+LEFT JOIN FILIAL FCC_ORIGEM ON CC.ID_FILIAL_ORIGEM = FCC_ORIGEM.ID_FILIAL
+LEFT JOIN PESSOA PCC_ORIGEM ON FCC_ORIGEM.ID_FILIAL = PCC_ORIGEM.ID_PESSOA
+LEFT JOIN FILIAL FCC_DESTINO ON CC.ID_FILIAL_DESTINO = FCC_DESTINO.ID_FILIAL
+LEFT JOIN PESSOA PCC_DESTINO ON FCC_DESTINO.ID_FILIAL = PCC_DESTINO.ID_PESSOA
+LEFT JOIN ROTA_IDA_VOLTA RIV ON CC.ID_ROTA_IDA_VOLTA = RIV.ID_ROTA_IDA_VOLTA
+LEFT JOIN ROTA R ON RIV.ID_ROTA = R.ID_ROTA
+INNER JOIN PROPRIETARIO PROP ON RFC.ID_PROPRIETARIO = PROP.ID_PROPRIETARIO
+INNER JOIN PESSOA P_PROP ON PROP.ID_PROPRIETARIO = P_PROP.ID_PESSOA
+INNER JOIN MOTORISTA MOT ON RFC.ID_MOTORISTA = MOT.ID_MOTORISTA
+INNER JOIN PESSOA P_MOT ON MOT.ID_MOTORISTA = P_MOT.ID_PESSOA
+LEFT JOIN BENEFICIARIO BENEF ON RFC.ID_BENEFICIARIO = BENEF.ID_BENEFICIARIO
+LEFT JOIN PESSOA P_BENEF ON BENEF.ID_BENEFICIARIO = P_BENEF.ID_PESSOA
+INNER JOIN MEIO_TRANSPORTE MT ON RFC.ID_MEIO_TRANSPORTE = MT.ID_MEIO_TRANSPORTE
+INNER JOIN MODELO_MEIO_TRANSPORTE MODELO ON MT.ID_MODELO_MEIO_TRANSPORTE = MODELO.ID_MODELO_MEIO_TRANSPORTE
+INNER JOIN MARCA_MEIO_TRANSPORTE MARCA ON MODELO.ID_MARCA_MEIO_TRANSPORTE = MARCA.ID_MARCA_MEIO_TRANSPORTE
+INNER JOIN TIPO_MEIO_TRANSPORTE TIPO ON MODELO.ID_TIPO_MEIO_TRANSPORTE = TIPO.ID_TIPO_MEIO_TRANSPORTE
+LEFT JOIN MEIO_TRANSPORTE_RODOVIARIO MT_RODO ON MT.ID_MEIO_TRANSPORTE = MT_RODO.ID_MEIO_TRANSPORTE
+LEFT JOIN MUNICIPIO MUNIC_MT ON MT_RODO.ID_MUNICIPIO = MUNIC_MT.ID_MUNICIPIO
+LEFT JOIN CONTA_BANCARIA CB ON RFC.ID_CONTA_BANCARIA = CB.ID_CONTA_BANCARIA
+LEFT JOIN AGENCIA_BANCARIA AB ON CB.ID_AGENCIA_BANCARIA = AB.ID_AGENCIA_BANCARIA
+LEFT JOIN BANCO B ON AB.ID_BANCO = B.ID_BANCO]]></queryString>
+
+	<field name="territorio" class="java.lang.String"/>
+	<field name="metaRodoviario" class="java.lang.String"/>
+	<field name="receitaRodoviario" class="java.lang.String"/>
+	<field name="percentualMetaRodoviario" class="java.lang.String"/>
+	<field name="metaAereo" class="java.lang.String"/>
+	<field name="receitaAereo" class="java.lang.String"/>
+	<field name="percentualMetaAereo" class="java.lang.String"/>
+	<field name="metaTri" class="java.lang.String"/>
+	<field name="receitaTri" class="java.lang.String"/>
+	<field name="percentualMetaTri" class="java.lang.String"/>
+	<field name="receitaLiquidaPaga" class="java.lang.String"/>
+	<field name="clienteNovoRodoviario" class="java.lang.String"/>
+	<field name="clienteNovoAereo" class="java.lang.String"/>
+
+	<variable name="totalNumberOfPages" class="java.lang.Integer" resetType="Report" incrementType="Report" calculation="Nothing">
+		<variableExpression><![CDATA[$V{PAGE_NUMBER}]]></variableExpression>
+		<initialValueExpression><![CDATA[$V{PAGE_NUMBER}]]></initialValueExpression>
+	</variable>
+	<variable name="LastPage" class="java.lang.Boolean" resetType="Report" calculation="System">
+		<initialValueExpression><![CDATA[new Boolean(false)]]></initialValueExpression>
+	</variable>
+
+		<group  name="masterGroup" isStartNewPage="true" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="outrasFontesDetalhe" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="outrasFontesGroup" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="357"  isSplitAllowed="true" >
+				<rectangle>
+					<reportElement
+						x="12"
+						y="186"
+						width="224"
+						height="41"
+						backcolor="#CCCCCC"
+						key="rectangle-22"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="95"
+						y="33"
+						width="92"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-16"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="98"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-98"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[MANUTENÇÃO (% SOBRE SALÁRIO)]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="95"
+						y="33"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-177"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="95"
+						y="63"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-178"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="94"
+						y="33"
+						width="0"
+						height="31"
+						key="line-179"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="95"
+						y="93"
+						width="92"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-180"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="94"
+						y="64"
+						width="1"
+						height="30"
+						key="line-181"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="186"
+						y="63"
+						width="1"
+						height="30"
+						key="line-182"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="186"
+						y="33"
+						width="1"
+						height="31"
+						key="line-183"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="97"
+						y="64"
+						width="88"
+						height="28"
+						key="textField-9"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{manutencaoSobreSalario}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement
+						x="198"
+						y="33"
+						width="92"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-17"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="201"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-99"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[CLIENTES NOVOS R$)]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="198"
+						y="33"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-184"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="198"
+						y="63"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-185"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="197"
+						y="33"
+						width="0"
+						height="31"
+						key="line-186"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="198"
+						y="93"
+						width="92"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-187"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="197"
+						y="64"
+						width="1"
+						height="30"
+						key="line-188"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="289"
+						y="63"
+						width="1"
+						height="30"
+						key="line-189"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="289"
+						y="33"
+						width="1"
+						height="31"
+						key="line-190"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="200"
+						y="64"
+						width="88"
+						height="28"
+						key="textField-10"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{clientesNovos}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement
+						x="300"
+						y="33"
+						width="92"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-18"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="303"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-100"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[DIFERENÇA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="300"
+						y="33"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-191"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="300"
+						y="63"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-192"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="299"
+						y="33"
+						width="0"
+						height="31"
+						key="line-193"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="300"
+						y="93"
+						width="92"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-194"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="299"
+						y="64"
+						width="1"
+						height="30"
+						key="line-195"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="391"
+						y="63"
+						width="1"
+						height="30"
+						key="line-196"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="391"
+						y="33"
+						width="1"
+						height="31"
+						key="line-197"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="302"
+						y="64"
+						width="88"
+						height="28"
+						key="textField-11"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{diferenca}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement
+						x="403"
+						y="33"
+						width="92"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-19"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="406"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-101"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[ ]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="403"
+						y="33"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-198"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="403"
+						y="63"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-199"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="402"
+						y="33"
+						width="0"
+						height="31"
+						key="line-200"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="403"
+						y="93"
+						width="92"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-201"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="402"
+						y="64"
+						width="1"
+						height="30"
+						key="line-202"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="494"
+						y="63"
+						width="1"
+						height="30"
+						key="line-203"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="494"
+						y="33"
+						width="1"
+						height="31"
+						key="line-204"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="405"
+						y="64"
+						width="88"
+						height="28"
+						key="textField-12"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{servicosAdicionais}]]></textFieldExpression>
+				</textField>
+				<rectangle>
+					<reportElement
+						x="508"
+						y="33"
+						width="92"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-20"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="511"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-102"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[CROSS SELLING]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="508"
+						y="33"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-205"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="508"
+						y="63"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-206"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="507"
+						y="33"
+						width="0"
+						height="31"
+						key="line-207"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="508"
+						y="93"
+						width="92"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-208"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="507"
+						y="64"
+						width="1"
+						height="30"
+						key="line-209"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="599"
+						y="63"
+						width="1"
+						height="30"
+						key="line-210"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="599"
+						y="33"
+						width="1"
+						height="31"
+						key="line-211"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="510"
+						y="64"
+						width="88"
+						height="28"
+						key="textField-13"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{crossSelling}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="406"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-103"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[SERVIÇOS ADICIONAIS (R$)]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="613"
+						y="33"
+						width="92"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-21"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="616"
+						y="35"
+						width="83"
+						height="26"
+						key="staticText-104"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[FOB DIRIGIDO]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="613"
+						y="33"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-212"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="613"
+						y="63"
+						width="91"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-213"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="612"
+						y="33"
+						width="0"
+						height="31"
+						key="line-214"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="613"
+						y="93"
+						width="92"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-215"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="612"
+						y="64"
+						width="1"
+						height="30"
+						key="line-216"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="704"
+						y="63"
+						width="1"
+						height="30"
+						key="line-217"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="704"
+						y="33"
+						width="1"
+						height="31"
+						key="line-218"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="615"
+						y="64"
+						width="88"
+						height="28"
+						key="textField-14"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{fobDirigido}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="94"
+						y="17"
+						width="62"
+						height="13"
+						key="staticText-105"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[COMISSÃO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="113"
+						width="168"
+						height="14"
+						key="staticText-106"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Importante]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="124"
+						width="537"
+						height="14"
+						key="staticText-107"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[A meta utilizada para cálculo do comissionamento de Manutenção é a soma das metas dos executivos atendidos pelo vendedor interno.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="134"
+						width="537"
+						height="14"
+						key="staticText-108"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[O valor mensal da comissão para Executivos de Vendas interno está limitado a no máximo 100% do salário base.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="1"
+						y="144"
+						width="537"
+						height="14"
+						key="staticText-109"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Para manutenção, será pago um percentual sobre o salário com base no atingimento da meta de acordo com a tabela abaixo:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="71"
+						y="204"
+						width="52"
+						height="20"
+						key="staticText-110"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Rodoviário Doméstico]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="125"
+						y="204"
+						width="1"
+						height="24"
+						key="line-219"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="69"
+						y="187"
+						width="0"
+						height="43"
+						key="line-220"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="128"
+						y="204"
+						width="47"
+						height="20"
+						key="staticText-111"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Aéreo doméstico]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="182"
+						y="203"
+						width="1"
+						height="26"
+						key="line-221"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="184"
+						y="204"
+						width="51"
+						height="20"
+						key="staticText-112"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Rodoviário internacional]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="236"
+						y="186"
+						width="1"
+						height="43"
+						key="line-222"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="13"
+						y="186"
+						width="224"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-223"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="69"
+						y="203"
+						width="168"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-224"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="70"
+						y="188"
+						width="167"
+						height="13"
+						key="staticText-113"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[% COMISSÃO]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="125"
+						y="228"
+						width="1"
+						height="44"
+						key="line-225"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="69"
+						y="230"
+						width="1"
+						height="42"
+						key="line-226"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="182"
+						y="229"
+						width="1"
+						height="44"
+						key="line-227"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="236"
+						y="228"
+						width="1"
+						height="44"
+						key="line-228"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="13"
+						y="242"
+						width="224"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-229"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="13"
+						y="227"
+						width="224"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-230"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="15"
+						y="189"
+						width="52"
+						height="35"
+						key="staticText-114"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[% da meta atingida]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="13"
+						y="187"
+						width="0"
+						height="43"
+						key="line-231"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="13"
+						y="228"
+						width="1"
+						height="44"
+						key="line-232"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="72"
+						y="228"
+						width="47"
+						height="13"
+						key="staticText-115"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="14"
+						y="257"
+						width="223"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-233"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="13"
+						y="272"
+						width="224"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-234"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="72"
+						y="243"
+						width="47"
+						height="13"
+						key="staticText-116"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="72"
+						y="258"
+						width="47"
+						height="13"
+						key="staticText-117"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="130"
+						y="258"
+						width="47"
+						height="13"
+						key="staticText-118"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="130"
+						y="243"
+						width="47"
+						height="13"
+						key="staticText-119"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="130"
+						y="228"
+						width="47"
+						height="13"
+						key="staticText-120"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="186"
+						y="258"
+						width="47"
+						height="13"
+						key="staticText-121"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="186"
+						y="243"
+						width="47"
+						height="13"
+						key="staticText-122"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="186"
+						y="228"
+						width="47"
+						height="13"
+						key="staticText-123"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="18"
+						y="228"
+						width="47"
+						height="13"
+						key="staticText-124"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="18"
+						y="243"
+						width="47"
+						height="13"
+						key="staticText-125"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="18"
+						y="258"
+						width="47"
+						height="13"
+						key="staticText-126"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="13"
+						y="276"
+						width="56"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-23"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="18"
+						y="278"
+						width="49"
+						height="26"
+						key="staticText-127"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[CLIENTES NOVOS]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="14"
+						y="276"
+						width="222"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-235"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="14"
+						y="306"
+						width="223"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-236"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="13"
+						y="276"
+						width="0"
+						height="31"
+						key="line-237"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="69"
+						y="276"
+						width="1"
+						height="31"
+						key="line-241"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="236"
+						y="276"
+						width="1"
+						height="31"
+						key="line-242"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="125"
+						y="276"
+						width="1"
+						height="31"
+						key="line-243"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="183"
+						y="276"
+						width="1"
+						height="31"
+						key="line-244"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="73"
+						y="285"
+						width="47"
+						height="13"
+						key="staticText-128"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="130"
+						y="285"
+						width="47"
+						height="13"
+						key="staticText-129"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="187"
+						y="285"
+						width="47"
+						height="13"
+						key="staticText-130"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font/>
+					</textElement>
+				<text><![CDATA[NA]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="14"
+						y="175"
+						width="225"
+						height="14"
+						key="staticText-131"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Política atual: PF COM 001 - Revisão 10 de 01/04/2014]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="256"
+						y="193"
+						width="56"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-24"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="261"
+						y="195"
+						width="49"
+						height="26"
+						key="staticText-132"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[SERVIÇOS ADICIONAIS]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="257"
+						y="193"
+						width="222"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-245"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="257"
+						y="223"
+						width="223"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-246"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="256"
+						y="193"
+						width="0"
+						height="31"
+						key="line-247"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="312"
+						y="193"
+						width="1"
+						height="31"
+						key="line-248"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="479"
+						y="193"
+						width="1"
+						height="31"
+						key="line-249"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="319"
+						y="197"
+						width="158"
+						height="24"
+						key="staticText-135"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[1.5% sobre o faturamento líquido pago com teto adicional de 1/4 do salário fixo.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="13"
+						y="310"
+						width="225"
+						height="43"
+						key="staticText-136"/>
+					<box topBorder="Dotted" topBorderColor="#000000" leftBorder="Dotted" leftBorderColor="#000000" rightBorder="Dotted" rightBorderColor="#000000" bottomBorder="Dotted" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[CLIENTE NOVO: Considerado para clientes que não tiveram embarque, mesmo que eventual, nas últimas 13 semanas. O tempo de duração do pagemtno será de 3 meses. o % de comissão será calculado sobre a receita líquida paga.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="256"
+						y="228"
+						width="350"
+						height="126"
+						key="staticText-138"/>
+					<box topBorder="Dotted" topBorderColor="#000000" leftBorder="Dotted" leftBorderColor="#000000" rightBorder="Dotted" rightBorderColor="#000000" bottomBorder="Dotted" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Justified">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[COMISSIONAMENTO CROSS SELLING]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="256"
+						y="243"
+						width="350"
+						height="31"
+						key="staticText-139"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Será calculado % de comissão para Clientes Conquistados da divisão G e S (Produtos Internacionais) e o tempo de duração do pagamento será 3 meses, considerando somente a receita nova paga.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="256"
+						y="276"
+						width="350"
+						height="31"
+						key="staticText-140"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Conceito de cliente conquistado: cliente que não teve embarque nas últimas 13 semanas. Será pago o comissionamento de conquista tanto para clientes de indicação, como para clientes com processo completo de venda.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="256"
+						y="309"
+						width="350"
+						height="31"
+						key="staticText-141"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="8" isBold="true" isUnderline="true"/>
+					</textElement>
+				<text><![CDATA[O percentual de comissão será 1.50% para venda completa e 0.25% para indicação]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="256"
+						y="322"
+						width="350"
+						height="31"
+						key="staticText-142"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[Manutenção: será pago o comissionamento ee Manutenção apenas para clientes com o "Processo completo de Vendas". O percentual pago será de 0.25%. O mínimo de atingimento da meta é de 90%.]]></text>
+				</staticText>
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="notasCredito" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="contaBancaria" >
+			<groupExpression><![CDATA[]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<group  name="benbeficiario" >
+			<groupExpression><![CDATA[null]]></groupExpression>
+			<groupHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupHeader>
+			<groupFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+			</groupFooter>
+		</group>
+		<background>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</background>
+		<title>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</title>
+		<pageHeader>
+			<band height="141"  isSplitAllowed="true" >
+				<printWhenExpression><![CDATA[$V{PAGE_NUMBER}.equals(1)]]></printWhenExpression>
+				<rectangle>
+					<reportElement
+						x="81"
+						y="110"
+						width="167"
+						height="30"
+						backcolor="#CCCCCC"
+						key="rectangle-9"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<rectangle>
+					<reportElement
+						x="1"
+						y="110"
+						width="68"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-8"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="3"
+						y="113"
+						width="61"
+						height="26"
+						key="staticText-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[TERRITORIO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="82"
+						y="128"
+						width="52"
+						height="11"
+						key="staticText-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[META]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="110"
+						width="69"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-32"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="140"
+						width="68"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-33"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="110"
+						width="0"
+						height="31"
+						key="line-34"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="69"
+						y="110"
+						width="1"
+						height="31"
+						key="line-35"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="136"
+						y="128"
+						width="1"
+						height="13"
+						key="line-37"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="80"
+						y="111"
+						width="0"
+						height="30"
+						key="line-99"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="143"
+						y="128"
+						width="43"
+						height="11"
+						key="staticText-69"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[RECEITA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="193"
+						y="127"
+						width="1"
+						height="14"
+						key="line-101"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="201"
+						y="128"
+						width="38"
+						height="11"
+						key="staticText-70"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[% META ATING]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="247"
+						y="110"
+						width="1"
+						height="31"
+						key="line-105"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="80"
+						y="110"
+						width="169"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-107"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="80"
+						y="127"
+						width="168"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-109"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="81"
+						y="112"
+						width="167"
+						height="13"
+						key="staticText-71"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[RODOVIÁRIO]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="585"
+						y="110"
+						width="57"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-12"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="585"
+						y="110"
+						width="57"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-135"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="585"
+						y="140"
+						width="57"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-136"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="584"
+						y="110"
+						width="0"
+						height="31"
+						key="line-137"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="642"
+						y="110"
+						width="0"
+						height="31"
+						key="line-140"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="583"
+						y="128"
+						width="60"
+						height="11"
+						key="staticText-80"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[REC LIQ PAGA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="585"
+						y="128"
+						width="57"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-142"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="586"
+						y="113"
+						width="55"
+						height="11"
+						key="staticText-81"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[SERV ADICIO]]></text>
+				</staticText>
+				<rectangle>
+					<reportElement
+						x="655"
+						y="110"
+						width="130"
+						height="31"
+						backcolor="#CCCCCC"
+						key="rectangle-13"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="655"
+						y="110"
+						width="131"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-143"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="655"
+						y="140"
+						width="131"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-144"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="654"
+						y="110"
+						width="0"
+						height="31"
+						key="line-145"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="720"
+						y="128"
+						width="0"
+						height="13"
+						key="line-148"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="658"
+						y="129"
+						width="59"
+						height="11"
+						key="staticText-82"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[RODOVIÁRIO]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="655"
+						y="128"
+						width="130"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-150"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="655"
+						y="108"
+						width="131"
+						height="21"
+						key="staticText-83"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[CLIENTES NOVOS-REC LIQ PAGA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="785"
+						y="110"
+						width="0"
+						height="31"
+						key="line-151"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="725"
+						y="129"
+						width="58"
+						height="11"
+						key="staticText-84"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[AEREO]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="80"
+						y="140"
+						width="169"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-110"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<rectangle>
+					<reportElement
+						x="260"
+						y="110"
+						width="167"
+						height="30"
+						backcolor="#CCCCCC"
+						key="rectangle-14"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="261"
+						y="128"
+						width="52"
+						height="11"
+						key="staticText-85"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[META]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="315"
+						y="128"
+						width="1"
+						height="13"
+						key="line-153"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="259"
+						y="111"
+						width="0"
+						height="30"
+						key="line-154"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="322"
+						y="128"
+						width="43"
+						height="11"
+						key="staticText-86"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[RECEITA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="372"
+						y="127"
+						width="1"
+						height="14"
+						key="line-155"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="380"
+						y="128"
+						width="38"
+						height="11"
+						key="staticText-87"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[% META ATING]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="427"
+						y="110"
+						width="1"
+						height="31"
+						key="line-156"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="259"
+						y="110"
+						width="169"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-157"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="259"
+						y="127"
+						width="168"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-158"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="260"
+						y="112"
+						width="167"
+						height="13"
+						key="staticText-88"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[AÉREO]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="259"
+						y="140"
+						width="169"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-164"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<rectangle>
+					<reportElement
+						x="439"
+						y="111"
+						width="134"
+						height="30"
+						backcolor="#CCCCCC"
+						key="rectangle-15"/>
+					<graphicElement stretchType="NoStretch" pen="None"/>
+				</rectangle>
+				<staticText>
+					<reportElement
+						x="441"
+						y="128"
+						width="41"
+						height="11"
+						key="staticText-89"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[META]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="483"
+						y="128"
+						width="1"
+						height="13"
+						key="line-165"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="439"
+						y="111"
+						width="0"
+						height="30"
+						key="line-166"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="484"
+						y="128"
+						width="41"
+						height="11"
+						key="staticText-90"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[RECEITA]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="528"
+						y="127"
+						width="1"
+						height="14"
+						key="line-167"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<staticText>
+					<reportElement
+						x="531"
+						y="128"
+						width="38"
+						height="11"
+						key="staticText-91"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[% META ATING]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						x="572"
+						y="110"
+						width="1"
+						height="31"
+						key="line-168"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="439"
+						y="110"
+						width="134"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-169"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="439"
+						y="127"
+						width="133"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-170"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="440"
+						y="112"
+						width="131"
+						height="13"
+						key="staticText-92"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<text><![CDATA[TRI]]></text>
+				</staticText>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="439"
+						y="140"
+						width="133"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-176"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<staticText>
+					<reportElement
+						x="2"
+						y="66"
+						width="149"
+						height="13"
+						key="staticText-93"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Executivo de vendas interno]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="2"
+						y="84"
+						width="62"
+						height="13"
+						key="staticText-94"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Matrícula]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="160"
+						y="66"
+						width="137"
+						height="14"
+						key="textField-5"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{nomeExecutivo}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="160"
+						y="84"
+						width="137"
+						height="14"
+						key="textField-6"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{matricula}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="354"
+						y="66"
+						width="45"
+						height="13"
+						key="staticText-95"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Filial]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="393"
+						y="66"
+						width="137"
+						height="14"
+						key="textField-7"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{filial}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement
+						x="4"
+						y="4"
+						width="133"
+						height="19"
+						key="staticText-96"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
+					</textElement>
+				<text><![CDATA[Demonstrativo de Comissão]]></text>
+				</staticText>
+				<staticText>
+					<reportElement
+						x="4"
+						y="25"
+						width="292"
+						height="18"
+						key="staticText-97"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Left">
+						<font pdfFontName="Helvetica-Bold" size="12" isBold="true"/>
+					</textElement>
+				<text><![CDATA[EXECUTIVO DE VENDAS INTERNO]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						x="144"
+						y="4"
+						width="209"
+						height="19"
+						key="textField-8"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement>
+						<font pdfFontName="Helvetica-Bold" size="14" isBold="true"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$P{competencia}]]></textFieldExpression>
+				</textField>
+			</band>
+		</pageHeader>
+		<columnHeader>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnHeader>
+		<detail>
+			<band height="30"  isSplitAllowed="true" >
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="3"
+						y="2"
+						width="64"
+						height="24"
+						key="textTipoDoctoServico-1"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{territorio}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="1"
+						y="29"
+						width="68"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-9"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="0"
+						y="0"
+						width="1"
+						height="30"
+						key="line-16"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="69"
+						y="0"
+						width="1"
+						height="30"
+						key="line-17"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="82"
+						y="2"
+						width="53"
+						height="25"
+						key="textTipoDoctoServico-2"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{metaRodoviario}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="136"
+						y="0"
+						width="1"
+						height="29"
+						key="line-19"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="80"
+						y="0"
+						width="1"
+						height="30"
+						key="line-100"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="138"
+						y="2"
+						width="53"
+						height="25"
+						key="textTipoDoctoServico-24"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{receitaRodoviario}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="193"
+						y="0"
+						width="1"
+						height="29"
+						key="line-102"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="196"
+						y="2"
+						width="49"
+						height="25"
+						key="textTipoDoctoServico-25"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{percentualMetaRodoviario}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="247"
+						y="0"
+						width="1"
+						height="29"
+						key="line-106"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="80"
+						y="29"
+						width="169"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-108"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="587"
+						y="2"
+						width="53"
+						height="24"
+						key="textTipoDoctoServico-32"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{receitaLiquidaPaga}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="585"
+						y="29"
+						width="57"
+						height="0"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-138"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="584"
+						y="0"
+						width="1"
+						height="30"
+						key="line-139"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="642"
+						y="0"
+						width="1"
+						height="30"
+						key="line-141"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="657"
+						y="2"
+						width="59"
+						height="24"
+						key="textTipoDoctoServico-33"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{clienteNovoRodoviario}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="655"
+						y="29"
+						width="131"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-146"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="654"
+						y="0"
+						width="1"
+						height="30"
+						key="line-147"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="720"
+						y="0"
+						width="1"
+						height="30"
+						key="line-149"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="785"
+						y="0"
+						width="1"
+						height="30"
+						key="line-152"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="724"
+						y="2"
+						width="58"
+						height="24"
+						key="textTipoDoctoServico-34"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{clienteNovoAereo}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="261"
+						y="2"
+						width="53"
+						height="25"
+						key="textTipoDoctoServico-35"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{metaAereo}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="315"
+						y="0"
+						width="1"
+						height="29"
+						key="line-159"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="259"
+						y="0"
+						width="1"
+						height="30"
+						key="line-160"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="317"
+						y="2"
+						width="53"
+						height="25"
+						key="textTipoDoctoServico-36"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{receitaAereo}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="372"
+						y="0"
+						width="1"
+						height="29"
+						key="line-161"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="375"
+						y="2"
+						width="49"
+						height="25"
+						key="textTipoDoctoServico-37"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{percentualMetaAereo}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="427"
+						y="0"
+						width="1"
+						height="29"
+						key="line-162"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="259"
+						y="29"
+						width="169"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-163"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="441"
+						y="2"
+						width="40"
+						height="25"
+						key="textTipoDoctoServico-38"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{metaTri}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="483"
+						y="0"
+						width="1"
+						height="29"
+						key="line-171"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						x="439"
+						y="0"
+						width="1"
+						height="30"
+						key="line-172"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="485"
+						y="2"
+						width="41"
+						height="25"
+						key="textTipoDoctoServico-39"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{receitaTri}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="528"
+						y="0"
+						width="1"
+						height="29"
+						key="line-173"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="true" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="530"
+						y="2"
+						width="40"
+						height="25"
+						key="textTipoDoctoServico-40"/>
+					<box topBorder="None" topBorderColor="#000000" leftBorder="None" leftBorderColor="#000000" rightBorder="None" rightBorderColor="#000000" bottomBorder="None" bottomBorderColor="#000000"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="8"/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{percentualMetaTri}]]></textFieldExpression>
+				</textField>
+				<line direction="TopDown">
+					<reportElement
+						x="572"
+						y="0"
+						width="1"
+						height="29"
+						key="line-174"/>
+					<graphicElement stretchType="NoStretch"/>
+				</line>
+				<line direction="TopDown">
+					<reportElement
+						mode="Opaque"
+						x="439"
+						y="29"
+						width="134"
+						height="1"
+						forecolor="#000000"
+						backcolor="#FFFFFF"
+						key="line-175"/>
+					<graphicElement stretchType="NoStretch" pen="Thin" fill="Solid" />
+				</line>
+			</band>
+		</detail>
+		<columnFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</columnFooter>
+		<pageFooter>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</pageFooter>
+		<summary>
+			<band height="0"  isSplitAllowed="true" >
+			</band>
+		</summary>
+</jasperReport>

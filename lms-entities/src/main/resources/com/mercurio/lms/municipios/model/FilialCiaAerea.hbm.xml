@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.municipios.model.FilialCiaAerea" table="FILIAL_CIA_AEREA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+    <id name="idFilialCiaAerea" column="ID_FILIAL_CIA_AEREA">
+        <generator class="foreign">
+            <param name="property">pessoa</param>
+        </generator>
+    </id>		
+    
+
+    <property name="cdFornecedor" type="java.lang.Long" column="CD_FORNECEDOR" not-null="true" length="10"/>
+    <property name="blImprimeMinuta" type="sim_nao" column="BL_IMPRIME_MINUTA" not-null="true" length="1">
+    </property>
+    <property name="dtVigenciaInicial" type="jtyearmonthday" column="DT_VIGENCIA_INICIAL" not-null="true" length="7"/>
+    <property name="blTaxaTerrestre" type="sim_nao" column="BL_TAXA_TERRESTRE" length="1">
+    </property>
+    <property name="dtVigenciaFinal" type="jtyearmonthday_v" column="DT_VIGENCIA_FINAL" length="7"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-one association to Pessoa -->
+    <one-to-one name="pessoa" class="com.mercurio.lms.configuracoes.model.Pessoa" constrained="true"/>    
+    <!-- bi-directional many-to-one association to Aeroporto -->
+    <many-to-one name="aeroporto" class="com.mercurio.lms.municipios.model.Aeroporto" not-null="true" >
+        <column name="ID_AEROPORTO"/>
+    </many-to-one>
+    <!-- bi-directional many-to-one association to InscricaoEstadual -->
+    
+    <!-- many-to-one name="inscricaoEstadual" 
+    		class="com.mercurio.lms.configuracoes.model.InscricaoEstadual"
+        	column="ID_INSCRICAO_ESTADUAL" 
+        	unique="true"
+	/-->
+    
+    
+    <!-- many-to-one name="inscricaoEstadual" class="com.mercurio.lms.configuracoes.model.InscricaoEstadual" not-null="true">
+        <column name="ID_INSCRICAO_ESTADUAL"/>
+    </many-to-one-->
+    
+    
+    
+    <!-- bi-directional many-to-one association to Empresa -->
+    <many-to-one name="empresa" class="com.mercurio.lms.municipios.model.Empresa" not-null="true">
+        <column name="ID_EMPRESA"/>
+    </many-to-one>
+    <!-- bi-directional one-to-many association to FilialMercurioFilialCia -->
+    <bag name="filialMercurioFilialCias" lazy="true" inverse="true" cascade="none">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.FilialMercurioFilialCia</meta>
+ 	        <key>
+            <column name="ID_FILIAL_CIA_AEREA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.municipios.model.FilialMercurioFilialCia"/>
+    </bag>
+    <!-- bi-directional one-to-many association to AtendimFilialCiaAerea -->
+    <bag name="atendimFilialCiaAereas" lazy="true" inverse="true" cascade="none">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.municipios.model.AtendimFilialCiaAerea</meta>
+ 	        <key>
+            <column name="ID_FILIAL_CIA_AEREA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.municipios.model.AtendimFilialCiaAerea"/>
+    </bag>
+</class>
+</hibernate-mapping>

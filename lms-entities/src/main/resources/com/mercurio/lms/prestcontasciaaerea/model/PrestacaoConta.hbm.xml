@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.prestcontasciaaerea.model.PrestacaoConta" 
+    table="PRESTACAO_CONTA"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idPrestacaoConta"
+        type="java.lang.Long"
+        column="ID_PRESTACAO_CONTA"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">PRESTACAO_CONTA_SQ</param>
+        </generator>
+    </id>
+    <property
+        name="nrPrestacaoConta"
+			        type="java.lang.Long"
+            column="NR_PRESTACAO_CONTA"
+        not-null="true"
+        unique="true"
+        length="15"
+    />
+    <property
+        name="qtAwb"
+			        type="java.lang.Long"
+            column="QT_AWB"
+        not-null="true"
+        unique="true"
+        length="10"
+    />
+    <property
+        name="dtEmissao"
+			        type="jtyearmonthday"
+            column="DT_EMISSAO"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtInicial"
+			        type="jtyearmonthday"
+            column="DT_INICIAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtFinal"
+			        type="jtyearmonthday"
+            column="DT_FINAL"
+        not-null="true"
+        length="7"
+    />
+    <property
+        name="dtVencimento"
+			        type="jtyearmonthday"
+            column="DT_VENCIMENTO"
+        not-null="true"
+        length="7"
+    />
+
+    <!-- Associations -->
+   <many-to-one
+        name="ciaFilialMercurio"
+        class="com.mercurio.lms.municipios.model.CiaFilialMercurio"
+        not-null="true"
+    >
+        <column name="ID_CIA_FILIAL_MERCURIO" />
+    </many-to-one>
+    <!-- bi-directional one-to-many association to ValorPrestacaoConta -->
+    <bag
+        name="valorPrestacaoContas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.prestcontasciaaerea.model.ValorPrestacaoConta</meta>
+ 	        <key>
+            <column name="ID_PRESTACAO_CONTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.prestcontasciaaerea.model.ValorPrestacaoConta"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to AwbCancelado -->
+    <bag
+        name="awbCancelados"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.prestcontasciaaerea.model.AwbCancelado</meta>
+ 	        <key>
+            <column name="ID_PRESTACAO_CONTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.prestcontasciaaerea.model.AwbCancelado"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to IntervaloAwb -->
+    <bag
+        name="intervaloAwbs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.prestcontasciaaerea.model.IntervaloAwb</meta>
+ 	        <key>
+            <column name="ID_PRESTACAO_CONTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.prestcontasciaaerea.model.IntervaloAwb"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to IcmsPrestacao -->
+    <bag
+        name="icmsPrestacoes"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.prestcontasciaaerea.model.IcmsPrestacao</meta>
+ 	        <key>
+            <column name="ID_PRESTACAO_CONTA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.prestcontasciaaerea.model.IcmsPrestacao"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

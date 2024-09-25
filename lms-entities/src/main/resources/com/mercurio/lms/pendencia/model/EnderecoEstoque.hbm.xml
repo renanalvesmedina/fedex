@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.pendencia.model.EnderecoEstoque" 
+    table="ENDERECO_ESTOQUE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idEnderecoEstoque"
+        type="java.lang.Long"
+        column="ID_ENDERECO_ESTOQUE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">ENDERECO_ESTOQUE_SQ</param>
+        </generator>
+    </id>
+
+    <property
+        name="nrRua"
+			        type="java.lang.Short"
+            column="NR_RUA"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="nrAndar"
+			        type="java.lang.Short"
+            column="NR_ANDAR"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="nrApartamento"
+			        type="java.lang.Short"
+            column="NR_APARTAMENTO"
+        not-null="true"
+        length="3"
+    />
+    <property
+        name="tpSituacaoEndereco"
+		    column="DM_STATUS_ENDERECO"
+        not-null="true"
+        length="2"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_STATUS_ENDERECO</param>
+	    </type>
+    </property>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to Mda -->
+    <bag
+        name="mdas"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.Mda</meta>
+ 	        <key>
+            <column name="ID_ENDERECO_ESTOQUE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.Mda"
+        />
+    </bag>
+    <!-- bi-directional one-to-many association to MercadoriaPendenciaMz -->
+    <bag
+        name="mercadoriaPendenciaMzs"
+        lazy="true"
+        inverse="true"
+		cascade="none"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz</meta>
+ 	        <key>
+            <column name="ID_ENDERECO_ESTOQUE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.pendencia.model.MercadoriaPendenciaMz"
+        />
+    </bag>
+    <!-- bi-directional many-to-one association to Modulo -->
+    <many-to-one
+        name="modulo"
+        class="com.mercurio.lms.pendencia.model.Modulo"
+        not-null="true"
+    >
+        <column name="ID_MODULO" />
+    </many-to-one>
+</class>
+</hibernate-mapping>

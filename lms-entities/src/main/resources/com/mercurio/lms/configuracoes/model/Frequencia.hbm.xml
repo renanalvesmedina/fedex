@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.configuracoes.model.Frequencia" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="FREQUENCIA">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_FREQUENCIA" name="idFrequencia" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">FREQUENCIA_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_FREQUENCIA_I" length="60" name="dsFrequencia" not-null="true" type="varcharI18n" unique="true"/>
+    <property column="TP_FREQUENCIA_INDICADOR_FINANC" length="1" name="tpFrequenciaIndicadorFinanc" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_FREQ_IND_FINANCEIRO</param>
+	    </type>
+    </property>	        
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    <property column="DD_CORTE" length="2" name="ddCorte" type="java.lang.Byte"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to IndicadorFinanceiro -->
+    <bag cascade="none" inverse="true" lazy="true" name="indicadorFinanceiros">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.configuracoes.model.IndicadorFinanceiro</meta>
+ 	        <key>
+            <column name="ID_FREQUENCIA"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.configuracoes.model.IndicadorFinanceiro"/>
+    </bag>
+
+	
+	
+</class>
+</hibernate-mapping>

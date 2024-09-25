@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.entrega.model.Turno" table="TURNO">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+    
+
+
+    <id column="ID_TURNO" name="idTurno" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">TURNO_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_TURNO" length="60" name="dsTurno" not-null="true" type="string" unique="true"/>
+    <property column="HR_TURNO_INICIAL" length="7" name="hrTurnoInicial" not-null="true" type="jttimeofday"/>
+    <property column="HR_TURNO_FINAL" length="7" name="hrTurnoFinal" not-null="true" type="jttimeofday"/>
+    <property column="DT_VIGENCIA_INICIAL" length="7" name="dtVigenciaInicial" not-null="true" type="jtyearmonthday"/>
+    <property column="DT_VIGENCIA_FINAL" length="7" name="dtVigenciaFinal" type="jtyearmonthday_v"/>
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to AgendamentoEntrega -->
+    <bag cascade="none" inverse="true" lazy="true" name="agendamentoEntregas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.AgendamentoEntrega</meta>
+ 	        <key>
+            <column name="ID_TURNO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.AgendamentoEntrega"/>
+    </bag>
+    <!-- bi-directional many-to-one association to Filial -->
+    <many-to-one class="com.mercurio.lms.municipios.model.Filial" name="filial" not-null="true">
+        <column name="ID_FILIAL"/>
+    </many-to-one>
+
+	
+	
+</class>
+</hibernate-mapping>

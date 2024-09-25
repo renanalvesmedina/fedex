@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+    
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class 
+    name="com.mercurio.lms.tributos.model.ExcecaoICMSCliente" 
+    table="EXCECAO_ICMS_CLIENTE"
+>
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <id
+        name="idExcecaoICMSCliente"
+        type="java.lang.Long"
+        column="ID_EXCECAO_ICMS_CLIENTE"
+    >
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">EXCECAO_ICMS_CLIENTE_SQ</param>
+        </generator>
+    </id>
+    
+    <property
+        name="nrCNPJParcialDev"
+			        type="java.lang.String"
+            column="NR_CNPJ_PARCIAL_DEV"
+        not-null="true"
+        length="14"
+    />
+    
+    <property
+        name="tpFrete"
+		column="TP_FRETE"
+        not-null="true"
+        length="1"
+    >
+		<type name="domain">
+        	<param name="domainName">DM_TIPO_FRETE</param>
+	    </type>
+    </property>    
+  
+    <property
+        name="blSubcontratacao"
+		type="sim_nao"
+        column="BL_SUBCONTRATACAO"
+        not-null="true"
+        length="1"
+    />    
+    
+    <property
+        name="blObrigaCtrcSubContratante"
+		type="sim_nao"
+        column="BL_OBRIGA_CTRC_SUBCONTRATANTE"
+        not-null="true"
+        length="1"
+    />  
+    
+    <property
+        name="dsRegimeEspecial"
+		type="java.lang.String"
+        column="DS_REGIME_ESPECIAL"
+        not-null="false"
+        length="85"
+    />    
+    
+    <property
+        name="dtVigenciaInicial"
+		type="jtyearmonthday"
+        column="DT_VIGENCIA_INICIAL"
+        not-null="true"
+        length="7"
+    />    
+    
+    <property
+        name="dtVigenciaFinal"
+		type="jtyearmonthday_v"
+        column="DT_VIGENCIA_FINAL"
+        length="7"
+    />        
+
+	<property
+		name="cdEmbLegalMastersaf"
+		type="java.lang.String"
+		column="CD_EMB_LEGAL_MASTERSAF"
+		length="10"
+    />
+
+    <!-- Associations -->
+    
+    <!-- bi-directional many-to-one association to UnidadeFederativa -->
+    <many-to-one
+        name="tipoTributacaoIcms"
+        class="com.mercurio.lms.tributos.model.TipoTributacaoIcms"
+        not-null="true"
+    >
+        <column name="ID_TIPO_TRIBUTACAO_ICMS" />
+    </many-to-one>
+    
+    <!-- bi-directional many-to-one association to UnidadeFederativa -->
+    <many-to-one
+        name="unidadeFederativa"
+        class="com.mercurio.lms.municipios.model.UnidadeFederativa"
+        not-null="true"
+    >
+        <column name="ID_UNIDADE_FEDERATIVA" />
+    </many-to-one>    
+    
+    <!-- bi-directional one-to-many association to ItemFatura -->
+    <bag
+        name="remetentesExcecaoICMSCli"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.RemetenteExcecaoICMSCli</meta>
+ 	        <key>
+            <column name="ID_EXCECAO_ICMS_CLIENTE" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.RemetenteExcecaoICMSCli"
+        />
+    </bag>
+    
+    <!-- bi-directional one-to-many association to ItemFatura -->
+    <bag
+        name="execoesICMSNatureza"
+        lazy="true"
+        inverse="true"
+		cascade="delete-orphan"
+    >
+    	<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.tributos.model.ExcecaoICMSNatureza</meta>
+		<key>
+			<column name="ID_EXCECAO_ICMS_NATUREZA" />
+        </key>
+        <one-to-many 
+            class="com.mercurio.lms.tributos.model.ExcecaoICMSNatureza"
+        />
+    </bag>
+</class>
+</hibernate-mapping>

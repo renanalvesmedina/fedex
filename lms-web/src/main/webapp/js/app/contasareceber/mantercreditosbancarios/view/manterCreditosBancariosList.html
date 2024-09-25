@@ -1,0 +1,390 @@
+<style type="text/css">
+	.export-Saldo-Csv .modal-dialog{
+		width: 540px;
+	}
+</style>
+
+<form class="form-horizontal content-padding" data-ng-submit="find()"> 
+ 
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearFilter()" class="btn btn-default btn-lg pull-right" id="limpar">{{'limpar' |  translate }}</button>
+		<button type="button" data-ng-click="exportCsv()" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportar">{{'exportarExcel' |  translate }}</button>
+		<button type="button" data-ng-click="exportSaldoModal()" data-adsm-loading="exportando" class="btn btn-default btn-lg pull-right" id="exportarSaldo">{{'exportarSaldoExcel' |  translate }}</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">{{'consultar' |  translate }}</button>
+	</div>
+
+
+
+	<div class="row">
+		<div class="col-sm-6">
+		
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'filialDeCredito' | translate }}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input lms-filial ng-model="filter.idFilialCredito" id="idFilialCredito" class="form-control" >
+						</div>
+						<div class="col-xs-9">
+							<input type="text" disabled class="form-control"
+								value="{{filter.idFilialCredito.nmFilial}}" 
+								id="idFilialCredito.nmFilial">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'banco' | translate }}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-3">						
+							<input disabled class="form-control text-right" ng-model="filter.banco.nrBanco" id="banco.nrBanco">
+						</div>
+						<div class="col-xs-9">
+							<input lms-banco
+								ng-model="filter.banco" 
+								id="banco"
+								class="form-control"
+								ng-disabled="dados.disabled"
+								ng-change="changeBanco()" />																					
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'dtCredito' | translate }}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-5">
+							<input
+								id="dataCreditoInicial"
+								adsm-date-picker
+								ng-model="filter.dataCreditoInicial"
+								mask="date"
+								class="form-control"
+								data-end="filter.dataCreditoFinal"
+								data-maxInterval="{{ maxIntervalDtCredito }}"
+								required>
+
+						</div>
+						<div class="col-xs-5">
+							<input
+								id="dataCreditoFinal"
+								adsm-date-picker
+								ng-model="filter.dataCreditoFinal"
+								mask="date"
+								class="form-control"
+								data-start="filter.dataCreditoInicial"
+								data-maxInterval="{{ maxIntervalDtCredito }}"
+								required>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'dtAlteracao' | translate }}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="col-xs-5">
+							<input
+								id="dataAlteracaoInicial"
+								adsm-date-picker
+								ng-model="filter.dataAlteracaoInicial"
+								mask="date"
+								class="form-control"
+								data-end="filter.dataAlteracaoFinal"
+								data-maxInterval="{{ getIntervaloMax() }}">
+
+						</div>
+						<div class="col-xs-5">
+							<input
+								id="dataAlteracaoFinal"
+								adsm-date-picker
+								ng-model="filter.dataAlteracaoFinal"
+								mask="date"
+								class="form-control"
+								data-start="filter.dataAlteracaoInicial"
+								data-maxInterval="{{ getIntervaloMax() }}">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'modalidade' | translate }}</label>
+				<div class="col-lg-9">
+					<select
+						adsm-domain="DM_TP_MODALIDADE_CRED_BANC"
+						id="tpModalidade"
+						ng-model="filter.tpModalidade">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'origemRegistro' | translate }}</label>
+				<div class="col-lg-9">
+					<select
+						adsm-domain="DM_TP_ORIGEM_CRED_BANC"
+						id="tpOrigem"
+						ng-model="filter.tpOrigem">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'vlCredito' | translate }}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="multi-input">
+							<div class="col-xs-5">
+								<input
+									type="text"
+									class="form-control"
+									id="vlCreditoInicial"
+									data-numeric data-moeda
+									ng-model="filter.vlCreditoInicial"/>
+							</div>
+							<div class="col-xs-5">
+								<input
+									type="text"
+									class="form-control"
+									id="vlCreditoFinal"
+									data-numeric data-moeda
+									ng-model="filter.vlCreditoFinal"/>
+							</div>
+						</div>
+					</div>			
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'vlSaldo' | translate }}</label>
+				<div class="col-lg-9">
+					<div class="multi-input">
+						<div class="multi-input">
+							<div class="col-xs-5">
+								<input
+									type="text"
+									class="form-control"
+									id="vlSaldoInicial"
+									data-numeric data-moeda
+									ng-model="filter.vlSaldoInicial" />
+							</div>
+							<div class="col-xs-5">
+								<input
+									type="text"
+									class="form-control"
+									id="vlSaldoFinal"
+									data-numeric data-moeda
+									ng-model="filter.vlSaldoFinal" />
+							</div>
+						</div>
+					</div>			
+				</div>
+			</div>
+		</div>
+	</div>
+
+ 	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'cpfCnpj' | translate }}</label>
+				<div class="col-lg-9">
+					<input type="text" ng-model="filter.dsCpfCnpj" id="dsCpfCnpj" class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'numeroBoleto' | translate }}</label>
+				<div class="col-lg-9">
+					<input type="text" ng-model="filter.dsBoleto" id="dsBoleto" class="form-control" />
+				</div>
+			</div>
+		</div>
+	</div>
+ 
+ 	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'nomeRazaoSocial' | translate }}</label>
+				<div class="col-lg-9">
+					<input type="text" ng-model="filter.dsNomeRazaoSocial" id="dsNomeRazaoSocial" class="form-control" />
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'observacoes' | translate }}</label>
+				<div class="col-lg-9">
+					<input type="text" ng-model="filter.obCreditoBancario" id="obCreditoBancario" class="form-control" />				
+				</div>
+			</div>
+		</div>
+	</div>
+ 
+ 	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">	
+				<label class="col-lg-3 control-label">{{'situacao' | translate }}</label>
+				<div class="col-lg-9">
+ 					<select
+						adsm-domain="DM_TP_SITUACAO_CRED_BANC"
+						id="tpSituacao"
+						ng-model="filter.tpSituacao">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'classificacao' | translate }}</label>
+				<div class="col-lg-9">
+ 					<select
+						adsm-domain="DM_CLASSIFICACAO_CRED_BANC"
+						id="tpClassificacao"
+						ng-model="filter.tpClassificacao">
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+		</div>
+		
+	</div>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+	<div class="row"> 
+		<div class="col-sm-12"> 
+			<div class="scroll-table"> 
+				<table adsm-table="listTableParams" 
+					class="table adsm-table-hover table-condensed table-clickable adsm-table" 
+					style="width: 100%" 
+					show-checkboxes="true" 
+					data-remove-service="removeByIds()" 
+					> 
+					<tbody> 
+						<tr ng-repeat="row in page" ng-click="detail(row)"> 
+
+							<td column-title="'filial' | translate" sortable="filial.sgFilial" 
+								inline-property-filter="filial.sgFilial" 
+								style="min-width: 100px; max-width: 200px;">{{row.filial.sgFilial}}</td> 
+
+							<td column-title="'banco' | translate" sortable="banco.nmBanco" 
+								inline-property-filter="banco.nmBanco" 
+								style="min-width: 100px; max-width: 200px;">{{row.banco.nmBanco}}</td> 
+
+							<td column-title="'dtCredito' | translate" sortable="dtCredito" 
+								inline-property-filter="dtCredito" 
+								style="min-width: 100px; max-width: 200px;">{{row.dtCredito | date:'dd/MM/yyyy'}}</td> 
+
+							<td column-title="'vlCredito' | translate" sortable="vlCreditol" 
+								inline-property-filter="vlCredito" 
+								style="min-width: 100px; max-width: 200px;">{{row.vlCredito | currency }}</td> 
+							
+							<td column-title="'saldo' | translate" sortable="saldo" 
+								inline-property-filter="saldo" 
+								style="min-width: 100px; max-width: 200px;">{{row.saldo | currency }}</td> 
+							
+							<td column-title="'modalidade' | translate" sortable="tpModalidade" 
+								inline-property-filter="tpModalidade" 
+								style="min-width: 100px; max-width: 200px;">{{row.tpModalidade.description.value}}</td> 
+
+							<td column-title="'origemRegistro' | translate" sortable="tpOrigem" 
+								inline-property-filter="tpOrigem" 
+								style="min-width: 100px; max-width: 200px;">{{row.tpOrigem.description.value}}</td> 
+							
+							<td column-title="'tipoClassificacao' | translate" sortable="tpClassificacao" 
+								inline-property-filter="tpClassificacao" 
+								style="min-width: 100px; max-width: 200px;">{{row.tpClassificacao.description.value}}</td> 
+
+							<td column-title="'situacao' | translate" sortable="tpSituacao" 
+								inline-property-filter="tpSituacao" 
+								style="min-width: 100px; max-width: 200px;">{{row.tpSituacao.description.value}}</td> 
+							
+							<td column-title="'cpfCnpj' | translate" sortable="dsCpfCnpj" 
+								inline-property-filter="dsCpfCnpj" 
+								style="min-width: 100px; max-width: 200px;">{{row.dsCpfCnpj}}</td> 
+							
+							<td column-title="'nomeRazaoSocial' | translate" sortable="dsNomeRazaoSocial" 
+								inline-property-filter="dsNomeRazaoSocial" 
+								style="min-width: 100px; max-width: 200px;">{{row.dsNomeRazaoSocial}}</td> 
+
+							<td column-title="'numeroBoleto' | translate" sortable="numeroBoleto" 
+								inline-property-filter="numeroBoleto" 
+								style="min-width: 100px; max-width: 200px;">{{row.dsBoleto}}</td> 
+							
+							<td column-title="'observacoes' | translate" sortable="obCreditoBancario" 
+								inline-property-filter="obCreditoBancario" 
+								style="min-width: 100px; max-width: 200px;">{{row.obCreditoBancario}}</td> 
+							
+
+							<td column-title="'dataHoraAlteracao' | translate" sortable="dtAlteracao" 
+								inline-property-filter="dtAlteracao" 
+								style="min-width: 100px; max-width: 200px;">{{row.dtAlteracao | date:'dd/MM/yyyy'}}</td> 
+							
+							<td column-title="'usuarioAlteracao' | translate" sortable="usuario.nmUsuario" 
+								inline-property-filter="usuario.nmUsuario" 
+								style="min-width: 100px; max-width: 200px;">{{row.usuario.nmUsuario}}</td> 
+							 
+						</tr> 
+					</tbody> 
+				</table> 
+			</div> 
+		</div> 
+	</div> 
+</form>
+ 

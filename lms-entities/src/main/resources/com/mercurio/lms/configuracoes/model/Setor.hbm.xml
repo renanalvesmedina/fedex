@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<!-- 
+    Created by the Middlegen Hibernate plugin 2.1 for ADSM
+
+    http://boss.bekk.no/boss/middlegen/
+    http://www.hibernate.org/
+-->
+
+<class name="com.mercurio.lms.configuracoes.model.Setor" persister="com.mercurio.adsm.core.model.hibernate.I18nVarcharPersister" table="SETOR">
+    <meta attribute="implement-equals" inherit="false">true</meta>
+
+
+    <cache usage="read-write"/>
+
+	<id column="ID_SETOR" name="idSetor" type="java.lang.Long">
+        <meta attribute="use-in-equals">true</meta>
+        <generator class="sequence">
+            <param name="sequence">SETOR_SQ</param>
+        </generator>
+    </id>
+
+    <property column="DS_SETOR_I" length="60" name="dsSetor" not-null="true" type="varcharI18n"/>
+
+    <property column="CD_SETOR_RH" length="2" name="cdSetorRh" type="java.lang.Short"/>
+    
+    <property column="TP_SITUACAO" length="1" name="tpSituacao" not-null="true">
+		<type name="domain">
+        	<param name="domainName">DM_STATUS</param>
+	    </type>
+    </property>
+    
+
+    <!-- Associations -->
+  
+    <!-- bi-directional one-to-many association to ProtocoloTransferencia -->
+    <bag cascade="none" inverse="true" lazy="true" name="protocoloTransferencias">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.ProtocoloTransferencia</meta>
+ 	        <key>
+            <column name="ID_SETOR"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.ProtocoloTransferencia"/>
+    </bag>
+    <!-- bi-directional one-to-many association to ManifestoEntrega -->
+    <bag cascade="none" inverse="true" lazy="true" name="manifestoEntregas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.ManifestoEntrega</meta>
+ 	        <key>
+            <column name="ID_SETOR"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.ManifestoEntrega"/>
+    </bag>
+    <!-- bi-directional one-to-many association to SetorMotivoAberturaNc -->
+    <bag cascade="none" inverse="true" lazy="true" name="setorMotivoAberturaNcs">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.rnc.model.SetorMotivoAberturaNc</meta>
+ 	        <key>
+            <column name="ID_SETOR"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.rnc.model.SetorMotivoAberturaNc"/>
+    </bag>
+    <!-- bi-directional one-to-many association to Mda -->
+    <bag cascade="none" inverse="true" lazy="true" name="mdas">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.pendencia.model.Mda</meta>
+ 	        <key>
+            <column name="ID_SETOR_DESTINADO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.pendencia.model.Mda"/>
+    </bag>
+    <!-- bi-directional one-to-many association to Equipe -->
+    <bag cascade="none" inverse="true" lazy="true" name="equipes">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.carregamento.model.Equipe</meta>
+ 	        <key>
+            <column name="ID_SETOR"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.carregamento.model.Equipe"/>
+    </bag>
+    <!-- bi-directional one-to-many association to Mir -->
+    <bag cascade="none" inverse="true" lazy="true" name="mirsByIdSetorDestino">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.Mir</meta>
+ 	        <key>
+            <column name="ID_SETOR_DESTINO"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.Mir"/>
+    </bag>
+    <!-- bi-directional one-to-many association to Mir -->
+    <bag cascade="none" inverse="true" lazy="true" name="mirsByIdSetorOrigem">
+    		<meta attribute="adsm-parametrized-attribute">com.mercurio.lms.entrega.model.Mir</meta>
+ 	        <key>
+            <column name="ID_SETOR_ORIGEM"/>
+        </key>
+        <one-to-many class="com.mercurio.lms.entrega.model.Mir"/>
+    </bag>
+</class>
+</hibernate-mapping>

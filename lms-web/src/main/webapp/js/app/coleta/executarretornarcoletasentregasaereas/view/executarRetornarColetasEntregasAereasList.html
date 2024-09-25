@@ -1,0 +1,270 @@
+<form class="form-horizontal content-padding" data-ng-submit="consultar()"> 
+ 
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearFilter()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' | translate }}
+		</button>
+			
+		<button type="submit" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' |  translate }}
+		</button> 
+	</div> 
+	 
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="frotaPlaca" data-labelSize="3"  data-multiSize="6">
+			<input type="text" disabled class="form-control" value="{{ filter.meioTransporte.nrFrota }}" id="meioTransporte.nrFrota">
+		    <input lms-meio-transporte type="text" ng-model="filter.meioTransporte" id="meioTransporte" class="form-control">	
+		</div>
+		
+		<div adsm-add-field data-boxSize="6" data-label="preAwbAwb" data-labelSize="3"  data-multiSize="6">
+			<select adsm-domain="DM_LOOKUP_AWB" id="tpStatusAwb" ng-model="tmp.tpStatusAwb" />
+			<input lms-awb='{ tpStatusAwb:tmp.tpStatusAwb.value }' type="text" ng-model="tmp.awb" id="awb" class=form-control>
+		</div>
+		
+	</div>
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="controleCarga" data-labelSize="3"  data-multiSize="6">
+			<input lms-controle-carga type="text" ng-model="filter.controleCarga" id="controleCarga" class="form-control">
+			<input type="text" disabled class="form-control" value="{{ filter.controleCarga.nrControleCarga  | lpad: 6  }}" id="nrControleCarga">	
+		</div>
+		
+		<div adsm-add-field data-boxSize="6" data-label="documentoServico" data-labelSize="3" data-multiSize="6">
+			<input type="text" disabled class="form-control" value="{{ filter.doctoServico.tpDoctoServico.description }}" id="doctoServico.tpDoctoServico">
+			<input lms-docto-servico type="text" ng-model="filter.doctoServico" id="doctoServico" class="form-control" permission="doctoServico">
+		</div>
+	</div>
+	
+	<div class="row">
+		<div adsm-add-field data-boxSize="6" data-label="manifestoColeta" data-labelSize="3"  data-multiSize="6">
+		   	<input lms-manifesto-coleta type="text" ng-model="filter.manifestoColeta" id="manifestoColeta" class="form-control">
+			<input type="text" disabled class="form-control" value="{{ filter.manifestoColeta.nrManifesto | lpad: 6 }}" id="nrManifesto">
+		</div>
+			
+		<div adsm-add-field data-boxSize="6" data-label="manifestoEntrega" data-labelSize="3" data-multiSize="6">
+	    	<input lms-manifesto-entrega type="text" ng-model="filter.manifestoEntrega" id="manifestoEntrega" class=form-control>
+			<input type="text" disabled class="form-control" value="{{ filter.manifestoEntrega.nrManifestoEntrega  | lpad: 6  }}" id="nrManifestoEntrega">
+		</div>
+	</div>
+	
+	 <accordion close-others="false">
+			<accordion-group is-open="isAba1Open">
+				<accordion-heading>
+					<span class="glyphicon" ng-class="{'glyphicon-chevron-down':isAba1Open, 'glyphicon-chevron-right': !isAba1Open}"></span>
+					{{'coletasPendentes' | translate}}
+				</accordion-heading>
+		
+		
+				<div class="row"> 
+					<div class="col-sm-12"> 
+							<table adsm-table="coletasPendentesTableParams" 
+								class="table adsm-table-hover table-condensed table-clickable adsm-table" 
+								style="width: 100%" 
+								show-checkboxes="true"  
+								> 
+								<tbody> 
+									<tr ng-repeat="row in page" ng-click="detail(row)">
+									 
+										<td column-title="coleta"
+											sortable="coleta"   
+											>{{row.coleta}}</td>
+									 
+										<td column-title="preAwbAwb"
+											sortable="preAwbAwb" 
+											>{{row.preAwbAwb}}</td>
+									 
+										<td column-title="entregaDireta"  align="center"
+											sortable="entregaDireta"
+											>{{row.entregaDireta | customBoolean  | translate}}</td>
+									 
+										<td column-title="dpe" align="center"
+											sortable="otd"
+											>{{row.otd | customDate}}</td>
+									 
+										<td column-title="cliente"
+											sortable="cliente"
+											style="min-width: 100px; max-width: 400px;">{{row.cliente}}</td>
+									 
+										<td column-title="endereco"
+											sortable="endereco"
+											>{{row.endereco}}</td>
+											
+										<td column-title="qtdDocumentos" align="center"
+											sortable="nrDocumentos"
+											>{{row.nrDocumentos}}</td>
+									 
+										<td column-title="volumes" align="center"
+											sortable="volume"
+											>{{row.volume}}</td>
+									 
+										<td column-title="pesoKG" align="center"
+											sortable="peso"
+											>{{row.peso}}</td>
+									 
+										<td column-title="valorReais" align="center"
+											sortable="valor"
+											>{{row.valor | currency: ''}}</td>
+									 
+										<td column-title="horarioColeta" align="center"
+											sortable="horarioColeta"
+											style="min-width: 120px; max-width: 200px;">{{row.horarioColeta | date: 'hh:mm'}}</td>
+									 
+										<td column-title="veiculo"
+											sortable="veiculo"
+											>{{row.veiculo}}</td>
+									</tr> 
+								</tbody> 
+							</table> 
+					</div> 
+				</div> 
+				<button type="submit" data-ng-click="executarColetasPendentes()" class="btn btn-default btn-lg pull-right" id="executarColetas">
+					{{'executarColetas' |  translate }}
+				</button>
+				
+				<button type="button" data-ng-click="openModalRetornarColeta()" class="btn btn-default btn-lg pull-right" id="btnAbrirModalRetornarColetas">
+					{{'retornarColetas' |  translate }}
+				</button>
+			</accordion-group>
+			
+			<accordion-group is-open="isAba2Open">
+				<accordion-heading>
+					<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isAba2Open, 'glyphicon-chevron-right': !isAba2Open}"></span>
+					{{'entregasRealizar' | translate}}
+				</accordion-heading>
+		
+		
+				<div class="row"> 
+					<div class="col-sm-12"> 
+							<table adsm-table="entregasRealizarTableParams" 
+								class="table adsm-table-hover table-condensed table-clickable adsm-table" 
+								style="width: 100%" 
+								show-checkboxes="true"  
+							> 
+								<tbody> 
+									<tr ng-repeat="row in page" ng-click="detail(row)"> 
+									 
+										<td column-title="documentoServico"
+											sortable="nrDoctoServico"   
+											style="min-width: 120px; max-width: 200px;">{{row.nrDoctoServico}}</td>
+									 
+										<td column-title="preAwbAwb"
+											sortable="preAwbAwb"   
+											>{{row.preAwbAwb}}</td>
+									 
+										<td column-title="dpe" align="center"
+											sortable="otd"
+											>{{row.otd}}</td>
+									 
+										<td column-title="entregaDireta"  align="center"
+											sortable="entregaDireta"
+											>{{row.entregaDireta | customBoolean  | translate}}</td>
+									 
+										<td column-title="cliente"
+											sortable="nmCliente"   
+											>{{row.nmCliente}}</td>
+									 
+										<td column-title="endereco"
+											sortable="endereco"   
+											>{{row.endereco}}</td>
+									 
+										<td column-title="volumes" align="center"
+											sortable="volume"
+											>{{row.volume}}</td>
+									 
+										<td column-title="pesoKG" align="center"
+											sortable="peso"
+											>{{row.peso}}</td>
+									 
+										<td column-title="valorReais" align="center"
+											sortable="valor"
+											>{{row.valor | currency: ''}}</td>
+									 
+										<td column-title="veiculo" align="center"
+											sortable="veiculo"
+											>{{row.veiculo}}</td>
+									</tr> 
+								</tbody> 
+							</table> 
+					</div> 
+				</div> 
+				<button type="submit" data-ng-click="openModalExecutarEntrega()" class="btn btn-default btn-lg pull-right" id="btnAbrirModalExecutarEntregas">
+					{{'executarEntregas' |  translate }}
+				</button>
+				
+				<button type="button" data-ng-click="openModalRetornarEntrega()" class="btn btn-default btn-lg pull-right" id="btnAbrirModalRetornarEntregas">
+					{{'retornarEntregas' |  translate }}
+				</button>				
+				
+			</accordion-group>			
+			
+			<accordion-group is-open="isAba3Open">
+				<accordion-heading>
+					<span class="glyphicon" ng-class="{'glyphicon-chevron-down': isAba3Open, 'glyphicon-chevron-right': !isAba3Open}"></span>
+					{{'entregasColetasRealizadas' | translate}}
+				</accordion-heading>
+		
+		
+				<div class="row"> 
+					<div class="col-sm-12"> 
+							<table adsm-table="entregasRealizadasTableParams" 
+								class="table adsm-table-hover table-condensed table-clickable adsm-table" 
+								style="width: 100%"  
+							> 
+								<tbody> 
+									<tr ng-repeat="row in page" ng-click="detail(row)"> 
+									 
+										<td column-title="documentoServico"   
+											sortable="nrDoctoServico"
+											style="min-width: 140px; max-width: 200px;">{{row.nrDoctoServico}}</td>
+									 
+										<td column-title="preAwbAwb"
+											sortable="preAwbAwb"   
+											>{{row.preAwbAwb}}</td>
+											
+										<td column-title="manifesto"
+											sortable="nrManifesto"   
+											>{{row.nrManifesto}}</td>
+											
+										<td column-title="situacao"
+										   sortable="situacao"
+											>{{row.situacao}}</td>
+											
+										<td column-title="dataEvento"
+											sortable="dtHrEvento"   
+											>{{row.dtHrEvento}}</td>
+									 
+										<td column-title="dpe"   
+											sortable="otd"
+											>{{row.otd}}</td>
+									 
+										<td column-title="cliente"
+											sortable="nmCliente"   
+											>{{row.nmCliente}}</td>
+									 
+										<td column-title="endereco"
+											sortable="endereco"   
+											>{{row.endereco}}</td>
+									 
+										<td column-title="volumes"
+										   	sortable="volume"
+											>{{row.volume}}</td>
+									 
+										<td column-title="pesoKG"
+										   	sortable="peso"
+											>{{row.peso}}</td>
+									 
+										<td column-title="valorReais" align="center"
+											sortable="valor"
+											>{{row.valor | currency: ''}}</td>
+									 
+										<td column-title="veiculo" align="center"
+											sortable="veiculo"
+											>{{row.veiculo}}</td>
+									</tr> 
+								</tbody> 
+							</table> 
+					</div> 
+				</div> 
+	
+			</accordion-group>			
+	 </accordion>
+</form> 

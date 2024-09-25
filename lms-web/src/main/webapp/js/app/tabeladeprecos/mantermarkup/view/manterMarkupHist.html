@@ -1,0 +1,192 @@
+<style type="text/css">
+.scroll-table {
+	overflow: visible !important;
+}
+
+.dynamic-table th {
+	min-width: 100px;
+}
+
+.modal-rota .modal-dialog {
+	width: 70%;
+}
+
+.modal-tarifa .modal-dialog {
+	width: 70%;
+}
+</style>
+
+<form class="form-horizontal content-padding" >
+	
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'tabelaPrecos' |
+					translate }}</label>
+				<div class="col-lg-7">
+					<div class="multi-input">
+						<div class="col-xs-3">
+							<input lms-tabela-preco="{tpmodal:'A'}" class="form-control"
+								type="text" ng-model="dados.tabela" id="tabela_preco"
+								maxlength="5" 
+								disabled/>
+						</div>
+						<div class="col-xs-9">
+							<input type="text" class="form-control" disabled
+								ng-model="dados.tabela.descricao">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="form-group">
+				<label class="col-lg-3 control-label">{{'markupGeral' |
+					translate }}</label>
+				<div class="col-lg-4">
+					<input type="text" ng-model="markupGeral.valorMarkup"
+						id="vlMarkup_tabela" data-numeric="{mDec: 2}"
+						class="form-control text-right"
+						disabled>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="nav-content">
+
+		<div adsm-sub-tab orientation="horizontal">
+
+			<div adsm-tab-panel="minimoProgressivo" heading="Minimo Progressivo">
+			
+				<accordion close-others="false" ng-init="isDisabled = true;isOpen = true;">
+					<accordion-group is-open="isOpen" is-disabled="isDisabled">
+						<accordion-heading>
+							<span>&nbsp</span>
+						</accordion-heading>
+						
+						<div class="row">
+							<a id="excluiParcelaTab" class="btn btn-default"
+								style="padding: 4px 10px 6px; margin-left: 5px;"
+								ng-click="removeMinimoProgressivoHist()" ng-disabled="!idTabela">
+								<span class="glyphicon glyphicon-trash"
+								style="font-size: 14px; margin-right: 0px; margin-top: 2px"></span>
+							</a>
+							<div ng-hide="!idTabela" style="width: 100%; overflow: auto">
+								<table adsm-multi-header-table
+									class="table table-condensed adsm-table dynamic-table"
+									header-config="headerConfigMinimoProgressivoHist"
+									show-checkboxes="true" 
+									items="itemsMinimoProgressivoHist"
+									selected="minimoProgressivoSelectedHist"
+									row-mapper="rowMapperMinimoProgressivoHist"
+									disable-field="true"
+									style="width: initial">
+								</table>
+							</div>
+						</div>	
+					</accordion-group>
+				</accordion>	
+				
+			</div>
+
+			<div adsm-tab-panel="precoFrete" heading="Preco Frete">
+				<accordion close-others="false" ng-init="isDisabled1 = true;isOpen1 = true;">
+					<accordion-group is-open="isOpen1" is-disabled="isDisabled1">
+						<accordion-heading>
+							<span>&nbsp</span>
+						</accordion-heading>
+						
+						<div class="row">
+							<a id="excluiPrecoFrete" class="btn btn-default"
+								style="padding: 4px 10px 6px; margin-left: 5px;"
+								ng-click="removePrecoFreteHist()" ng-disabled="!idTabela"> <span
+								class="glyphicon glyphicon-trash"
+								style="font-size: 14px; margin-right: 0px; margin-top: 2px"></span>
+							</a>
+							<div ng-hide="!idTabela" style="width: 100%; overflow: auto">
+								<table adsm-multi-header-table
+									class="table table-condensed adsm-table dynamic-table"
+									header-config="headerConfigPrecoFreteHist" show-checkboxes="true"
+									items="itemsPrecoFreteHist" 
+									selected="precoFreteSelectedHist"
+									row-mapper="rowMapperPrecoFreteHist"
+									disable-field="true"
+									style="width: initial">
+								</table>
+							</div>
+						</div>
+						
+					</accordion-group>
+				</accordion>
+			</div>
+
+			<div adsm-tab-panel="generalidades" heading="Generalidades">
+				<accordion close-others="false" ng-init="isDisabled2 = true;isOpen2 = true;">
+					<accordion-group is-open="isOpen2" is-disabled="isDisabled2">
+						<accordion-heading>
+							<span>&nbsp</span>
+						</accordion-heading>
+						
+						<div class="row">
+							<a id="excluiParcelaGen" class="btn btn-default"
+								style="padding: 4px 10px 6px; margin-left: 5px;"
+								ng-click="removeGeneralidadeHist()"
+								ng-disabled="!idTabela"> <span
+								class="glyphicon glyphicon-trash"
+								style="font-size: 14px; margin-right: 0px; margin-top: 2px"></span>
+							</a>
+							<table ng-hide="!idTabela || listGeneralidadeHist.length == 0" adsm-table="markupsParcelasGeneralidadeHist"
+								data-adsm-table-internal-loading="true"
+								class="table adsm-table-hover table-condensed adsm-table"
+								style="overflow: visible;" show-checkboxes="true"
+								list="listGeneralidadeHist">
+								<tbody>
+									<tr ng-repeat="row in page">
+										<td column-title="Parcela" style="width: 50%; vertical-align: middle; overflow: visible;">
+											<input type="text" 
+												id="parcela_generalidade_{{$index}}"
+												ng-model="row.markup.nomeParcela"
+												class="form-control adsm-element-changed" 
+												disabled/> 
+										</td>
+										<td column-title="vigenciaInicial" style="width: 20%"><input
+											id="dt_ini_parcela_generalidade_{{$index}}" adsm-date-picker
+											ng-model="row.markup.dataVigenciaInicial"
+											ng-blur="changeGeneralidade(row.markup)"
+											class="form-control adsm-element-changed" required
+											data-end="row.markup.dataVigenciaFinal" mask="date" 
+											disabled/></td>
+										<td column-title="vigenciaFinal" style="width: 20%"><input
+											id="dt_fim_parcela_generalidade_{{$index}}" adsm-date-picker
+											ng-model="row.markup.dataVigenciaFinal"
+											ng-blur="changeGeneralidade(row.markup)"
+											class="form-control adsm-element-changed"
+											data-start="row.markup.dataVigenciaInicial" mask="date" 
+											disabled/></td>
+										<td column-title="Markup"
+											style="width: 10%; vertical-align: middle"><input
+											type="text" id="markup_generalidade_tabela_{{$index}}"
+											ng-model="row.markup.valorMarkup"
+											ng-blur="changeGeneralidade(row.markup)"
+											class="form-control adsm-element-changed" required data-numeric
+											data-percentual 
+											disabled/></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						
+					</accordion-group>
+				</accordion>
+			</div>
+
+		</div>
+
+	</div>
+
+</form>
+

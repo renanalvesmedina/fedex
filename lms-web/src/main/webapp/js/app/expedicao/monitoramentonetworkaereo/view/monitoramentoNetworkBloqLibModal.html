@@ -1,0 +1,72 @@
+<style type="text/css">
+.my-modal .modal-dialog{
+	width: 840px;
+}
+</style>
+
+<div class="content">
+	<form class="form-horizontal content-padding" ng-submit="storeAwbOcorrenciaPendencia()">
+		<div class="fixed-top">
+		
+		</div>
+		<div class="alert-container" data-ng-show="popupAlerts.length">
+			<alert data-ng-repeat="alert in popupAlerts" type="{{alert.type}}" close="closeAlert($index)">
+				<span data-ng-bind="alert.msg"></span>
+			</alert>
+		</div>	
+	
+		<div class="modal-body">
+			<div class="row">
+				<div adsm-add-field data-label="awb" data-boxSize="12" data-labelSize="3" data-fieldSize="3">
+					<input type="text" ng-model="data.awbSelecionado" id="awbSelecionado" disabled />
+				</div>
+			</div>
+			<div class="row">
+				<div adsm-add-field data-label="ciaAerea" data-boxSize="12" data-labelSize="3" data-fieldSize="3">
+					<input type="text" ng-model="data.nmCiaAerea" id="awbSelecionado" disabled />
+				</div>
+			</div>
+			<div class="row">
+				<div adsm-add-field data-label="ocorrencia" data-boxSize="12" data-labelSize="3" data-fieldSize="9">
+					<select adsm-chosen id="ocorrenciaPendencia"
+					 	ng-disabled="{{isLocalizacaoRetiradoAeroporto}}"
+						ng-options="obj.idOcorrenciaPendencia as obj.label for obj in ocorrenciasPendencia | orderBy:'obj.cdOcorrenciaPendencia'"
+						ng-model="data.idOcorrenciaPendencia"
+						ng-change="validateOcorrenciaPendencia()" 
+						required>
+						<option value=""></option>
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div adsm-add-field data-label="dtHoraOcorrencia" data-boxSize="12" data-labelSize="3" data-fieldSize="3">
+					<input adsm-date-time ng-model="data.dtHrOcorrencia" adsm-custom-validation="validateDtHrOcorrencia" required ng-disabled="{{isLocalizacaoRetiradoAeroporto}}"/>
+				</div>
+			</div>
+		</div>
+		<div class="row"> 
+			<div class="col-sm-12">
+				<table adsm-table="listAwbOcorrenciaPendenciaTableParams" adsm-table-internal-loading="true">
+					<tbody>
+						<tr ng-repeat="row in page">
+							<td column-title="dataOcorrencia">{{ row.dhOcorrenciaPendencia | dateTimeZone }}</td>
+							<td column-title="ocorrencia">{{ row.ocorrencia }}
+							<td column-title="tipoOcorrencia">{{ row.tpOcorrencia }}</td>
+							<td column-title="usuario" sortable="usuario">{{ row.usuarioOcorrencia}}</td>
+						</tr>
+					</tbody>
+				</table>					
+			</div>
+		</div>
+		
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default btn-lg pull-right" ng-click="close()">
+				{{'fechar' |  translate }}
+			</button>
+			
+			<button type="submit" class="btn btn-default btn-lg pull-right" id="salvarBloqueioLiberacao" ng-disabled="{{isLocalizacaoRetiradoAeroporto}}">
+				{{'salvar' |  translate }}
+			</button>
+		</div>
+	</form>
+</div>

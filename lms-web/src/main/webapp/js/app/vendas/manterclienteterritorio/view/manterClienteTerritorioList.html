@@ -1,0 +1,124 @@
+<form class="form-horizontal content-padding" data-ng-submit="find()">
+
+	<div class="fixed-top">
+		<button type="button" data-ng-click="clearFilter()" class="btn btn-default btn-lg pull-right" id="limpar">
+			{{'limpar' |  translate }}
+		</button>
+		<button type="submit" data-adsm-loading="listTableParams.loading" class="btn btn-default btn-lg pull-right" id="consultar">
+			{{'consultar' |  translate }}
+		</button>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="cliente" data-labelSize="3" data-fieldSize="9" data-multiSize="3,5">
+			<input type="text" class="form-control" ng-model="filter.cliente" lms-cliente id="cliente" />
+			<input type="text" class="form-control" ng-model="filter.cliente.nmPessoa" id="razaoSocial" disabled />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="territorio" data-labelSize="3" data-fieldSize="4">
+			<input type="text" class="form-control" ng-model="filter.territorio" lms-territorio id="territorio" maxlength="50" autocomplete="off" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="modal" data-labelSize="3" data-fieldSize="4" data-multiSize="7,4">
+			<select data-adsm-domain="DM_MODAL" id="tpModal" ng-model="filter.tpModal">
+				<option value=""></option>
+			</select>
+			<span ng-show="!filter.tpModal" style="line-height: 25px;">{{'aereorodoviario' | translate}}</span>
+		</div>
+	</div>
+
+{{filter.dtInicio}}
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="vigencia" data-labelSize="3" data-fieldSize="3" data-multiSize="6,6">
+			<input type="text" class="form-control" ng-model="filter.dtInicio" mask="date" adsm-date-picker id="dtInicio"
+				data-end="filter.dtFim" data-maxInterval="{{ getIntervaloMax() }}" />
+			<input type="text" class="form-control" ng-model="filter.dtFim" mask="date" adsm-date-picker id="dtFim"
+				data-start="filter.dtInicio" data-maxInterval="{{ getIntervaloMax() }}" />
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="filial" data-labelSize="3" data-fieldSize="4">
+			<div class="multi-input">
+				<div class="col-xs-3">
+					<input lms-filial ng-model="filter.filial" id="filial" class="form-control" ng-change="carregarRegional()">
+				</div>
+				<div class="col-xs-9">
+					<input type="text" disabled class="form-control" value="{{ filter.filial.nmFilial }}" id="filial.nmFilial">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div adsm-add-field data-boxSize="12" data-label="regional" data-labelSize="3" data-fieldSize="4">
+			<select
+				lms-regional-chosen
+				id="regional"
+				ng-model="filter.regional"
+				ng-change="selectRegionalFilter()">
+				<option value=""></option>
+			</select>
+		</div>
+	</div>
+
+	<style>
+		.adsm-table td.empty-content {
+			text-align: center;
+			vertical-align: middle;
+		}
+	</style>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="scroll-table">
+				<table adsm-table="listTableParams"
+					class="table adsm-table-hover table-condensed table-clickable adsm-table"
+					style="width: 100%"
+					show-checkboxes="false"
+					>
+					<tbody>
+						<tr ng-repeat="row in page" ng-click="detail(row)">
+
+							<td column-title="'cnpj' | translate" sortable="'cnpj'" inline-property-filter="cnpj">{{row.cnpj}}</td>
+
+							<td column-title="'cliente' | translate" sortable="'nmPessoa'" inline-property-filter="nmPessoa">{{row.nmPessoa}}</td>
+
+							<td column-title="'territorio' | translate" sortable="'nmTerritorio'" inline-property-filter="nmTerritorio">{{row.nmTerritorio}}</td>
+
+							<td column-title="'modal' | translate" sortable="'tpModal'" inline-property-filter="tpModal"
+								style="text-align:center" ng-class="{'empty-content':!row.tpModal}">{{row.tpModal || 'Ambos'}}</td>
+
+							<td column-title="'tpCliente' | translate" sortable="'tpCliente'" inline-property-filter="tpCliente"
+								style="text-align:center" ng-class="{'empty-content':!row.tpCliente}">{{row.tpCliente || '-'}}</td>
+
+							<td column-title="'tpSituacao' | translate" sortable="'tpSituacao'" inline-property-filter="tpSituacao"
+								style="text-align:center" ng-class="{'empty-content':!row.tpSituacao}">{{row.tpSituacao || '-'}}</td>
+
+							<td column-title="'filialResponsavel' | translate" sortable="'sgFilialResponsavel'" 
+								style="text-align:center" ng-class="{'empty-content':!row.sgFilialResponsavel}" inline-property-filter="sgFilialResponsavel">{{row.sgFilialResponsavel || '-'}}</td>
+							
+							<td column-title="'filialNegociacao' | translate" sortable="'sgfilialNegociacao'" 
+								style="text-align:center" ng-class="{'empty-content':!row.sgFilialNegociacao}" inline-property-filter="sgFilialNegociacao">{{row.sgFilialNegociacao || '-'}}</td>
+
+							<td column-title="'vigenciaInicial' | translate" sortable="'dtInicio'" inline-property-filter="dtInicio"
+								style="text-align:center">{{row.dtInicio | date:'dd/MM/yyyy'}}</td>
+
+							<td column-title="'vigenciaFinal'" sortable="'dtFim'" inline-property-filter="dtFim"
+								style="text-align:center" ng-class="{'empty-content':!row.dtFim}">{{(row.dtFim | date:'dd/MM/yyyy') || '-'}}</td>
+
+							<td column-title="'tpSituacaoAprovacao' | translate" sortable="'tpSituacaoAprovacao'" inline-property-filter="tpSituacaoAprovacao"
+								style="text-align:center" ng-class="{'empty-content':!row.tpSituacaoAprovacao}">{{row.tpSituacaoAprovacao || '-'}}</td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</form>
